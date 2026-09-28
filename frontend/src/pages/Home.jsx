@@ -3,22 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import {
   Compass,
   TrendingUp,
+  Calculator,
   ShieldCheck,
-  CheckCircle2,
+  Calendar,
+  FileCheck2,
   ArrowRight,
   Sparkles,
-  Calculator,
-  FileCheck2,
-  Building2,
+  CheckCircle2,
+  MapPin,
+  Store,
+  Banknote,
 } from 'lucide-react';
 import { Button, Card, Badge } from '../components/common';
-import { DEFAULT_DEMO_SCENARIO, FINANCIAL_DISCLAIMER } from '../data/defaultData';
+import { DEFAULT_DEMO_SCENARIO } from '../data/defaultData';
 import { formatCurrency } from '../utils/formatters';
 import { useBizSahayak } from '../hooks/useBizSahayak';
 
 export const Home = () => {
   const navigate = useNavigate();
   const { setInputData } = useBizSahayak();
+
+  const handleStartAnalysis = () => {
+    navigate('/business-input');
+  };
 
   const handleLaunchDemo = () => {
     setInputData({
@@ -29,36 +36,82 @@ export const Home = () => {
     navigate('/business-input');
   };
 
+  const features = [
+    {
+      title: 'Hyper-Local Market Insights',
+      description:
+        'Evaluate catchment radius, nearby village demand clusters, and consumer purchasing patterns tailored to your location.',
+      icon: Compass,
+      color: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    },
+    {
+      title: 'Business Opportunity Analysis',
+      description:
+        'Discover high-potential product categories, local supply chain advantages, and gaps left by existing competitors.',
+      icon: TrendingUp,
+      color: 'bg-amber-50 text-amber-800 border-amber-200',
+    },
+    {
+      title: 'Financial Planning',
+      description:
+        'Deterministic project sizing where your available margin represents 10% and institutional debt covers up to 90%.',
+      icon: Calculator,
+      color: 'bg-sky-50 text-sky-800 border-sky-200',
+    },
+    {
+      title: 'Scheme Recommendation',
+      description:
+        'Automatic routing to government lending schemes (Micro Finance Scheme vs. Term Loan Scheme) based on verified cost thresholds.',
+      icon: ShieldCheck,
+      color: 'bg-indigo-50 text-indigo-800 border-indigo-200',
+    },
+    {
+      title: 'EMI & Repayment Planning',
+      description:
+        'Transparent monthly installment calculations with moratorium grace period guidelines so cashflow stays healthy from day one.',
+      icon: Calendar,
+      color: 'bg-teal-50 text-teal-800 border-teal-200',
+    },
+    {
+      title: 'Downloadable Business Plan',
+      description:
+        'Export a professional, bank-ready PDF appraisal report formatted in simple plain language for immediate loan submission.',
+      icon: FileCheck2,
+      color: 'bg-rose-50 text-rose-800 border-rose-200',
+    },
+  ];
+
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 sm:space-y-16">
       {/* Hero Section */}
-      <section className="text-center max-w-3xl mx-auto pt-4 sm:pt-8 space-y-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-900 text-xs font-bold">
+      <section className="text-center max-w-3xl mx-auto pt-4 sm:pt-10 space-y-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-200 text-emerald-950 text-xs font-bold shadow-2xs">
           <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
-          <span>SIH26091 — Rural Micro-Entrepreneur Empowerment</span>
+          <span>AI-Driven Rural Micro-Entrepreneur Advisory</span>
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-          From Business Idea <span className="text-emerald-800">→</span> Business Insight{' '}
-          <span className="text-emerald-800">→</span>{' '}
-          <span className="text-amber-600">Financial Plan</span>
-        </h1>
+        <div className="space-y-3">
+          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight">
+            Biz<span className="text-amber-600">Sahayak</span>
+          </h1>
+          <p className="text-xl sm:text-2xl font-bold text-emerald-900 tracking-tight">
+            "From Business Idea → Business Insight → Financial Plan."
+          </p>
+        </div>
 
-        <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-          BizSahayak bridges the gap for rural micro-entrepreneurs by turning localized
-          market intuition into bank-ready financial structuring, automatic scheme routing,
-          and transparent repayment schedules.
+        <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          Turn your business idea into a localized feasibility report and financial plan.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
           <Button
             variant="primary"
             size="lg"
-            onClick={() => navigate('/business-input')}
+            onClick={handleStartAnalysis}
             icon={ArrowRight}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto text-base px-8 py-3.5 shadow-md hover:shadow-lg"
           >
-            Start Business Advisory
+            Start Your Business Analysis
           </Button>
 
           <Button
@@ -67,56 +120,73 @@ export const Home = () => {
             onClick={handleLaunchDemo}
             className="w-full sm:w-auto"
           >
-            Load Anand, Gujarat Demo
+            Explore Anand, Gujarat Demo
           </Button>
         </div>
       </section>
 
-      {/* Default Demo Scenario Callout */}
+      {/* Featured Scenario Benchmark Card */}
       <section className="max-w-4xl mx-auto">
         <Card
           className="border-emerald-200 bg-gradient-to-br from-emerald-50/70 via-white to-amber-50/40"
-          title="Featured Benchmark Scenario"
+          title="Default Evaluation Scenario"
           badge={
             <Badge variant="primary" size="sm">
-              Default SIH Demo
+              SIH26091 Benchmark
             </Badge>
           }
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-            <div className="bg-white p-4 rounded-xl border border-slate-200">
-              <span className="text-xs text-slate-500 font-semibold block uppercase">
-                Location
-              </span>
-              <span className="text-base font-bold text-slate-800">
-                {DEFAULT_DEMO_SCENARIO.location}
-              </span>
+            <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-100 text-emerald-800">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-xs text-slate-500 font-semibold block uppercase">
+                  Location
+                </span>
+                <span className="text-sm sm:text-base font-bold text-slate-800">
+                  {DEFAULT_DEMO_SCENARIO.location}
+                </span>
+              </div>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-200">
-              <span className="text-xs text-slate-500 font-semibold block uppercase">
-                Category
-              </span>
-              <span className="text-base font-bold text-slate-800">
-                {DEFAULT_DEMO_SCENARIO.business_category}
-              </span>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-amber-100 text-amber-800">
+                <Store className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-xs text-slate-500 font-semibold block uppercase">
+                  Category
+                </span>
+                <span className="text-sm sm:text-base font-bold text-slate-800">
+                  {DEFAULT_DEMO_SCENARIO.business_category}
+                </span>
+              </div>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-200">
-              <span className="text-xs text-slate-500 font-semibold block uppercase">
-                Margin Capital
-              </span>
-              <span className="text-base font-bold text-emerald-800">
-                {formatCurrency(DEFAULT_DEMO_SCENARIO.available_capital)}
-              </span>
+
+            <div className="bg-white p-4 rounded-xl border border-slate-200 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-100 text-emerald-800">
+                <Banknote className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-xs text-slate-500 font-semibold block uppercase">
+                  Margin Capital
+                </span>
+                <span className="text-sm sm:text-base font-bold text-emerald-800">
+                  {formatCurrency(DEFAULT_DEMO_SCENARIO.available_capital)}
+                </span>
+              </div>
             </div>
           </div>
 
           <div className="mt-4 pt-4 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-600">
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-              Routes deterministically to{' '}
-              <strong className="text-slate-800">
-                {DEFAULT_DEMO_SCENARIO.scheme_name} (₹10 Lakh Project)
-              </strong>
+              <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+              <span>
+                Deterministic sizing: <strong className="text-slate-800">₹10 Lakh Project</strong>{' '}
+                → <strong className="text-emerald-900">{DEFAULT_DEMO_SCENARIO.scheme_name}</strong>
+              </span>
             </span>
             <Button
               variant="subtle"
@@ -124,62 +194,67 @@ export const Home = () => {
               onClick={handleLaunchDemo}
               icon={ArrowRight}
             >
-              Analyze This Scenario
+              Load This Case
             </Button>
           </div>
         </Card>
       </section>
 
-      {/* 3 Pillars of BizSahayak */}
-      <section className="max-w-5xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-            How BizSahayak Works for You
+      {/* Feature Section */}
+      <section className="max-w-5xl mx-auto space-y-6">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Complete End-to-End Advisory Journey
           </h2>
-          <p className="text-sm text-slate-500 mt-1">
-            Deterministic financial models combined with transparent local insights
+          <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto">
+            Everything a rural entrepreneur needs to validate an idea and secure institutional credit.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="hover:border-emerald-300">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mb-4">
-              <Compass className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-2">
-              1. Hyper-Local Market Insights
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Understand customer reach radius, competition clusters, opportunity
-              matrices, and recommended product pricing tailored to your geography.
-            </p>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {features.map((feat, idx) => {
+            const Icon = feat.icon;
+            return (
+              <Card key={idx} className="hover:border-emerald-300 card-hover flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div
+                    className={`w-12 h-12 rounded-2xl border flex items-center justify-center ${feat.color}`}
+                  >
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900">
+                    {feat.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    {feat.description}
+                  </p>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
 
-          <Card className="hover:border-amber-300">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mb-4">
-              <Calculator className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-2">
-              2. Deterministic Financial Engine
+      {/* Bottom CTA Banner */}
+      <section className="max-w-4xl mx-auto bg-emerald-900 text-white rounded-3xl p-8 sm:p-10 shadow-xl relative overflow-hidden">
+        <div className="relative z-10 space-y-4 text-center sm:text-left sm:flex sm:items-center sm:justify-between sm:space-y-0 gap-6">
+          <div className="space-y-2 max-w-lg">
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Ready to structure your business?
             </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Calculates 10% margin project sizing, 90% loan eligibility, Micro Finance vs
-              Term Loan routing, exact monthly EMIs, and moratorium periods.
+            <p className="text-emerald-100 text-sm leading-relaxed">
+              Enter your location, select your enterprise type, and provide your available margin capital.
             </p>
-          </Card>
-
-          <Card className="hover:border-emerald-300">
-            <div className="w-12 h-12 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center mb-4">
-              <FileCheck2 className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-2">
-              3. Bank-Ready Business Plan
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Generates a transparent, plain-language business summary with complete
-              amortization schedules and working capital requirements for credit appraisal.
-            </p>
-          </Card>
+          </div>
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={handleStartAnalysis}
+            icon={ArrowRight}
+            className="w-full sm:w-auto shrink-0 shadow-lg text-amber-950 font-bold"
+          >
+            Start Your Business Analysis
+          </Button>
         </div>
       </section>
     </div>

@@ -12,13 +12,14 @@ export const DEFAULT_DEMO_SCENARIO = {
 
 export const BUSINESS_CATEGORIES = [
   "Textile & Clothing",
-  "Food Processing & Snacks",
-  "Dairy & Animal Husbandry",
-  "Handicrafts & Pottery",
-  "Retail & Kirana Store",
-  "Agri-Equipment & Repairs",
-  "Carpentry & Furniture",
-  "Eco-Friendly Packaging",
+  "Grocery",
+  "Dairy",
+  "Food Processing",
+  "Agriculture",
+  "Retail",
+  "Handicrafts",
+  "Services",
+  "Other",
 ];
 
 export const POPULAR_LOCATIONS = [

@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MapPin,
-  Banknote,
   Store,
+  Banknote,
   ArrowRight,
-  Info,
-  CheckCircle,
-  Sparkles,
   RotateCcw,
+  CheckCircle2,
+  FileCheck,
+  AlertCircle,
+  Sparkles,
 } from 'lucide-react';
 import {
   Button,
@@ -17,129 +18,154 @@ import {
   Select,
   SectionHeader,
   Badge,
-  StatCard,
 } from '../components/common';
 import {
   BUSINESS_CATEGORIES,
   POPULAR_LOCATIONS,
   DEFAULT_DEMO_SCENARIO,
 } from '../data/defaultData';
-import { formatCurrency, formatLakhs } from '../utils/formatters';
+import { formatCurrency } from '../utils/formatters';
 import { useBizSahayak } from '../hooks/useBizSahayak';
 
 export const BusinessInput = () => {
   const navigate = useNavigate();
-  const { inputData, setInputData, resetToDemoScenario } = useBizSahayak();
+  const { inputData, setInputData } = useBizSahayak();
 
   const [location, setLocation] = useState(inputData.location || '');
   const [category, setCategory] = useState(inputData.business_category || '');
-  const [capital, setCapital] = useState(inputData.available_capital || 100000);
+  const [capital, setCapital] = useState(inputData.available_capital || '');
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Deterministic preview calculation (Rules: Project Cost = Capital / 10%, Max Loan = 90%)
-  const numericCapital = Number(capital) || 0;
-  const projectCost = numericCapital > 0 ? numericCapital / 0.1 : 0;
-  const maxLoan = projectCost * 0.9;
-  const isMicroFinance = projectCost <= 140000;
-  const schemeName = isMicroFinance ? 'Micro Finance Scheme' : 'Term Loan Scheme';
-  const interestRate = isMicroFinance ? '6.5%' : '8.0%';
-  const tenure = isMicroFinance ? '3 Years' : '7 Years';
-  const moratorium = isMicroFinance ? '3 Months' : '6 Months';
+  // Capital parsing
+  const numericCapital = Number(capital);
 
+  // Quick preset chips for boundary conditions & demo
   const handlePresetCapital = (amount) => {
     setCapital(amount);
+    if (errors.capital) {
+      setErrors((prev) => ({ ...prev, capital: null }));
+    }
   };
 
-  const handleApplyDefaultScenario = () => {
+  const handleResetToDemo = () => {
     setLocation(DEFAULT_DEMO_SCENARIO.location);
     setCategory(DEFAULT_DEMO_SCENARIO.business_category);
     setCapital(DEFAULT_DEMO_SCENARIO.available_capital);
     setErrors({});
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Form Validation
+  const validateForm = () => {
     const newErrors = {};
 
-    if (!location.trim()) {
-      newErrors.location = 'Please provide a location (e.g. Anand, Gujarat)';
-    }
-    if (!category.trim()) {
-      newErrors.category = 'Please choose a business category';
-    }
-    if (!numericCapital || numericCapital < 1000) {
-      newErrors.capital = 'Minimum margin capital is ₹1,000';
+    if (!location || !location.trim()) {
+      newErrors.location = 'Location is required. Please specify your town, district, or region.';
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (!category || !category.trim()) {
+      newErrors.category = 'Business category is required. Please select a category.';
+    }
+
+    if (capital === '' || capital === null || capital === undefined) {
+      newErrors.capital = 'Available margin capital is required.';
+    } else if (isNaN(numericCapital) || numericCapital <= 0) {
+      newErrors.capital = 'Available capital must be a valid amount greater than ₹0.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
       return;
     }
 
-    // Save into state context
-    setInputData({
+    setIsSubmitting(true);
+
+    // Save into shared frontend state for downstream analysis & financial screens
+    const preparedPayload = {
       location: location.trim(),
       business_category: category.trim(),
       available_capital: numericCapital,
-    });
+    };
 
-    navigate('/analysis');
+    setInputData(preparedPayload);
+
+    // Smooth navigation transition
+    setTimeout(() => {
+      setIsSubmitting(false);
+      navigate('/analysis');
+    }, 400);
   };
+
+  const isFormComplete =
+    location.trim().length > 0 &&
+    category.trim().length > 0 &&
+    !isNaN(numericCapital) &&
+    numericCapital > 0;
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Page Header */}
       <SectionHeader
-        title="Business Profile & Capital Input"
-        subtitle="Provide your location, business category, and available margin capital to structure your loan and feasibility insights."
+        title="Business Profile & Margin Capital"
+        subtitle="Enter your enterprise details and available promoter contribution to begin hyper-local feasibility and financial structuring."
         icon={Store}
         badge={
           <Badge variant="primary" size="md">
-            Step 1 of 4
+            Step 1 of 4 • Input
           </Badge>
         }
         action={
           <Button
             variant="outline"
             size="sm"
-            onClick={handleApplyDefaultScenario}
+            onClick={handleResetToDemo}
             icon={RotateCcw}
           >
-            Reset to Anand Demo
+            Load Anand Demo
           </Button>
         }
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        {/* Input Form (2 cols) */}
+        {/* Form Container (2 cols) */}
         <div className="lg:col-span-2">
           <Card>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Location Input */}
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+              {/* 1. Location */}
               <div>
                 <Input
-                  label="1. Geographic Location (Town / District, State)"
-                  id="business-location"
+                  label="1. Geographic Location"
+                  id="location-input"
                   placeholder="e.g. Anand, Gujarat"
                   value={location}
                   onChange={(e) => {
                     setLocation(e.target.value);
-                    if (errors.location) setErrors({ ...errors, location: null });
+                    if (errors.location) setErrors((prev) => ({ ...prev, location: null }));
                   }}
                   icon={MapPin}
                   error={errors.location}
-                  helper="Hyper-local analysis will evaluate nearby rural demand clusters."
+                  helper="Enter the village, town, district, or state where you plan to establish the business."
                 />
 
-                {/* Popular Location Chips */}
+                {/* Popular Location Suggestions */}
                 <div className="mt-2.5 flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[11px] text-slate-600 font-semibold">
+                  <span className="text-[11px] text-slate-500 font-semibold">
                     Quick suggestions:
                   </span>
                   {POPULAR_LOCATIONS.map((loc) => (
                     <button
                       key={loc}
                       type="button"
-                      onClick={() => setLocation(loc)}
+                      onClick={() => {
+                        setLocation(loc);
+                        if (errors.location) setErrors((prev) => ({ ...prev, location: null }));
+                      }}
                       className={`text-xs px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
                         location === loc
                           ? 'bg-emerald-100 text-emerald-900 border-emerald-300 font-bold'
@@ -152,147 +178,144 @@ export const BusinessInput = () => {
                 </div>
               </div>
 
-              {/* Business Category */}
+              {/* 2. Business Category */}
               <div>
                 <Select
-                  label="2. Proposed Business Category"
-                  id="business-category"
-                  placeholder="Select a category"
+                  label="2. Business Category"
+                  id="category-select"
+                  placeholder="Select proposed business category"
                   options={BUSINESS_CATEGORIES}
                   value={category}
                   onChange={(e) => {
                     setCategory(e.target.value);
-                    if (errors.category) setErrors({ ...errors, category: null });
+                    if (errors.category) setErrors((prev) => ({ ...prev, category: null }));
                   }}
                   error={errors.category}
-                  helper="Select the sector matching your proposed enterprise."
+                  helper="Choose the industry sector closest to your proposed micro-enterprise."
                 />
               </div>
 
-              {/* Available Margin Capital */}
+              {/* 3. Available Margin Capital */}
               <div>
                 <Input
-                  label="3. Available Margin Capital (Your Contribution)"
-                  id="available-capital"
+                  label="3. Available Margin Capital (INR)"
+                  id="capital-input"
                   type="number"
-                  min="1000"
+                  min="1"
                   step="500"
                   placeholder="100000"
                   prefix="₹"
                   value={capital}
                   onChange={(e) => {
                     setCapital(e.target.value);
-                    if (errors.capital) setErrors({ ...errors, capital: null });
+                    if (errors.capital) setErrors((prev) => ({ ...prev, capital: null }));
                   }}
                   error={errors.capital}
-                  helper="By official guidelines, your capital represents 10% of the total project size."
+                  helper="Your self-financed promoter margin contribution in Indian Rupees (INR)."
                 />
 
-                {/* Quick boundary condition presets */}
+                {/* Boundary condition presets */}
                 <div className="mt-2.5 space-y-1.5">
-                  <span className="text-[11px] text-slate-600 font-semibold block">
-                    Test Scheme Routing Boundary Conditions:
+                  <span className="text-[11px] text-slate-500 font-semibold block">
+                    Quick capital presets (Boundary testing):
                   </span>
                   <div className="flex items-center gap-2 flex-wrap">
                     <button
                       type="button"
                       onClick={() => handlePresetCapital(10000)}
-                      className="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 cursor-pointer font-medium"
+                      className="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium cursor-pointer"
                     >
-                      ₹10k (Micro: ₹1L Cost)
+                      ₹10,000
                     </button>
                     <button
                       type="button"
                       onClick={() => handlePresetCapital(14000)}
-                      className="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 cursor-pointer font-medium"
+                      className="text-xs px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 font-medium cursor-pointer"
                     >
-                      ₹14k (Micro Boundary: ₹1.4L)
+                      ₹14,000 (Boundary)
                     </button>
                     <button
                       type="button"
                       onClick={() => handlePresetCapital(14001)}
-                      className="text-xs px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 cursor-pointer font-medium"
+                      className="text-xs px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 font-medium cursor-pointer"
                     >
-                      ₹14,001 (Term Loan Boundary)
+                      ₹14,001 (Boundary)
                     </button>
                     <button
                       type="button"
                       onClick={() => handlePresetCapital(100000)}
-                      className="text-xs px-2.5 py-1 rounded-lg bg-emerald-700 text-white font-semibold hover:bg-emerald-800 cursor-pointer"
+                      className="text-xs px-2.5 py-1 rounded-lg bg-emerald-700 text-white font-semibold hover:bg-emerald-800 cursor-pointer shadow-2xs"
                     >
-                      ₹1 Lakh (Demo Default)
+                      ₹1,00,000 (Demo Default)
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit CTA */}
               <div className="pt-2">
                 <Button
                   type="submit"
                   variant="primary"
                   size="lg"
+                  loading={isSubmitting}
                   icon={ArrowRight}
-                  className="w-full"
+                  className="w-full text-base py-3 font-bold"
                 >
-                  Analyze Feasibility & Generate Financial Plan
+                  Generate Business Analysis
                 </Button>
               </div>
             </form>
           </Card>
         </div>
 
-        {/* Live Calculation Preview Sidebar (1 col) */}
+        {/* Summary Card Before Submission (1 col) */}
         <div className="space-y-4">
           <Card
-            title="Instant Sizing Preview"
-            subtitle="Deterministic 10% Margin Rule"
+            title="Profile Summary"
+            subtitle="Verify your inputs before generation"
             badge={
-              <Badge variant={isMicroFinance ? 'info' : 'primary'} size="sm">
-                {schemeName}
+              <Badge
+                variant={isFormComplete ? 'success' : 'default'}
+                size="sm"
+              >
+                {isFormComplete ? 'Ready' : 'Incomplete'}
               </Badge>
             }
           >
-            <div className="space-y-3.5 text-sm">
-              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Your Margin (10%):</span>
-                <span className="font-bold text-slate-800">
-                  {formatCurrency(numericCapital)}
+            <div className="space-y-4 text-xs">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <span className="text-slate-500 font-medium block">Location</span>
+                <span className="font-bold text-slate-800 text-sm block">
+                  {location.trim() || '— Not specified yet —'}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Total Project Cost:</span>
-                <span className="font-extrabold text-emerald-900 text-base">
-                  {formatCurrency(projectCost)}
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <span className="text-slate-500 font-medium block">Enterprise Category</span>
+                <span className="font-bold text-slate-800 text-sm block">
+                  {category || '— Not selected yet —'}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Maximum Loan (90%):</span>
-                <span className="font-bold text-slate-800">
-                  {formatCurrency(maxLoan)}
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+                <span className="text-slate-500 font-medium block">Margin Capital</span>
+                <span className="font-bold text-emerald-800 text-sm block">
+                  {!isNaN(numericCapital) && numericCapital > 0
+                    ? formatCurrency(numericCapital)
+                    : '— Awaiting INR input —'}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Interest Rate:</span>
-                <span className="font-bold text-amber-700">{interestRate} p.a.</span>
+              <div className="p-3.5 bg-emerald-50/70 rounded-xl border border-emerald-200 text-slate-700 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-emerald-950 text-xs">
+                  <Sparkles className="w-4 h-4 text-emerald-700 shrink-0" />
+                  What happens next?
+                </div>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  Upon clicking <strong>"Generate Business Analysis"</strong>, your inputs will be evaluated for local feasibility, SWOT, and risk, followed by deterministic loan sizing and scheme routing on the next pages.
+                </p>
               </div>
-
-              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-                <span className="text-slate-500">Loan Tenure:</span>
-                <span className="font-medium text-slate-700">{tenure}</span>
-              </div>
-
-              <div className="flex justify-between items-center py-1.5">
-                <span className="text-slate-500">Moratorium:</span>
-                <span className="font-medium text-slate-700">{moratorium}</span>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-200 bg-slate-50 -mx-5 -mb-5 p-4 rounded-b-2xl text-[11px] text-slate-500 leading-tight">
-              Project sizing is calculated deterministically as Margin / 10% as per official micro-enterprise lending guidelines.
             </div>
           </Card>
         </div>
