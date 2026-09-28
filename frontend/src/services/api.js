@@ -11,152 +11,195 @@ const apiClient = axios.create({
 });
 
 /**
- * Generates structured domain analysis for local prototyping fallback
+ * Deterministic financial calculator adhering to the official financial rules
+ * used as a resilient client-side service fallback when the backend service is offline.
  */
-export const getFallbackAnalysis = (location, category, capital) => {
-  const loc = location || 'Anand, Gujarat';
-  const cat = category || 'Textile & Clothing';
+export const calculateDeterministicFinancials = (availableCapital) => {
+  const marginPercentage = 10.0;
+  const capital = Math.max(1000, Number(availableCapital) || 100000);
+  const projectCost = Math.round((capital / (marginPercentage / 100.0)) * 100) / 100;
+  const maxLoanAmount = Math.round(projectCost * 0.9 * 100) / 100;
+
+  // Boundary condition check: <= 1.40 Lakh vs > 1.40 Lakh
+  const isMicroFinance = projectCost <= 140000.0;
+
+  const scheme = isMicroFinance
+    ? {
+        scheme_name: 'Micro Finance Scheme',
+        scheme_code: 'MFS-RURAL-01',
+        interest_rate_percent: 6.5,
+        tenure_years: 3,
+        tenure_months: 36,
+        moratorium_months: 3,
+        max_agency_funding: 125000.0,
+        eligible_funding: Math.min(maxLoanAmount, 125000.0),
+        governing_body: 'National Rural Livelihood Mission (NRLM) / Micro-credit Division',
+        eligibility_criteria: [
+          'Project cost must not exceed INR 1.40 Lakh.',
+          'Rural micro-entrepreneurs, self-help groups (SHGs), and solo artisans.',
+          'Simple Aadhaar & Village Panchayat / Ward recommendation required.',
+          'No collateral security required up to scheme ceiling.',
+        ],
+        key_benefits: [
+          'Concessional 6.5% per annum fixed interest rate.',
+          '3-month initial moratorium to setup production and sales.',
+          'Low paperwork with direct bank disbursement.',
+          'Eligibility for prompt repayment incentive rebate (up to 1%).',
+        ],
+      }
+    : {
+        scheme_name: 'Term Loan Scheme',
+        scheme_code: 'TLS-MSME-02',
+        interest_rate_percent: 8.0,
+        tenure_years: 7,
+        tenure_months: 84,
+        moratorium_months: 6,
+        max_agency_funding: 4500000.0,
+        eligible_funding: Math.min(maxLoanAmount, 4500000.0),
+        governing_body: 'CGTMSE / Rural Enterprise Development Board / PMEGP',
+        eligibility_criteria: [
+          'Project cost above INR 1.40 Lakh and up to INR 50.00 Lakh.',
+          'Formal or semi-formal micro enterprises in rural/peri-urban locations.',
+          'Udyam Registration Certificate & basic project report required.',
+          'Covered under Credit Guarantee cover without third-party collateral.',
+        ],
+        key_benefits: [
+          'Attractive 8.0% annual interest rate for long-term capital deployment.',
+          'Extended 7-year repayment tenure for relaxed liquidity management.',
+          '6-month moratorium period during initial gestation and ramp-up.',
+          'Covers both machinery capital expenditure and initial working capital.',
+        ],
+      };
+
+  const principal = scheme.eligible_funding;
+  const totalMonths = scheme.tenure_months;
+  const moratoriumMonths = scheme.moratorium_months;
+  const postMoratoriumMonths = totalMonths - moratoriumMonths;
+  const monthlyRate = scheme.interest_rate_percent / 100.0 / 12.0;
+
+  const moratoriumMonthlyInterest = Math.round(principal * monthlyRate * 100) / 100;
+
+  let monthlyEmi = 0;
+  if (monthlyRate > 0 && postMoratoriumMonths > 0) {
+    const factor = Math.pow(1.0 + monthlyRate, postMoratoriumMonths);
+    monthlyEmi = Math.round(((principal * monthlyRate * factor) / (factor - 1.0)) * 100) / 100;
+  } else {
+    monthlyEmi = Math.round((principal / Math.max(1, postMoratoriumMonths)) * 100) / 100;
+  }
+
+  // Generate repayment schedule items
+  const schedule = [];
+  let currentBalance = principal;
+  let totalRepaymentInterest = 0;
+
+  for (let m = 1; m <= moratoriumMonths; m++) {
+    const yearNum = Math.floor((m - 1) / 12) + 1;
+    const interestComp = Math.round(currentBalance * monthlyRate * 100) / 100;
+    const principalComp = 0.0;
+    totalRepaymentInterest += interestComp;
+
+    schedule.push({
+      month: m,
+      year: yearNum,
+      is_moratorium: true,
+      opening_balance: currentBalance,
+      installment_amount: interestComp,
+      principal_component: principalComp,
+      interest_component: interestComp,
+      closing_balance: currentBalance,
+    });
+  }
+
+  for (let m = moratoriumMonths + 1; m <= totalMonths; m++) {
+    const yearNum = Math.floor((m - 1) / 12) + 1;
+    const interestComp = Math.round(currentBalance * monthlyRate * 100) / 100;
+    let principalComp = 0;
+    let closingBalance = 0;
+    let installment = monthlyEmi;
+
+    if (m === totalMonths) {
+      principalComp = currentBalance;
+      installment = Math.round((principalComp + interestComp) * 100) / 100;
+      closingBalance = 0.0;
+    } else {
+      principalComp = Math.round((monthlyEmi - interestComp) * 100) / 100;
+      if (principalComp > currentBalance) {
+        principalComp = currentBalance;
+      }
+      closingBalance = Math.round((currentBalance - principalComp) * 100) / 100;
+    }
+
+    totalRepaymentInterest += interestComp;
+    schedule.push({
+      month: m,
+      year: yearNum,
+      is_moratorium: false,
+      opening_balance: currentBalance,
+      installment_amount: installment,
+      principal_component: principalComp,
+      interest_component: interestComp,
+      closing_balance: Math.max(0, closingBalance),
+    });
+
+    currentBalance = closingBalance;
+    if (currentBalance <= 0.01) currentBalance = 0;
+  }
+
+  const totalInterestPayable = Math.round(totalRepaymentInterest * 100) / 100;
+  const totalRepaymentAmount = Math.round((principal + totalInterestPayable) * 100) / 100;
+
+  const emi = {
+    principal_amount: principal,
+    annual_interest_rate_percent: scheme.interest_rate_percent,
+    tenure_months: totalMonths,
+    moratorium_months: moratoriumMonths,
+    post_moratorium_tenure_months: postMoratoriumMonths,
+    monthly_emi: monthlyEmi,
+    moratorium_monthly_interest: moratoriumMonthlyInterest,
+    total_interest_payable: totalInterestPayable,
+    total_repayment_amount: totalRepaymentAmount,
+  };
+
+  const monthlyRawMaterials = Math.round(projectCost * 0.045 * 100) / 100;
+  const monthlyLabor = Math.round(projectCost * 0.025 * 100) / 100;
+  const monthlyRent = Math.round(projectCost * 0.012 * 100) / 100;
+  const monthlyLogistics = Math.round(projectCost * 0.008 * 100) / 100;
+  const monthlyContingency = Math.round(projectCost * 0.005 * 100) / 100;
+  const totalMonthlyOpex = Math.round(
+    (monthlyRawMaterials + monthlyLabor + monthlyRent + monthlyLogistics + monthlyContingency) * 100
+  ) / 100;
+
+  const workingCapital = {
+    monthly_raw_materials: monthlyRawMaterials,
+    monthly_labor_wages: monthlyLabor,
+    monthly_rent_utilities: monthlyRent,
+    monthly_logistics_packaging: monthlyLogistics,
+    monthly_contingency_buffer: monthlyContingency,
+    total_monthly_operating_expense: totalMonthlyOpex,
+    recommended_3_months_reserve: Math.round(totalMonthlyOpex * 3.0 * 100) / 100,
+    projected_monthly_revenue: Math.round((totalMonthlyOpex + monthlyEmi) * 1.35 * 100) / 100,
+    projected_monthly_net_profit: Math.round(
+      ((totalMonthlyOpex + monthlyEmi) * 1.35 - totalMonthlyOpex - monthlyEmi) * 100
+    ) / 100,
+    break_even_monthly_revenue: Math.round((totalMonthlyOpex + monthlyEmi) * 100) / 100,
+    break_even_occupancy_or_capacity_percent: 74.0,
+  };
 
   return {
-    is_verified: false,
-    source: 'prototype_simulation',
-    disclaimer: 'Indicative prototype data. Verify applicable local parameters before execution.',
-    business_summary: {
-      location: loc,
-      business_category: cat,
-      available_capital: capital || 100000,
-      readiness_level: 'High Initial Potential',
+    financial: {
+      available_capital: capital,
+      margin_percentage: marginPercentage,
+      project_cost: projectCost,
+      promoter_contribution: capital,
+      max_loan_amount: maxLoanAmount,
+      subsidy_or_grant_estimate: Math.round(projectCost * 0.15 * 100) / 100,
+      financial_disclaimer:
+        'Indicative calculation for planning purposes. Verify applicable scheme terms before making financial decisions.',
     },
-    market_reach: {
-      estimated_consumer_reach: '18,500 – 24,000 residents',
-      local_area: `0 – 15 km catchment radius surrounding ${loc}`,
-      distribution_channels: [
-        {
-          name: 'Direct Counter & Retail Storefront',
-          description: 'High walk-in visibility on village market road or town bazaar.',
-          suitability: 'Primary (60% volume)',
-        },
-        {
-          name: 'Weekly Village Haats & Mandi Stalls',
-          description: 'Access to rotating weekly agricultural gatherings in neighboring talukas.',
-          suitability: 'Secondary (25% volume)',
-        },
-        {
-          name: 'Direct Institutional & Bulk Orders',
-          description: 'Orders from local schools, cooperatives, and small workshops.',
-          suitability: 'High-Margin (15% volume)',
-        },
-      ],
-      customer_segments: [
-        { name: 'Agricultural Families', percentage: 45, demand: 'Durable, cost-effective essentials' },
-        { name: 'Town Salaried & Shop Owners', percentage: 30, demand: 'Daily consumables & regular upgrades' },
-        { name: 'Youth & Students', percentage: 25, demand: 'Modern styles & custom preferences' },
-      ],
-    },
-    opportunities: [
-      {
-        title: 'Cluster Supply-Chain Advantage',
-        description: `Proximity to key regional raw material corridors for ${cat} reduces transport friction and supplier lead time.`,
-        impact: 'High Impact',
-      },
-      {
-        title: 'Underserved Semi-Rural Demand',
-        description: 'Local consumers travel 20-30 km to major district hubs; a nearby center retains local spending.',
-        impact: 'High Impact',
-      },
-      {
-        title: 'Seasonal Surge Capitalization',
-        description: 'Agricultural harvest payouts and local festival seasons consistently deliver 2x sales peaks.',
-        impact: 'Moderate Impact',
-      },
-    ],
-    swot: {
-      strengths: [
-        'Direct relationship and trust with local village panchayats and community.',
-        'Significantly lower operational rental overhead compared to urban establishments.',
-        'High operational agility to tailor offerings to local cultural preferences.',
-        'Promoter commitment with skin in the game through 10% margin equity.',
-      ],
-      weaknesses: [
-        'Initial working capital constraints limiting bulk raw material purchases.',
-        'Early reliance on manual processing prior to machinery scale-up.',
-        'Informal bookkeeping that requires transition to structured digital accounting.',
-        'Initial brand awareness limited to immediate 5 km radius.',
-      ],
-      opportunities: [
-        'Leverage government interest-subsidized credit schemes with moratorium benefits.',
-        'Establish direct supply agreements with local institutional cooperatives.',
-        'Adopt UPI and digital cataloging via WhatsApp Business to expand radius.',
-        'Introduce value-added custom services that competitors do not provide.',
-      ],
-      threats: [
-        'Temporary cash flow delays when rural customers face harvest payment lags.',
-        'Raw material wholesale price volatility during off-peak seasons.',
-        'Competition from low-quality, unorganized mobile haat traders.',
-        'Dependence on local power stability for machinery operations.',
-      ],
-    },
-    risks: [
-      {
-        title: 'Seasonal Demand & Cashflow Fluctuations',
-        description: 'Revenue peaks during post-harvest months but can soften during monsoon periods.',
-        severity: 'Medium',
-        mitigation: 'Utilize the 3-6 month loan moratorium to build a 2-month cash buffer and maintain multi-product lines.',
-      },
-      {
-        title: 'Supplier Raw Material Price Volatility',
-        description: 'Unanticipated increases in wholesale inputs could squeeze operating margins.',
-        severity: 'Medium',
-        mitigation: 'Form bulk-buying syndicates with neighboring micro-entrepreneurs and secure fixed short-term contracts.',
-      },
-      {
-        title: 'Informal Credit Demands by Buyers',
-        description: 'Rural customers often expect extended credit terms until crop sales are realized.',
-        severity: 'High',
-        mitigation: 'Enforce a strict cash-first or 50% advance policy on customized orders with small discounts for upfront UPI payments.',
-      },
-    ],
-    competitors: [
-      {
-        name: 'Local Legacy Traders',
-        type: 'Traditional Brick & Mortar',
-        presence: 'Established village market location',
-        pricing_tier: 'Standard / High',
-        weakness: 'Limited variety, rigid payment terms, outdated product lines',
-      },
-      {
-        name: 'Weekly Haat Vendors',
-        type: 'Informal Mobile Traders',
-        presence: 'Available 1-2 days per week',
-        pricing_tier: 'Low / Budget',
-        weakness: 'Inconsistent quality, zero after-sales service or customization',
-      },
-      {
-        name: 'Nearby Town Retail Outlets',
-        type: 'Commercial Semi-Urban Hub',
-        presence: '15-20 km distance',
-        pricing_tier: 'High',
-        weakness: 'Inconvenient travel cost and time for routine rural purchases',
-      },
-    ],
-    pricing: {
-      estimated_price_range: '₹220 – ₹850',
-      purchasing_power_context:
-        'Average rural household ticket size per purchase is ₹400 – ₹700, with high willingness to pay for proven durability.',
-      suggested_approach:
-        'Value-Based Tiered Pricing: Price essential daily volume items at competitive entry points (₹250-₹400) to build footfall, while keeping higher margin (35-42%) offerings for festive and customized orders.',
-    },
-    recommendation: {
-      score: 83,
-      status: 'Recommended for Financial Structuring',
-      headline: `Feasible Micro-Enterprise Opportunity in ${loc}`,
-      summary: `The proposed ${cat} enterprise shows robust local feasibility score of 83/100. Strong regional demand, manageable competitor density, and available credit schemes make this a viable candidate for term financing.`,
-      key_actions: [
-        'Secure shop premise along high-footfall village connective road or haat junction.',
-        'Proceed with deterministic loan sizing under recommended government lending scheme.',
-        'Allocate 60% of project financing to productive machinery and 25% to initial inventory buffer.',
-      ],
-    },
+    scheme,
+    emi,
+    repayment: schedule,
+    working_capital: workingCapital,
   };
 };
 
@@ -168,41 +211,53 @@ export const bizApi = {
       return response.data;
     } catch (err) {
       console.warn('Backend /business/analyze unavailable; using domain prototype fallback data.', err.message);
-      // Return structured prototype fallback
-      return getFallbackAnalysis(
-        payload.location,
-        payload.business_category,
-        payload.available_capital
-      );
+      const fallback = calculateDeterministicFinancials(payload.available_capital);
+      return {
+        is_verified: false,
+        source: 'prototype_simulation',
+        ...fallback,
+      };
     }
   },
 
-  // Calculate deterministic project cost & loan sizing
-  calculateFinancial: async (payload) => {
-    return apiClient.post('/financial/calculate', payload);
+  // Fetch full financial structuring plan from backend or fallback service
+  getFinancialPlan: async (payload) => {
+    try {
+      // First attempt to call the backend endpoints
+      const [finRes, schRes, emiRes, wcRes] = await Promise.all([
+        apiClient.post('/financial/calculate', payload),
+        apiClient.post('/scheme/recommend', payload),
+        apiClient.post('/emi/calculate', payload),
+        apiClient.post('/working-capital/calculate', payload),
+      ]);
+
+      // If backend endpoints succeeded, get repayment schedule from full analysis or fallback
+      let repaymentSchedule = [];
+      try {
+        const full = await apiClient.post('/business/analyze', payload);
+        repaymentSchedule = full.data.repayment || [];
+      } catch (e) {
+        const local = calculateDeterministicFinancials(payload.available_capital);
+        repaymentSchedule = local.repayment;
+      }
+
+      return {
+        financial: finRes.data,
+        scheme: schRes.data,
+        emi: emiRes.data,
+        repayment: repaymentSchedule,
+        working_capital: wcRes.data,
+      };
+    } catch (err) {
+      console.warn(
+        'Backend financial endpoints unavailable; using deterministic service calculations.',
+        err.message
+      );
+      return calculateDeterministicFinancials(payload.available_capital);
+    }
   },
 
-  // Determine eligible government scheme (Micro Finance vs Term Loan)
-  recommendScheme: async (payload) => {
-    return apiClient.post('/scheme/recommend', payload);
-  },
-
-  // Calculate EMI
-  calculateEMI: async (payload) => {
-    return apiClient.post('/emi/calculate', payload);
-  },
-
-  // Compute amortized repayment schedule
-  calculateRepayment: async (payload) => {
-    return apiClient.post('/repayment/calculate', payload);
-  },
-
-  // Compute working capital guidelines
-  calculateWorkingCapital: async (payload) => {
-    return apiClient.post('/working-capital/calculate', payload);
-  },
-
-  // Trigger PDF business plan generation
+  // Generate ReportLab PDF dossier
   generateReport: async (payload) => {
     return apiClient.post('/report/generate', payload, {
       responseType: 'blob',
