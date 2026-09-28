@@ -55,6 +55,45 @@ class RepaymentScheduleItem(BaseModel):
     principal_component: float
     interest_component: float
     closing_balance: float
+    emi: Optional[float] = None
+    principal: Optional[float] = None
+    interest: Optional[float] = None
+
+class FinancialCalculateRequest(BaseModel):
+    available_margin: Optional[float] = Field(None, description="Available margin capital in INR")
+    available_capital: Optional[float] = Field(None, description="Available capital alias for margin in INR")
+    location: Optional[str] = None
+    business_category: Optional[str] = None
+
+class SchemeRecommendRequest(BaseModel):
+    project_cost: Optional[float] = Field(None, description="Total project cost in INR")
+    available_margin: Optional[float] = Field(None, description="Available margin in INR")
+    available_capital: Optional[float] = Field(None, description="Alias for available margin")
+    requested_loan_amount: Optional[float] = Field(None, description="Requested loan amount in INR")
+
+class EMICalculateRequest(BaseModel):
+    principal: Optional[float] = Field(None, description="Principal loan amount in INR")
+    annual_interest_rate: Optional[float] = Field(None, description="Annual interest rate percentage")
+    annual_interest_rate_percent: Optional[float] = Field(None, description="Annual interest rate percentage alias")
+    tenure_years: Optional[int] = Field(None, description="Loan tenure in years")
+    moratorium_months: Optional[int] = Field(0, description="Moratorium period in months")
+    available_margin: Optional[float] = Field(None, description="Deduce from margin if principal not provided")
+    available_capital: Optional[float] = None
+
+class RepaymentCalculateRequest(BaseModel):
+    principal: Optional[float] = Field(None, description="Principal loan amount in INR")
+    annual_interest_rate: Optional[float] = Field(None, description="Annual interest rate percentage")
+    annual_interest_rate_percent: Optional[float] = Field(None, description="Annual interest rate percentage alias")
+    tenure_years: Optional[int] = Field(None, description="Loan tenure in years")
+    moratorium_months: Optional[int] = Field(0, description="Moratorium period in months")
+    available_margin: Optional[float] = None
+    available_capital: Optional[float] = None
+
+class WorkingCapitalCalculateRequest(BaseModel):
+    project_cost: Optional[float] = Field(None, description="Project cost in INR")
+    monthly_emi: Optional[float] = Field(0.0, description="Monthly EMI in INR")
+    available_margin: Optional[float] = None
+    available_capital: Optional[float] = None
 
 class WorkingCapitalPlan(BaseModel):
     monthly_raw_materials: float
