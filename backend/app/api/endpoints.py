@@ -55,6 +55,21 @@ async def calculate_loan_emi(request: BusinessInputRequest):
     )
     return emi
 
+@router.post("/repayment/calculate", response_model=list)
+async def calculate_loan_repayment(request: BusinessInputRequest):
+    """
+    Computes full amortized month-by-month repayment schedule.
+    """
+    fin = calculate_financial_structure(request.available_capital)
+    sch = route_scheme(fin.project_cost, fin.max_loan_amount)
+    _, schedule = calculate_emi(
+        principal=sch.eligible_funding,
+        annual_interest_rate_percent=sch.interest_rate_percent,
+        tenure_years=sch.tenure_years,
+        moratorium_months=sch.moratorium_months,
+    )
+    return schedule
+
 @router.post("/working-capital/calculate", response_model=WorkingCapitalPlan)
 async def calculate_wc(request: BusinessInputRequest):
     """
