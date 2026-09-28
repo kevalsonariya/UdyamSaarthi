@@ -41,7 +41,7 @@ import { bizApi } from '../services/api';
 
 export const Report = () => {
   const navigate = useNavigate();
-  const { inputData, financialData, setFinancialData, resetToDemoScenario } = useBizSahayak();
+  const { inputData, analysisData, financialData, setFinancialData, resetToDemoScenario } = useBizSahayak();
 
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
@@ -318,7 +318,7 @@ export const Report = () => {
         {/* 3. Market Reach */}
         <Card
           title="3. Market Reach"
-          subtitle="Estimated consumer catchment and distribution territory"
+          subtitle="Simulated Local Market Estimate of consumer catchment territory"
         >
           <div className="space-y-3.5 text-xs">
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
@@ -334,7 +334,7 @@ export const Report = () => {
               <span className="font-bold text-slate-900">Farming Families, Salaried Workers, Youth</span>
             </div>
             <p className="text-slate-500 pt-1 leading-relaxed text-[11px]">
-              Note: Market reach metrics are prototype estimates for appraisal demonstration.
+              Note: Market reach metrics are simulated local market estimates for appraisal demonstration.
             </p>
           </div>
         </Card>
@@ -449,7 +449,7 @@ export const Report = () => {
         <Card title="8. Business Recommendation" subtitle="Final feasibility verdict">
           <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2 text-xs">
             <div className="flex items-center justify-between">
-              <span className="font-extrabold text-emerald-950 text-sm">Viability Score: 83/100</span>
+              <span className="font-extrabold text-emerald-950 text-sm">Rule-Based Advisory Feasibility Score: 83/100</span>
               <Badge variant="primary">Recommended</Badge>
             </div>
             <p className="text-slate-700 leading-relaxed">
@@ -570,46 +570,30 @@ export const Report = () => {
       {/* 17. Recommended Next Steps */}
       <Card
         title="17. Recommended Next Steps for Promoter"
-        subtitle="Actionable 90-day execution roadmap"
-        badge={<Badge variant="success">Execution</Badge>}
+        subtitle="Actionable 90-day execution roadmap and strategic guidance"
+        badge={
+          <Badge variant="success">
+            {analysisData?.ai_explanation?.is_ai_generated ? "AI-Assisted Roadmap" : "Advisory Roadmap"}
+          </Badge>
+        }
       >
         <div className="space-y-3 text-xs text-slate-700">
-          <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-              1
+          {(analysisData?.ai_explanation?.next_steps || [
+            `Submit this compiled BizSahayak business plan dossier to the designated nodal rural credit officer under ${scheme.scheme_name}.`,
+            "Procure primary machinery and install essential fittings using the initial capital drawdown during Month 1.",
+            `Utilize the ${scheme.moratorium_months}-month moratorium grace period to build operating reserves before regular principal repayments begin.`,
+            "Launch community outreach and establish local supply partnerships.",
+          ]).map((step, idx) => (
+            <div key={idx} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                {idx + 1}
+              </div>
+              <div>
+                <span className="font-bold text-slate-900 block">Milestone {idx + 1}:</span>
+                <p className="text-slate-600 mt-0.5">{step}</p>
+              </div>
             </div>
-            <div>
-              <span className="font-bold text-slate-900 block">Apply for Scheme Sanction:</span>
-              <p className="text-slate-600 mt-0.5">
-                Submit this compiled BizSahayak business plan dossier to the designated nodal rural credit officer under the{' '}
-                <strong>{scheme.scheme_name}</strong>.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-              2
-            </div>
-            <div>
-              <span className="font-bold text-slate-900 block">Deploy Fixed Equipment:</span>
-              <p className="text-slate-600 mt-0.5">
-                Procure primary machinery and install essential fittings using the initial capital drawdown during Month 1.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-              3
-            </div>
-            <div>
-              <span className="font-bold text-slate-900 block">Capitalize on the Moratorium Buffer:</span>
-              <p className="text-slate-600 mt-0.5">
-                Utilize the {scheme.moratorium_months}-month moratorium grace period to launch sales in local village haats and accumulate the recommended 3-month operating reserve ({formatCurrency(working_capital.recommended_3_months_reserve)}) before regular principal repayments begin.
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </Card>
 

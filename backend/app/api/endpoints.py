@@ -287,3 +287,30 @@ async def generate_report_pdf(request: BusinessInputRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"PDF generation error: {str(e)}")
+
+
+@router.post("/ai/explain")
+async def generate_ai_advisory(request: BusinessInputRequest):
+    """
+    Phase B4: AI Advisory / Explanation Layer.
+    Enhances already-calculated business profile and deterministic financial values.
+    AI NEVER recalculates or overrides financial numbers.
+    """
+    try:
+        from app.services.ai_advisory_service import ai_advisory_service
+        full_analysis = perform_complete_analysis(request)
+        ai_data = full_analysis.ai_explanation or ai_advisory_service.generate_advisory_explanation(full_analysis.model_dump())
+        return {
+            "success": True,
+            "data": ai_data.model_dump() if hasattr(ai_data, "model_dump") else ai_data,
+            "financial_invariants": {
+                "project_cost": full_analysis.financial.project_cost,
+                "eligible_funding": full_analysis.scheme.eligible_funding,
+                "scheme_name": full_analysis.scheme.scheme_name,
+                "monthly_emi": full_analysis.emi.monthly_emi,
+            },
+            "disclaimer": "AI-Assisted Business Insight & Planning Guidance. Indicative only.",
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI advisory generation error: {str(e)}")
+

@@ -47,7 +47,29 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         available_capital=clean_cap,
     )
 
-    # 3. Assemble complete structured payload matching Phase B3 specifications
+    # 3. Phase B4: AI Advisory / Explanation Layer (Strictly explains, never recalculates financial metrics)
+    from app.services.ai_advisory_service import ai_advisory_service
+    ai_context = {
+        "location": clean_loc,
+        "business_category": clean_cat,
+        "available_capital": clean_cap,
+        "business": adv["business"],
+        "market": adv["market"],
+        "opportunities": adv["opportunities"],
+        "swot": adv["swot"],
+        "risks": adv["risks"],
+        "competitors": adv["competitors"],
+        "pricing": adv["pricing"],
+        "recommendation": adv["recommendation"],
+        "financial": fin,
+        "scheme": sch,
+        "emi": emi,
+        "repayment": schedule,
+        "working_capital": wc,
+    }
+    ai_explanation = ai_advisory_service.generate_advisory_explanation(ai_context)
+
+    # 4. Assemble complete structured payload matching Phase B3 & B4 specifications
     data_payload = {
         "business": adv["business"],
         "market": adv["market"],
@@ -65,6 +87,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         "location": clean_loc,
         "business_category": clean_cat,
         "available_capital": clean_cap,
+        "ai_explanation": ai_explanation,
     }
 
     return FullAnalysisResponse(
@@ -87,5 +110,6 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         competitors=adv["competitors"],
         pricing=adv["pricing"],
         recommendation=adv["recommendation"],
+        ai_explanation=ai_explanation,
         disclaimer=DISCLAIMER_TEXT,
     )

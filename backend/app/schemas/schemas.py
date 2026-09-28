@@ -176,6 +176,18 @@ class BusinessAnalysisMetadata(BaseModel):
     note: str = "Prototype demo datasets. Not verified live/real-time market data."
     version: str = "1.0-prototype"
 
+class AIExplanation(BaseModel):
+    summary: str
+    market_insight: str
+    opportunity_explanation: str
+    risk_explanation: str
+    financial_explanation: str
+    scheme_explanation: str
+    recommended_actions: List[str]
+    next_steps: List[str]
+    is_ai_generated: bool = False
+    provider: str = "deterministic_rule_engine"
+
 class FullAnalysisResponse(BaseModel):
     success: bool = True
     data: Optional[Dict[str, Any]] = None
@@ -196,4 +208,5 @@ class FullAnalysisResponse(BaseModel):
     competitors: List[CompetitorItem]
     pricing: PricingGuidance
     recommendation: BusinessRecommendation
+    ai_explanation: Optional[AIExplanation] = None
     disclaimer: str

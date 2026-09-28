@@ -16,10 +16,8 @@ export const BUSINESS_CATEGORIES = [
   "Dairy",
   "Food Processing",
   "Agriculture",
-  "Retail",
   "Handicrafts",
   "Services",
-  "Other",
 ];
 
 export const POPULAR_LOCATIONS = [

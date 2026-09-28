@@ -10,3 +10,4 @@ export { LoadingState } from './LoadingState';
 export { EmptyState } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export { Skeleton, AnalysisSkeleton, FinancialSkeleton } from './Skeleton';
+export { ErrorBoundary } from './ErrorBoundary';

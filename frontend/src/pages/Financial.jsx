@@ -42,7 +42,7 @@ import { bizApi } from '../services/api';
 
 export const Financial = () => {
   const navigate = useNavigate();
-  const { inputData, financialData, setFinancialData } = useBizSahayak();
+  const { inputData, analysisData, financialData, setFinancialData } = useBizSahayak();
 
   const [loading, setLoading] = useState(!financialData);
   const [error, setError] = useState(null);
@@ -98,9 +98,18 @@ export const Financial = () => {
   // Destructure verified values directly from backend service
   const { financial, scheme, emi, repayment, working_capital } = financialData;
 
+  // Extract actual schedule array safely whether repayment is an array or { schedule: [...] }
+  const scheduleArray = Array.isArray(repayment)
+    ? repayment
+    : Array.isArray(repayment?.schedule)
+    ? repayment.schedule
+    : Array.isArray(repayment?.data?.schedule)
+    ? repayment.data.schedule
+    : [];
+
   // Repayment chart data (sample every 3-6 months for clean visualization)
-  const chartData = (repayment || [])
-    .filter((_, idx) => idx % (repayment.length > 40 ? 3 : 1) === 0 || idx === repayment.length - 1)
+  const chartData = scheduleArray
+    .filter((_, idx) => idx % (scheduleArray.length > 40 ? 3 : 1) === 0 || idx === scheduleArray.length - 1)
     .map((item) => ({
       name: `M${item.month}`,
       balance: Math.round(item.closing_balance),
@@ -109,8 +118,8 @@ export const Financial = () => {
     }));
 
   const visibleSchedule = showFullSchedule
-    ? repayment || []
-    : (repayment || []).slice(0, 12);
+    ? scheduleArray
+    : scheduleArray.slice(0, 12);
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -256,6 +265,31 @@ export const Financial = () => {
           </div>
         </div>
       </Card>
+
+      {/* Phase B4: AI Financial Plan Explained */}
+      {analysisData?.ai_explanation && (
+        <Card
+          title="AI Advisory: Financial Structuring & Scheme Explained"
+          subtitle="Clear breakdown of how your debt is structured and why the moratorium benefits you"
+          badge={
+            <Badge variant="primary" size="sm">
+              AI Advisory Explanation
+            </Badge>
+          }
+          className="border-emerald-200 bg-emerald-50/20"
+        >
+          <div className="space-y-3.5 text-xs text-slate-700">
+            <div className="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
+              <span className="font-bold text-slate-900 block">Capital & Equity Structure:</span>
+              <p className="leading-relaxed text-slate-600">{analysisData.ai_explanation.financial_explanation}</p>
+            </div>
+            <div className="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
+              <span className="font-bold text-slate-900 block">Moratorium Grace Period Impact:</span>
+              <p className="leading-relaxed text-slate-600">{analysisData.ai_explanation.scheme_explanation}</p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* 3. EMI & Moratorium Breakdown Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

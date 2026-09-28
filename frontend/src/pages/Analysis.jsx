@@ -143,14 +143,10 @@ export const Analysis = () => {
       <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-4 flex items-start gap-3">
         <Info className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="text-xs text-amber-950 leading-relaxed">
-          <strong>Prototype Data Notice: </strong>
-          {is_verified ? (
-            <span className="text-emerald-800 font-semibold">Verified Live Data</span>
-          ) : (
-            <span>
-              All catchment statistics, competitor metrics, and pricing ranges shown below are <strong>demo/prototype estimates</strong> for testing the user journey and are not verified live government data.
-            </span>
-          )}
+          <strong className="font-bold">Simulated Local Market Estimate: </strong>
+          <span>
+            Catchment statistics, competitor metrics, and pricing guidance shown below are <strong>simulated local market estimates</strong> tailored for advisory and business planning purposes. The feasibility rating represents a <strong>Rule-Based Advisory Feasibility Score</strong> (not a credit score).
+          </span>
         </div>
       </div>
 
@@ -192,6 +188,37 @@ export const Analysis = () => {
           </div>
         </div>
       </Card>
+
+      {/* Phase B4: AI-Assisted Advisory Explanation */}
+      {analysisData?.ai_explanation && (
+        <Card
+          title="AI-Assisted Business Insight & Advisory"
+          subtitle="Simple narrative explanation of local market conditions and promoter strategy"
+          badge={
+            <Badge variant="primary" size="sm">
+              AI Advisory Insight
+            </Badge>
+          }
+          className="border-emerald-200 bg-emerald-50/30"
+        >
+          <div className="space-y-3.5 text-xs text-slate-700">
+            <div className="p-3.5 bg-white rounded-xl border border-emerald-200 space-y-1">
+              <span className="font-bold text-emerald-950 block">Executive Summary:</span>
+              <p className="leading-relaxed text-slate-700">{analysisData.ai_explanation.summary}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
+                <span className="font-bold text-slate-900 block">Local Market Insight:</span>
+                <p className="leading-relaxed text-slate-600">{analysisData.ai_explanation.market_insight}</p>
+              </div>
+              <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
+                <span className="font-bold text-slate-900 block">Why This Opportunity Matters:</span>
+                <p className="leading-relaxed text-slate-600">{analysisData.ai_explanation.opportunity_explanation}</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* 2. Market Reach Card (with Demographics & Simple Chart) */}
       <Card
@@ -499,7 +526,7 @@ export const Analysis = () => {
         subtitle="Strategic synthesis prior to financial structuring"
         badge={
           <Badge variant="primary" size="md">
-            Viability Score: {recommendation?.score || 83} / 100
+            Rule-Based Advisory Feasibility Score: {recommendation?.score || 83} / 100
           </Badge>
         }
       >
