@@ -1,0 +1,393 @@
+{
+  "market_profiles": {
+    "textile_clothing": {
+      "base_catchment_radius_km": 18,
+      "base_target_population": 185000,
+      "primary_customer_segments": [
+        "Semi-urban households seeking readymade family ethnic & casual wear",
+        "Agricultural farm community purchasing durable everyday cotton wear",
+        "School and institutional bulk uniform requirements in taluka vicinity",
+        "Festive, wedding, and seasonal celebration shoppers in peri-urban markets"
+      ],
+      "high_demand_local_channels": [
+        "Weekly Haat (local bazaars) across market corridors",
+        "Direct storefront located near bus stand or taluka market square",
+        "WhatsApp catalog ordering for village self-help groups & extended families"
+      ],
+      "peak_demand_seasons": [
+        "Diwali & Navratri festival season (September - November)",
+        "Winter wedding season (December - February)",
+        "School re-opening term (June - July)"
+      ],
+      "ecosystem_growth_drivers": [
+        "Proximity to regional textile and fabric wholesale mandis",
+        "Expanding rural road connectivity connecting remote hamlets to market towns",
+        "Government handloom and weaver credit-linkage initiatives"
+      ],
+      "unmet_local_needs": [
+        "Lack of on-the-spot tailoring & alteration alongside retail purchase",
+        "Limited transparent pricing without aggressive haggling in weekly haats",
+        "Shortage of organized inventory for school & local workforce uniforms"
+      ],
+      "swot": {
+        "strengths": [
+          "Direct sourcing leverage from regional manufacturing hubs",
+          "Low operating overheads compared to urban mall retail outlets",
+          "Deep community goodwill and high customer retention through personalized service"
+        ],
+        "weaknesses": [
+          "Working capital pressure during pre-festival heavy stocking months",
+          "Initial vulnerability to fabric wastage without computerized cutting",
+          "Dependence on cash liquidity patterns aligned with crop harvest cycles"
+        ],
+        "opportunities": [
+          "Establishing supply ties with local schools, colleges, and factory workforces",
+          "Leveraging digital payments (UPI) and localized WhatsApp catalog marketing",
+          "Expanding into customized bridal and festive stitching during winter wedding peaks"
+        ],
+        "threats": [
+          "Fluctuation in yarn/cotton raw material benchmark prices",
+          "Competition from itinerant seasonal vendors in weekly village markets",
+          "Discounted online e-commerce penetration in younger demographics"
+        ]
+      }
+    },
+    "dairy": {
+      "base_catchment_radius_km": 25,
+      "base_target_population": 210000,
+      "primary_customer_segments": [
+        "Local cooperative societies and bulk procurement aggregators",
+        "Town restaurants, sweet marts, and tea stalls requiring daily fresh delivery",
+        "Health-conscious semi-urban families seeking pure unadulterated milk and ghee"
+      ],
+      "high_demand_local_channels": [
+        "Direct morning milk delivery routes to residential wards",
+        "B2B tie-ups with district dairy processing federations",
+        "Farm-gate retail kiosk near arterial highway junction"
+      ],
+      "peak_demand_seasons": [
+        "Summer season for curd, buttermilk, and cold beverages (March - June)",
+        "Festival and wedding season for ghee, mawa, and sweets (October - January)"
+      ],
+      "ecosystem_growth_drivers": [
+        "Established cooperative dairy procurement network across agrarian belts",
+        "Subsidies under National Livestock Mission and NABARD Agri-Infra fund",
+        "High availability of local green and dry crop residue fodder"
+      ],
+      "unmet_local_needs": [
+        "Consistent cold-chain chilling storage at village collection points",
+        "Adulteration-tested certified pure cow and buffalo milk directly to households",
+        "Reliable doorstep supply of fresh paneer and cultured churned ghee"
+      ],
+      "swot": {
+        "strengths": [
+          "Guaranteed daily liquidity and continuous cash sales",
+          "Abundant local agrarian feedstock and byproduct integration",
+          "High consumer trust for local fresh farm-gate milk"
+        ],
+        "weaknesses": [
+          "Perishable nature of product requires immediate cooling infrastructure",
+          "High initial milch cattle acquisition capital",
+          "Vulnerability to seasonal milk yield drops during peak summer"
+        ],
+        "opportunities": [
+          "Direct consumer delivery commanding a 20% premium over bulk cooperative rates",
+          "Bio-gas slurry and organic vermicompost byproduct sales to neighboring farmers",
+          "Contract supply to local tea vendors and sweet confectioners"
+        ],
+        "threats": [
+          "Animal health and seasonal foot-and-mouth disease risks",
+          "Fodder price surges during dry summer months",
+          "Stringent food safety enforcement against unchilled raw milk"
+        ]
+      }
+    },
+    "grocery": {
+      "base_catchment_radius_km": 10,
+      "base_target_population": 95000,
+      "primary_customer_segments": [
+        "Daily wage households buying small-sachet everyday grocery staples",
+        "Monthly salaried families purchasing full monthly ration baskets",
+        "Local roadside eateries, canteens, and tea vendors requiring bulk sugar, tea, and oil"
+      ],
+      "high_demand_local_channels": [
+        "Walk-in neighborhood storefront with visible counter display",
+        "Doorstep phone / WhatsApp delivery for elderly and working couples",
+        "Short-term credit ledger (Khata) accounts for trusted community regulars"
+      ],
+      "peak_demand_seasons": [
+        "Monthly harvest wage cycles (1st to 10th of every month)",
+        "Major festivals (Diwali, Eid, Holi) for dry fruits, ghee, and festive baking staples",
+        "Summer wedding season for bulk pulses, spices, and cooking oils"
+      ],
+      "ecosystem_growth_drivers": [
+        "Steady population inflow into peri-urban residential clusters",
+        "FMCG brand distribution network expansion into tier-3 and tier-4 pin codes",
+        "Growth of digital micro-payments reducing transaction frictions"
+      ],
+      "unmet_local_needs": [
+        "Stock-out prevention for premium branded health and personal hygiene items",
+        "Fast 30-minute free home delivery service in semi-urban pockets",
+        "Hygienically cleaned and pre-sorted pulses and unpolished grains"
+      ],
+      "swot": {
+        "strengths": [
+          "Recession-proof daily essential demand",
+          "Fast inventory turns on high-velocity FMCG items",
+          "Immediate cash flow and strong community relationship moat"
+        ],
+        "weaknesses": [
+          "Thin gross profit margins on branded commodities (5% - 10%)",
+          "Working capital tied up in customer credit khata",
+          "Space constraints limiting bulk wholesale procurement discounts"
+        ],
+        "opportunities": [
+          "Offering loose unbranded pulses and spices with higher gross margins (25%+)",
+          "Integrating bill payment, mobile recharges, and domestic money transfer services",
+          "WhatsApp-based express neighborhood order fulfillment"
+        ],
+        "threats": [
+          "Discounted online quick-commerce delivery encroaching from nearby cities",
+          "Wholesale cash-and-carry stores offering bulk discounts to consumers",
+          "Inventory shrinkage and expiry losses if unsorted"
+        ]
+      }
+    },
+    "food_processing": {
+      "base_catchment_radius_km": 30,
+      "base_target_population": 260000,
+      "primary_customer_segments": [
+        "Regional grocery stores and retail provision merchants",
+        "Local catering contractors, dhabas, and wedding event managers",
+        "Urban-migrant families seeking authentic regional traditional snacks and pickles"
+      ],
+      "high_demand_local_channels": [
+        "B2B supply to 40+ neighborhood kirana stores and roadside bakeries",
+        "Regional weekly haats and taluka agricultural fairs",
+        "Highway souvenir stalls and petrol pump convenience kiosks"
+      ],
+      "peak_demand_seasons": [
+        "Festive season (September - November) for packaged sweets, farsan, and snacks",
+        "Summer crop harvesting months for fresh pickle and spice grinding",
+        "Winter season for roasted flour items and traditional nutritious laddoos"
+      ],
+      "ecosystem_growth_drivers": [
+        "Abundant local raw agricultural commodities available at farm-gate rates",
+        "PM Formalisation of Micro food processing Enterprises (PMFME) subsidy scheme",
+        "Rising consumer preference for hygienically packed regional specialties"
+      ],
+      "unmet_local_needs": [
+        "Hygienic processing free from dust and artificial coloring",
+        "Convenient 200g - 500g zip-lock standup pouch packaging with clear expiry dates",
+        "Chemical-free stone-ground spices retaining natural volatile oils"
+      ],
+      "swot": {
+        "strengths": [
+          "High value-addition margin over raw agricultural commodities",
+          "Extended product shelf-life reducing daily spoilage risks",
+          "Scalable production capacity with semi-automated micro-machinery"
+        ],
+        "weaknesses": [
+          "Seasonal price volatility of key raw ingredients (mustard oil, chilies, wheat)",
+          "Strict regulatory compliance and continuous lab testing obligations",
+          "Initial brand building expenditure to overcome unbranded cheap alternatives"
+        ],
+        "opportunities": [
+          "Branded distribution across neighboring districts and regional retail chains",
+          "Institutional supply contracts with local schools and hospital canteens",
+          "Export / diaspora packaging of authentic traditional delicacies"
+        ],
+        "threats": [
+          "Aggressive marketing and slotting fees by multinational FMCG brands",
+          "Power supply interruptions affecting continuous packaging operations",
+          "Raw ingredient contamination or sudden batch recall risks"
+        ]
+      }
+    },
+    "agriculture": {
+      "base_catchment_radius_km": 35,
+      "base_target_population": 175000,
+      "primary_customer_segments": [
+        "District APMC wholesale mandis and commission agents",
+        "Urban vegetable aggregators and institutional retail chains",
+        "Local weekly vegetable bazaars and residential township consumers"
+      ],
+      "high_demand_local_channels": [
+        "Direct morning auction at nearest APMC agriculture yard",
+        "Contract farming buy-back arrangements with food processing units",
+        "Farm-gate direct sales to visiting weekend consumers and dhabas"
+      ],
+      "peak_demand_seasons": [
+        "Kharif post-monsoon harvest window (October - December)",
+        "Rabi winter harvest window (February - April)",
+        "Summer high-value vegetable cycle (May - July)"
+      ],
+      "ecosystem_growth_drivers": [
+        "Government subsidies on solar water pumps and micro-drip irrigation",
+        "Access to digital price discovery through the national e-NAM portal",
+        "Increasing consumer willingness to pay premium for certified organic produce"
+      ],
+      "unmet_local_needs": [
+        "Scientific soil nutrient mapping and customized fertigation planning",
+        "Localized cold storage access to avoid distress selling during peak glut",
+        "High-quality grafted disease-resistant nursery seedlings"
+      ],
+      "swot": {
+        "strengths": [
+          "Own arable land base with zero recurring commercial rent",
+          "Low cost of local family farm labor",
+          "Immediate absorption of staple produce in regional APMC yards"
+        ],
+        "weaknesses": [
+          "Vulnerability to erratic monsoon precipitation and unseasonal hailstorms",
+          "Perishable nature of fresh vegetable crops requiring swift marketing",
+          "High volatility in daily wholesale auction prices"
+        ],
+        "opportunities": [
+          "Transitioning part of acreage to high-value exotic vegetables and herbs",
+          "Direct farm-to-consumer subscription crates eliminating middleman margins",
+          "Setting up on-farm polyhouse nursery for seedling sales"
+        ],
+        "threats": [
+          "Sudden pest outbreaks (e.g., whiteflies, stem borers)",
+          "Depleting local groundwater tables during extended summers",
+          "Post-harvest crop glut causing prices to collapse below production cost"
+        ]
+      }
+    },
+    "handicrafts": {
+      "base_catchment_radius_km": 40,
+      "base_target_population": 130000,
+      "primary_customer_segments": [
+        "Cultural tourists, heritage visitors, and weekend urban travelers",
+        "Interior designers, boutique lifestyle stores, and eco-conscious decorators",
+        "Corporate gifting buyers and festival celebration event organizers"
+      ],
+      "high_demand_local_channels": [
+        "Artisan workshop display room located on tourist travel routes",
+        "Government-sponsored craft exhibitions (Saras Mela, Dilli Haat, Shilpgram)",
+        "Online curated marketplaces (Etsy, Amazon Karigar, ONDC, Instagram)"
+      ],
+      "peak_demand_seasons": [
+        "Tourist travel season (October - March)",
+        "Festive gifting season (Navratri, Diwali, New Year)",
+        "Spring lifestyle and architectural renovation cycles"
+      ],
+      "ecosystem_growth_drivers": [
+        "Government export promotion and GI (Geographical Indication) tagging",
+        "Global trend toward sustainable, handmade, plastic-free living",
+        "Direct digital payments and parcel courier logistics reaching rural clusters"
+      ],
+      "unmet_local_needs": [
+        "Contemporary design adaptation keeping traditional craftsmanship intact",
+        "Sturdy drop-safe export packaging preventing transit damage",
+        "Digital storytelling connecting the buyer directly to the master artisan"
+      ],
+      "swot": {
+        "strengths": [
+          "Unique generational artisan skill difficult for mass factories to replicate",
+          "High gross profit margins on differentiated cultural artifacts (40% - 60%)",
+          "Strong emotional resonance with urban and international buyers"
+        ],
+        "weaknesses": [
+          "Slow labor-intensive production cycles with low volume scalability",
+          "Artisan working capital vulnerability during tourist off-season",
+          "Dependence on authentic raw materials (natural gums, seasoned timber, organic dyes)"
+        ],
+        "opportunities": [
+          "Direct global e-commerce dispatch bypassing exploitative tourist middlemen",
+          "Conducting weekend artisan workshops for visiting tourists and students",
+          "Securing bulk corporate eco-friendly Diwali gifting contracts"
+        ],
+        "threats": [
+          "Cheap machine-made plastic and synthetic replicas flooding markets",
+          "Younger generation migrating away from time-consuming traditional crafts",
+          "High courier and returns friction on delicate ceramic / clay artifacts"
+        ]
+      }
+    },
+    "services": {
+      "base_catchment_radius_km": 15,
+      "base_target_population": 110000,
+      "primary_customer_segments": [
+        "Rural motorcycle, scooter, and tractor owners needing maintenance",
+        "Local households requiring electrical, plumbing, and appliance repair",
+        "Farmers and shopkeepers seeking digital government documentation and banking (CSC)"
+      ],
+      "high_demand_local_channels": [
+        "Roadside workshop storefront with prominent main-road visibility",
+        "Mobile on-call emergency breakdown repair across neighboring villages",
+        "Tie-ups with local agricultural equipment dealers for warranty service"
+      ],
+      "peak_demand_seasons": [
+        "Pre-monsoon and post-harvest agricultural servicing peaks (April - June, October - November)",
+        "Summer season for fan, cooler, and refrigeration servicing",
+        "Festive season for vehicle servicing prior to festival travel"
+      ],
+      "ecosystem_growth_drivers": [
+        "Rapid surge in two-wheeler and farm mechanization ownership in rural belts",
+        "Proliferation of household electronics and solar inverters requiring skilled repair",
+        "Government digital citizen services mandate through local common service points"
+      ],
+      "unmet_local_needs": [
+        "Genuine spare parts availability with transparent pricing receipts",
+        "Quick same-day repair turnaround avoiding long trips to big cities",
+        "Punctual doorstep technician availability with standardized service charges"
+      ],
+      "swot": {
+        "strengths": [
+          "Zero inventory perishability risk compared to physical goods trade",
+          "Pure labor skill component generates high net operating margins",
+          "Continuous repeat local demand throughout the calendar year"
+        ],
+        "weaknesses": [
+          "Revenue generation constrained by owner technician's daily available hours",
+          "Dependency on specialized diagnostic toolkits and testing devices",
+          "Difficulty in finding and retaining trustworthy skilled helper technicians"
+        ],
+        "opportunities": [
+          "Annual Maintenance Contracts (AMC) with local schools, banks, and poultry farms",
+          "Adding allied consumable sales (lubricants, batteries, filters, accessories)",
+          "Listing on hyper-local digital service directories with Google Maps reviews"
+        ],
+        "threats": [
+          "Authorized company service centers opening in nearby taluka headquarters",
+          "Rapid technological obsolescence (e.g., transition to Electric Vehicles and electronics)",
+          "Customer reluctance to pay fair diagnostic fees versus informal handymen"
+        ]
+      }
+    }
+  },
+  "location_profiles": {
+    "anand": {
+      "name": "Anand, Gujarat",
+      "characteristics": "Milk Capital of India, thriving agrarian-industrial corridor, strong cooperative movement, dense road connectivity, prosperous NRI rural investor base.",
+      "favorable_categories": ["Dairy", "Food Processing", "Textile & Clothing", "Agriculture"],
+      "multiplier": 1.15
+    },
+    "surat": {
+      "name": "Surat, Gujarat",
+      "characteristics": "World-leading textile and diamond capital, dense wholesale fabric mandis, ultra-fast supply chains, high commercial liquidity.",
+      "favorable_categories": ["Textile & Clothing", "Services", "Handicrafts"],
+      "multiplier": 1.25
+    },
+    "kutch": {
+      "name": "Kutch, Gujarat",
+      "characteristics": "Renowned artisanal heritage, vibrant tourism corridor (Rann Utsav), rich handloom, embroidery, pottery, and arid-climate horticulture.",
+      "favorable_categories": ["Handicrafts", "Textile & Clothing", "Agriculture"],
+      "multiplier": 1.1
+    },
+    "jaipur": {
+      "name": "Jaipur, Rajasthan",
+      "characteristics": "Major handicraft, block printing, tourism, and food processing hub with global tourist footfall and robust artisan ecosystem.",
+      "favorable_categories": ["Handicrafts", "Textile & Clothing", "Food Processing"],
+      "multiplier": 1.2
+    },
+    "default_rural": {
+      "name": "Rural / Semi-Urban Catchment",
+      "characteristics": "Agrarian economy with periodic harvest liquidity, reliance on weekly haats, strong community trust, and growing digital smartphone penetration.",
+      "favorable_categories": ["Grocery", "Services", "Dairy", "Agriculture"],
+      "multiplier": 1.0
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "pricing_profiles": {
+    "textile_clothing": {
+      "benchmark_product_or_service": "Cotton Everyday Kurti / Agrarian Work Shirt",
+      "estimated_unit_production_cost": "₹160 - ₹210 (fabric + stitching + trim)",
+      "suggested_retail_price": "₹320 - ₹420 per unit",
+      "target_gross_margin_percent": 50.0,
+      "pricing_strategy_notes": "Implement a tiered 3-tier pricing structure: budget cotton daily wear (35% margin), festive embroidered sets (55% margin), and uniform bulk contracts (25% margin with volume guarantees).",
+      "low_capital_strategy": "Focus on high-turnover ready-to-wear fast fashion and alter-to-fit service with minimal initial inventory depth.",
+      "high_capital_strategy": "Direct wholesale roll sourcing from Surat textile mandis to compress fabric cost by 22% and setup in-house stitching units."
+    },
+    "dairy": {
+      "benchmark_product_or_service": "1 Litre Full-Cream Fresh Milk / 1 Kg Fresh Malai Paneer",
+      "estimated_unit_production_cost": "₹42/Litre (Milk production/feed cost) | ₹240/Kg (Paneer)",
+      "suggested_retail_price": "₹58 - ₹64/Litre (Milk) | ₹360 - ₹420/Kg (Paneer)",
+      "target_gross_margin_percent": 32.0,
+      "pricing_strategy_notes": "Use milk as the high-velocity, daily cash-generating anchor, and capture higher 35%+ gross profit margins on processed items like Paneer, fresh curd, and cultured ghee.",
+      "low_capital_strategy": "Aggregate collection from 10-15 trusted smallholder dairy farmers and direct retail delivery to maximize initial cash velocity.",
+      "high_capital_strategy": "Invest in a 500-litre bulk milk cooler and automated vacuum sealing for value-added paneer and ghee export packaging."
+    },
+    "grocery": {
+      "benchmark_product_or_service": "Standard 5 Kg Monthly Ration Basket (Flour, Pulses, Oil, Sugar)",
+      "estimated_unit_production_cost": "₹480 wholesale procurement basket cost",
+      "suggested_retail_price": "₹575 - ₹610 per basket",
+      "target_gross_margin_percent": 18.0,
+      "pricing_strategy_notes": "Maintain competitive price parity with town supermarkets on high-visibility staples (sugar, oil, atta) while generating 25-30% margins on loose spices, unbranded pulses, and impulse confectionary.",
+      "low_capital_strategy": "Focus on fast-moving top 40 staples with weekly reordering from nearby wholesale distributors.",
+      "high_capital_strategy": "Procure seasonal food grains directly during harvest to capture bulk wholesale trade discounts of 12-15%."
+    },
+    "food_processing": {
+      "benchmark_product_or_service": "200g Branded Stand-up Pouch Ground Spices / Traditional Snack Pack",
+      "estimated_unit_production_cost": "₹32 - ₹42 per pouch (raw material + pouch + energy)",
+      "suggested_retail_price": "₹65 - ₹85 per pouch",
+      "target_gross_margin_percent": 50.0,
+      "pricing_strategy_notes": "Provide 22% retailer trade margin to incentivize village kirana shops to display your brand prominently ahead of established national competitors.",
+      "low_capital_strategy": "Custom jobwork packaging and local distribution to nearby tea stalls and weekly haats.",
+      "high_capital_strategy": "Semi-automated nitrogen-flush pouch packaging with multi-district distribution logistics."
+    },
+    "agriculture": {
+      "benchmark_product_or_service": "1 Quintal (100 Kg) Grade-A Seasonal Horticultural Produce (e.g., Tomatoes / Onions / Chilies)",
+      "estimated_unit_production_cost": "₹900 - ₹1,200 per quintal (seeds, fertilizer, drip irrigation, harvesting)",
+      "suggested_retail_price": "₹1,800 - ₹2,600 per quintal (direct farm-gate / B2B supply)",
+      "target_gross_margin_percent": 52.0,
+      "pricing_strategy_notes": "Stagger planting schedules across 3 phases to avoid single-week harvest glut and capture off-season price premiums of up to 40% in peri-urban markets.",
+      "low_capital_strategy": "High-density open field vegetable cultivation with leased tractor implements and manual harvesting.",
+      "high_capital_strategy": "Shade-net / polyhouse nursery cultivation combined with solar micro-irrigation for year-round exotic produce."
+    },
+    "handicrafts": {
+      "benchmark_product_or_service": "Handcrafted Terracotta Decor Urn / Handloom Embroidered Shawl",
+      "estimated_unit_production_cost": "₹180 - ₹280 (raw clay/fabric, natural dyes, artisan labor)",
+      "suggested_retail_price": "₹550 - ₹850 retail | ₹1,200+ (heritage urban / tourism)",
+      "target_gross_margin_percent": 65.0,
+      "pricing_strategy_notes": "Value-based pricing rather than cost-plus pricing. Heritage narrative, artisan identity card, and sustainable plastic-free packaging justify 3x production cost multiples in urban exhibitions.",
+      "low_capital_strategy": "Direct participation in district Saras melas and craft haats with cash transactions.",
+      "high_capital_strategy": "Brand creation with studio photography, ONDC/e-commerce listings, and corporate gifting catalogs."
+    },
+    "services": {
+      "benchmark_product_or_service": "Comprehensive Two-Wheeler / Tractor Servicing & Maintenance Unit",
+      "estimated_unit_production_cost": "₹120 base consumables (grease, cleaner, shop overhead) per service",
+      "suggested_retail_price": "₹350 - ₹500 standard labor charge (excluding replacement parts)",
+      "target_gross_margin_percent": 70.0,
+      "pricing_strategy_notes": "Offer transparent fixed-rate servicing packages (Basic Tune-up, Monsoon Proofing, General Overhaul) to build customer trust versus unorganized mechanics.",
+      "low_capital_strategy": "Mobile on-call emergency repair service and routine maintenance using portable diagnostic tools.",
+      "high_capital_strategy": "Full-fledged roadside workshop with hydraulic lift, computerized wheel balancing, and genuine spare parts inventory."
+    }
+  }
+}

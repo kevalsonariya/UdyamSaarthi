@@ -1,0 +1,253 @@
+{
+  "categories": [
+    {
+      "id": "textile_clothing",
+      "name": "Textile & Clothing",
+      "aliases": ["textile", "clothing", "apparel", "garment", "garments", "fabric", "textiles", "readymade"],
+      "description": "Retail, micro-stitching, and distribution of readymade garments, ethnic wear, and durable agrarian fabrics.",
+      "typical_capex_min": 50000.0,
+      "typical_capex_max": 1500000.0,
+      "primary_activities": [
+        "Procurement of wholesale fabric and finished garments",
+        "Micro-tailoring and customer alterations",
+        "Direct retail sales through weekly haats and taluka storefront"
+      ],
+      "key_equipment": [
+        "Industrial high-speed stitching machines",
+        "Fabric cutting table and heavy shears",
+        "Display racks, mannequins, and secure storage fixtures",
+        "Steam iron and garment finishing station"
+      ],
+      "mandatory_licenses": [
+        "Udyam MSME Registration Certificate",
+        "Local Panchayat / Municipal Trade & Establishment License",
+        "GST Registration (if annual turnover exceeds statutory threshold)",
+        "Shop and Establishment Act Registration"
+      ],
+      "digital_enablement": [
+        "Deploy BharatQR / UPI soundbox for friction-free micro-transactions.",
+        "Setup WhatsApp Business with digital product catalog and automated greeting.",
+        "Maintain digital khata (ledger) via Khatabook or Vyapar to track inventory turns."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Complete Udyam registration, secure commercial premises near market transit, and open current account.",
+        "Days 31-60: Procure wholesale stock from regional textile hubs (e.g., Surat, Ahmedabad) and install display racks.",
+        "Days 61-90: Inaugural launch, distribute WhatsApp catalogs to local SHGs, and establish repeat weekly haat stalls."
+      ]
+    },
+    {
+      "id": "dairy",
+      "name": "Dairy",
+      "aliases": ["dairy", "milk", "dairy farming", "dairy products", "milk collection", "dairy processing"],
+      "description": "Small-scale milk collection, cold storage, livestock management, and value-added dairy product processing (ghee, paneer, curd).",
+      "typical_capex_min": 75000.0,
+      "typical_capex_max": 2000000.0,
+      "primary_activities": [
+        "Hygienic daily milk collection and fat-testing",
+        "Bulk milk chilling and local cold-chain preservation",
+        "Processing of high-margin items like Paneer, cultured Ghee, and fresh curd",
+        "Direct doorstep delivery to households and supply to town sweet marts"
+      ],
+      "key_equipment": [
+        "Bulk milk chiller / refrigeration unit (300-500L)",
+        "Digital milk fat analyzer and lactometer",
+        "Stainless steel milk cans (40L food-grade)",
+        "Cream separator and paneer pressing press"
+      ],
+      "mandatory_licenses": [
+        "Udyam MSME Registration Certificate",
+        "FSSAI Basic Food Business Registration / State License",
+        "Local Gram Panchayat NOC for livestock / dairy premises",
+        "Cattle insurance coverage linkage under National Livestock Mission"
+      ],
+      "digital_enablement": [
+        "Deploy automated SMS fat/SNF receipt notification for milk suppliers.",
+        "Enable UPI QR on delivery crates for daily customer subscription payments.",
+        "Use dairy management mobile app for tracking yield, fodder cost, and spoilage."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Secure clean shed premises, water connection, and obtain FSSAI food registration.",
+        "Days 31-60: Procure certified milch cattle or contract 15+ local dairy farmers for daily collection.",
+        "Days 61-90: Install chiller, commence direct daily morning bottle supply, and initiate paneer production."
+      ]
+    },
+    {
+      "id": "grocery",
+      "name": "Grocery",
+      "aliases": ["grocery", "kirana", "provision", "general store", "retail grocery", "supermarket", "fmcg"],
+      "description": "Essential FMCG, grains, spices, packaged staples, and daily household provisions store for rural and semi-urban localities.",
+      "typical_capex_min": 40000.0,
+      "typical_capex_max": 1000000.0,
+      "primary_activities": [
+        "Wholesale procurement of food grains, pulses, oils, and packaged staples",
+        "Inventory categorization, micro-packaging, and retail shelving",
+        "Counter sales, phone order packing, and neighborhood home delivery"
+      ],
+      "key_equipment": [
+        "Commercial electronic weighing scales (countertop & heavy platform)",
+        "Heavy-duty steel slotted angle storage racks",
+        "Deep freezer / beverage glass-door cooler",
+        "POS barcode scanner & receipt thermal printer"
+      ],
+      "mandatory_licenses": [
+        "Udyam MSME Registration Certificate",
+        "FSSAI Registration for food grain & edible oil retailing",
+        "Trade License from local Gram Panchayat or Ward Municipal Council",
+        "Legal Metrology Verification Certificate for electronic weighing scales"
+      ],
+      "digital_enablement": [
+        "Deploy dual-language UPI soundbox at the billing counter.",
+        "Enable localized WhatsApp ordering with instant delivery within 30 minutes.",
+        "Implement digital barcode billing to control shrinkage and monitor stock expiry."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Secure central storefront on main village/town road and complete trade licensing.",
+        "Days 31-60: Install heavy display racks, negotiate distributor trade margins, and stock fast-moving staples.",
+        "Days 61-90: Launch neighborhood delivery service, setup WhatsApp ordering, and initiate loyalty credit khata."
+      ]
+    },
+    {
+      "id": "food_processing",
+      "name": "Food Processing",
+      "aliases": ["food processing", "bakery", "spice processing", "flour mill", "pickles", "agro processing", "snack manufacturing"],
+      "description": "Micro-processing and packaging of agro-produce into value-added food items such as spices, flour, pickles, snacks, and baked goods.",
+      "typical_capex_min": 60000.0,
+      "typical_capex_max": 2500000.0,
+      "primary_activities": [
+        "Sorting, cleaning, and grading of raw agro-produce",
+        "Milling, pulverizing, baking, or pickling formulation",
+        "Nitrogen-flushed / moisture-barrier pouch packaging and labeling",
+        "Distribution to local retailers, tea stalls, and regional haats"
+      ],
+      "key_equipment": [
+        "Multi-purpose hammer mill / pulverizer machine",
+        "Continuous band sealer with nitrogen gas flushing",
+        "Commercial hot air dryer / oven",
+        "Stainless steel mixing tanks and food-grade storage drums"
+      ],
+      "mandatory_licenses": [
+        "Udyam MSME Registration Certificate",
+        "FSSAI Manufacturing / Processing License",
+        "State Pollution Control Board Consent to Operate (Green Category)",
+        "Water testing & food safety lab certification report"
+      ],
+      "digital_enablement": [
+        "Create digital brand identity with QR code on packaging for source verification.",
+        "List products on Open Network for Digital Commerce (ONDC) and regional B2B apps.",
+        "Maintain batch manufacturing records and expiry alerts digitally."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Secure hygienic processing shed, water purification unit, and apply for FSSAI manufacturing license.",
+        "Days 31-60: Install pulverizing and packaging machinery, test trial production batches for shelf stability.",
+        "Days 61-90: Secure distributor agreements with 30+ rural retail outlets and launch branded packaging."
+      ]
+    },
+    {
+      "id": "agriculture",
+      "name": "Agriculture",
+      "aliases": ["agriculture", "farming", "agro", "horticulture", "organic farming", "crop farming", "polyhouse"],
+      "description": "High-value horticulture, organic vegetable cultivation, precision micro-irrigation, and nursery seedling supply.",
+      "typical_capex_min": 50000.0,
+      "typical_capex_max": 1800000.0,
+      "primary_activities": [
+        "Soil preparation, organic enrichment, and raised bed layout",
+        "Drip irrigation installation and fertigation scheduling",
+        "Crop cultivation, pest scouting, and biocontrol management",
+        "Post-harvest sorting, grading, and direct mandi / farm-gate marketing"
+      ],
+      "key_equipment": [
+        "Solar pump / micro-irrigation drip manifold system",
+        "Power weeder / mini tiller for inter-row tilling",
+        "Knapsack battery-powered sprayers and shade net nursery structure",
+        "Perforated plastic harvesting crates and weighing scale"
+      ],
+      "mandatory_licenses": [
+        "PM-Kisan / Farmer ID Registration & Land 7/12 Records",
+        "Seed / Fertilizer Retail Dealer License (if selling inputs)",
+        "Organic Certification Scheme Enrollment (NPOP / PGS-India)",
+        "Groundwater extraction NOC from state irrigation authority (where applicable)"
+      ],
+      "digital_enablement": [
+        "Use satellite crop health & weather forecasting apps (e.g., Meghdoot, CropIn).",
+        "Link direct produce listing to e-NAM (National Agriculture Market) portal.",
+        "Direct farm-to-consumer WhatsApp community subscription boxes."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Soil testing, field leveling, drip irrigation layout, and seed bed preparation.",
+        "Days 31-60: Sowing high-yield vegetable crops, trellising setup, and bio-fertilizer dosing.",
+        "Days 61-90: First harvest cycle, direct supply to peri-urban vegetable markets, and revenue realization."
+      ]
+    },
+    {
+      "id": "handicrafts",
+      "name": "Handicrafts",
+      "aliases": ["handicrafts", "handicraft", "pottery", "weaving", "artisanal", "woodcraft", "embroidery", "brassware"],
+      "description": "Traditional artisanal manufacturing of handloom fabrics, pottery, woodcraft, embroidery, and cultural home decor artifacts.",
+      "typical_capex_min": 30000.0,
+      "typical_capex_max": 800000.0,
+      "primary_activities": [
+        "Sourcing authentic raw materials (clay, seasoned wood, natural dyed yarn)",
+        "Artisanal handcrafting, motif carving, and traditional finishing",
+        "Quality standardization, eco-friendly protective packaging, and tagging",
+        "Sales via craft exhibitions, heritage tourism retail, and online artisan marketplaces"
+      ],
+      "key_equipment": [
+        "Motorized potter's wheel / traditional handloom frame",
+        "Precision carving chisels, buffing machine, and sanding tools",
+        "Clay pug mill or natural dye extraction vat",
+        "Cushioned corrugated packaging unit and product photography light tent"
+      ],
+      "mandatory_licenses": [
+        "Udyam MSME Registration Certificate",
+        "Pehchan Artisan ID Card issued by Development Commissioner (Handicrafts)",
+        "Local Gram Panchayat artisan cottage permit",
+        "Handloom Mark / Silk Mark / Craftmark certification (for textile crafts)"
+      ],
+      "digital_enablement": [
+        "Setup Instagram and Facebook storefront showcasing artisan craft-making videos.",
+        "Onboard products on ONDC, Etsy, Amazon Karigar, and Indiahandmade portal.",
+        "Use UPI QR code for direct exhibition and tourism craft sales."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Register for Pehchan artisan card, secure raw material bulk supply, and setup workshop.",
+        "Days 31-60: Standardize 10 core artisan product designs, create digital catalog and studio photos.",
+        "Days 61-90: Attend regional Saras Mela / craft haat, onboard to e-commerce, and establish regular output."
+      ]
+    },
+    {
+      "id": "services",
+      "name": "Services",
+      "aliases": ["services", "service", "repair", "automotive repair", "electrical services", "salon", "micro-logistics", "csc"],
+      "description": "Community services including two-wheeler/tractor repair, electrical servicing, grooming salon, and common service center (CSC) operations.",
+      "typical_capex_min": 35000.0,
+      "typical_capex_max": 1200000.0,
+      "primary_activities": [
+        "Diagnostic inspection, mechanical repair, or service provisioning",
+        "Spare parts inventory management and consumables stocking",
+        "Customer service scheduling, emergency doorstep assistance, and billing"
+      ],
+      "key_equipment": [
+        "Comprehensive pneumatic / hand toolkit and hydraulic lifting jack",
+        "Battery load tester, multimeter, and welding station",
+        "Air compressor with pressure regulator",
+        "All-in-one desktop computer with biometric scanner & laser printer (for CSC/services)"
+      ],
+      "mandatory_licenses": [
+        "Udyam MSME Registration Certificate",
+        "Local Panchayat / Municipal Trade License",
+        "National Skill Development Corporation (NSDC) / ITI Trade Certificate",
+        "Electricity Department commercial connection sanction"
+      ],
+      "digital_enablement": [
+        "Setup Google Business Profile with location mapping for nearby customer discovery.",
+        "Deploy UPI soundbox and digital invoice generation on customer WhatsApp.",
+        "Implement automated maintenance reminder SMS for past service customers."
+      ],
+      "first_90_days_milestones": [
+        "Days 1-30: Secure roadside workshop premises, complete trade registration, and power connection.",
+        "Days 31-60: Install core diagnostic tools, air compressor, and establish spare parts vendor credit.",
+        "Days 61-90: Distribute local pamphlets, setup Google Maps profile, and achieve steady daily service footfall."
+      ]
+    }
+  ]
+}

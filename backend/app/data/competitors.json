@@ -1,0 +1,116 @@
+{
+  "competitor_profiles": {
+    "textile_clothing": [
+      {
+        "name": "Mahalaxmi Readymade & Saree Centre",
+        "type_of_business": "Traditional Family Retailer",
+        "proximity": "1.2 km (Main Bazaar)",
+        "strengths": "Long-standing credit relationships with village elders, extensive inventory of wedding sarees.",
+        "differentiation_strategy": "Offer on-the-spot alterations, contemporary youth casuals, and transparent fixed pricing without tedious haggling."
+      },
+      {
+        "name": "Taluka Weekly Haat Itinerant Vendors",
+        "type_of_business": "Mobile Open-Air Stalls",
+        "proximity": "0.5 km (Weekly Market Ground)",
+        "strengths": "Aggressive rock-bottom cash pricing and low overhead operations.",
+        "differentiation_strategy": "Guarantee durable stitching, consistent shopfront presence, and hassle-free exchange policy."
+      }
+    ],
+    "dairy": [
+      {
+        "name": "Village Cooperative Milk Society Chilling Centre",
+        "type_of_business": "Cooperative Collection Mandi",
+        "proximity": "0.8 km",
+        "strengths": "Guaranteed baseline purchase of raw bulk milk, direct subsidy crediting.",
+        "differentiation_strategy": "Retain higher 25%+ gross margins through direct retail sale of paneer, cultured ghee, and doorstep glass-bottled fresh milk."
+      },
+      {
+        "name": "Local Private Milk Vendor (Doodhwala)",
+        "type_of_business": "Informal Milk Aggregator",
+        "proximity": "1.5 km",
+        "strengths": "Long-standing home delivery relationships.",
+        "differentiation_strategy": "Provide certified adulteration-free lactometer-tested milk, tamper-proof packaging, and digital UPI billing."
+      }
+    ],
+    "grocery": [
+      {
+        "name": "Shree Ganesh General Store & Kirana",
+        "type_of_business": "Traditional Neighborhood Kirana",
+        "proximity": "0.4 km",
+        "strengths": "Extensive informal monthly credit (khata) to surrounding families.",
+        "differentiation_strategy": "Fast WhatsApp ordering, 30-minute doorstep delivery, clean vacuum-sealed pulses, and modern digital payment soundbox."
+      },
+      {
+        "name": "Nearest Highway Supermarket / Cash & Carry",
+        "type_of_business": "Modern Semi-Urban Mart",
+        "proximity": "4.5 km",
+        "strengths": "Wide brand selection and promotional multi-buy discounts.",
+        "differentiation_strategy": "Hyper-local convenience eliminating travel costs, personalized service, and micro-packet options for daily wage earners."
+      }
+    ],
+    "food_processing": [
+      {
+        "name": "Kisan Agro Flour & Masala Chaki",
+        "type_of_business": "Informal Custom Jobwork Mill",
+        "proximity": "1.8 km",
+        "strengths": "Low jobwork grinding fee per kilogram.",
+        "differentiation_strategy": "Hygienic moisture-barrier pouch packaging, consistent formulation, FSSAI certified lab quality, and direct delivery to 30+ retail stores."
+      },
+      {
+        "name": "Regional Branded Packaged Spices (National Brands)",
+        "type_of_business": "FMCG Wholesale Distribution",
+        "proximity": "2.5 km (Distributor Godown)",
+        "strengths": "Massive television advertising and high consumer brand recall.",
+        "differentiation_strategy": "Offer 15% lower price point, authentic regional taste profile, fresher stock rotation, and direct retailer promotional margin support."
+      }
+    ],
+    "agriculture": [
+      {
+        "name": "Conventional Agrarian Farmers in Cluster",
+        "type_of_business": "Open-Field Commodity Cultivators",
+        "proximity": "Adjoining village fields",
+        "strengths": "Large contiguous acreage and traditional farming experience.",
+        "differentiation_strategy": "Adopt high-density drip fertigation, off-season high-value vegetable varieties, and direct B2B marketing avoiding commission agent cuts."
+      },
+      {
+        "name": "Commercial Nursery & Seedling Depot",
+        "type_of_business": "Input Supply Dealer",
+        "proximity": "6.0 km",
+        "strengths": "Established brand tie-ups with seed conglomerates.",
+        "differentiation_strategy": "Offer locally acclimatized, hardened organic seedlings with tailored soil management guidance to neighboring growers."
+      }
+    ],
+    "handicrafts": [
+      {
+        "name": "Middlemen Craft Aggregators / City Traders",
+        "type_of_business": "Wholesale Trader Network",
+        "proximity": "12.0 km (District Centre)",
+        "strengths": "Consolidated export orders and urban gallery networks.",
+        "differentiation_strategy": "Direct-to-consumer digital channels (ONDC, Instagram, Etsy) retaining the full retail price rather than accepting 30% artisan wholesale fractions."
+      },
+      {
+        "name": "Machine-Made Synthetic Souvenir Outlets",
+        "type_of_business": "Commercial Tourism Gift Shop",
+        "proximity": "3.0 km (Near Tourist Transit)",
+        "strengths": "Ultra-low unit cost and uniform factory finish.",
+        "differentiation_strategy": "Emphasize genuine GI-tagged handmade heritage, natural non-toxic materials, and verifiable artisan signature certification."
+      }
+    ],
+    "services": [
+      {
+        "name": "Local Roadside Informal Mechanic",
+        "type_of_business": "Unorganized Single-Handyman Kiosk",
+        "proximity": "0.6 km",
+        "strengths": "Quick makeshift repairs and very cheap labor charges.",
+        "differentiation_strategy": "Equipped with digital multimeters, professional pneumatic tools, genuine OEM parts inventory, transparent printed bill receipts, and guaranteed repair work."
+      },
+      {
+        "name": "Authorized Brand Service Dealership",
+        "type_of_business": "Corporate Showroom Service Center",
+        "proximity": "14.0 km (District Headquarters)",
+        "strengths": "Brand warranty tie-in and standardized company protocol.",
+        "differentiation_strategy": "Proximity within the village avoiding 14 km roundtrip transport, same-day delivery, 40% lower labor charges, and emergency roadside breakdown visits."
+      }
+    ]
+  }
+}

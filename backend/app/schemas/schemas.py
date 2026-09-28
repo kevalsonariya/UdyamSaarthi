@@ -1,13 +1,13 @@
-from typing import List, Optional
+from typing import List, Optional, Any, Dict
 from pydantic import BaseModel, Field
 
 class HealthResponse(BaseModel):
     status: str = "ok"
 
 class BusinessInputRequest(BaseModel):
-    location: str = Field(..., json_schema_extra={"example": "Anand, Gujarat"})
-    business_category: str = Field(..., json_schema_extra={"example": "Textile & Clothing"})
-    available_capital: float = Field(..., ge=1000, description="Available margin capital in INR")
+    location: Optional[Any] = Field(None, json_schema_extra={"example": "Anand, Gujarat"})
+    business_category: Optional[Any] = Field(None, json_schema_extra={"example": "Textile & Clothing"})
+    available_capital: Optional[Any] = Field(None, description="Available margin capital in INR")
 
 class FinancialStructuring(BaseModel):
     available_capital: float
@@ -160,7 +160,27 @@ class BusinessRecommendation(BaseModel):
     digital_enablement_tips: List[str]
     is_demo_data: bool = True
 
+class BusinessProfile(BaseModel):
+    category_id: str
+    category_name: str
+    description: str
+    primary_activities: List[str] = Field(default_factory=list)
+    key_equipment: List[str] = Field(default_factory=list)
+    typical_capex_range: str
+    capital_adequacy: str
+    target_location: str
+
+class BusinessAnalysisMetadata(BaseModel):
+    data_source: str = "prototype_demo_data"
+    is_live_data: bool = False
+    note: str = "Prototype demo datasets. Not verified live/real-time market data."
+    version: str = "1.0-prototype"
+
 class FullAnalysisResponse(BaseModel):
+    success: bool = True
+    data: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None
+    business: Optional[Dict[str, Any]] = None
     location: str
     business_category: str
     available_capital: float

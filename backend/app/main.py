@@ -6,12 +6,28 @@ from app.config import settings
 from app.schemas.schemas import HealthResponse
 from app.api.endpoints import router as api_router
 from app.engines.financial_engine import FinancialValidationError
+from app.engines.business_analysis_engine import BusinessAnalysisValidationError
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="AI-Driven Hyper-Local Business Advisory and Financial Structuring Assistant for Rural Micro-Entrepreneurs",
     version=settings.VERSION,
 )
+
+# Exception handler for business analysis validation errors
+@app.exception_handler(BusinessAnalysisValidationError)
+async def business_validation_handler(request: Request, exc: BusinessAnalysisValidationError):
+    return JSONResponse(
+        status_code=400,
+        content={
+            "success": False,
+            "error": {
+                "message": exc.message,
+                "field": exc.field,
+                "code": exc.code or "BUSINESS_VALIDATION_ERROR",
+            },
+        },
+    )
 
 # Exception handler for deterministic financial engine validation errors
 @app.exception_handler(FinancialValidationError)
