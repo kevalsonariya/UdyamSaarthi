@@ -11,6 +11,7 @@ from app.schemas.schemas import (
     SchemeRecommendation,
     EMIBreakdown,
     RepaymentScheduleItem,
+    QuarterlyRepaymentItem,
     WorkingCapitalPlan,
 )
 
@@ -528,6 +529,55 @@ def generate_repayment_schedule(
     return schedule
 
 
+def aggregate_quarterly_repayment(
+    monthly_schedule: List[RepaymentScheduleItem],
+) -> List[QuarterlyRepaymentItem]:
+    """
+    Derives deterministic quarterly roll-up from month-by-month repayment schedule.
+    Preserves exact deterministic totals:
+      Quarter principal = month 1 principal + month 2 principal + month 3 principal
+      Quarter interest = month 1 interest + month 2 interest + month 3 interest
+      Quarter total payment = month 1 payment + month 2 payment + month 3 payment
+      Remaining balance = closing balance of the final month in the quarter.
+    """
+    if not monthly_schedule:
+        return []
+
+    quarterly_schedule: List[QuarterlyRepaymentItem] = []
+    chunk_size = 3
+
+    for i in range(0, len(monthly_schedule), chunk_size):
+        chunk = monthly_schedule[i : i + chunk_size]
+        quarter_num = (i // chunk_size) + 1
+        year_num = (quarter_num - 1) // 4 + 1
+
+        q_principal = round(sum(item.principal_component for item in chunk), 2)
+        q_interest = round(sum(item.interest_component for item in chunk), 2)
+        q_payment = round(sum(item.installment_amount for item in chunk), 2)
+        q_opening = chunk[0].opening_balance
+        q_closing = chunk[-1].closing_balance
+        is_morat = all(item.is_moratorium for item in chunk)
+
+        quarterly_schedule.append(
+            QuarterlyRepaymentItem(
+                quarter=quarter_num,
+                year=year_num,
+                is_moratorium=is_morat,
+                opening_balance=round(q_opening, 2),
+                principal_paid=q_principal,
+                interest_paid=q_interest,
+                total_payment=q_payment,
+                remaining_balance=round(q_closing, 2),
+                principal_component=q_principal,
+                interest_component=q_interest,
+                installment_amount=q_payment,
+                closing_balance=round(q_closing, 2),
+            )
+        )
+
+    return quarterly_schedule
+
+
 def calculate_working_capital(
     project_cost: float,
     monthly_emi: float = 0.0,
@@ -546,16 +596,20 @@ def calculate_working_capital(
 
     monthly_raw_materials = cost * 0.045
     monthly_labor = cost * 0.025
-    monthly_rent_utilities = cost * 0.012
+    monthly_rent = cost * 0.008
+    monthly_utilities = cost * 0.004
+    monthly_rent_utilities = monthly_rent + monthly_utilities
     monthly_logistics = cost * 0.008
-    monthly_contingency = cost * 0.005
+    monthly_marketing = cost * 0.003
+    monthly_contingency = cost * 0.002
+    monthly_contingency_buffer = monthly_marketing + monthly_contingency
 
     total_monthly_opex = (
         monthly_raw_materials
         + monthly_labor
         + monthly_rent_utilities
         + monthly_logistics
-        + monthly_contingency
+        + monthly_contingency_buffer
     )
 
     recommended_3_months_reserve = total_monthly_opex * 3.0
@@ -568,13 +622,24 @@ def calculate_working_capital(
         monthly_labor_wages=round(monthly_labor, 2),
         monthly_rent_utilities=round(monthly_rent_utilities, 2),
         monthly_logistics_packaging=round(monthly_logistics, 2),
-        monthly_contingency_buffer=round(monthly_contingency, 2),
+        monthly_contingency_buffer=round(monthly_contingency_buffer, 2),
         total_monthly_operating_expense=round(total_monthly_opex, 2),
         recommended_3_months_reserve=round(recommended_3_months_reserve, 2),
         projected_monthly_revenue=round(projected_monthly_revenue, 2),
         projected_monthly_net_profit=round(projected_monthly_net_profit, 2),
         break_even_monthly_revenue=round(break_even_monthly_revenue, 2),
         break_even_occupancy_or_capacity_percent=74.0,
+        monthly_operating_cost=round(total_monthly_opex, 2),
+        inventory=round(monthly_raw_materials, 2),
+        utilities=round(monthly_utilities, 2),
+        rent=round(monthly_rent, 2),
+        labour=round(monthly_labor, 2),
+        transportation=round(monthly_logistics, 2),
+        marketing=round(monthly_marketing, 2),
+        other=round(monthly_contingency, 2),
+        recommended_reserve=round(recommended_3_months_reserve, 2),
+        total_working_capital=round(recommended_3_months_reserve, 2),
+        is_indicative_estimate=True,
     )
 
 

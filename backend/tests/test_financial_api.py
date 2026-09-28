@@ -196,3 +196,65 @@ def test_api_working_capital_calculate():
     assert data["total_monthly_operating_expense"] == 95000.0
     assert data["recommended_3_months_reserve"] == 285000.0
     assert data["break_even_occupancy_or_capacity_percent"] == 74.0
+
+
+# ==============================================================================
+# 6. PHASE B5 ENHANCEMENT API TESTS
+# ==============================================================================
+
+def test_api_repayment_calculate_with_quarterly_schedule():
+    """Phase B5: Verify /repayment/calculate returns quarterly_schedule matching monthly sums."""
+    payload = {
+        "principal": 900000.0,
+        "annual_interest_rate": 8.0,
+        "tenure_years": 7,
+        "moratorium_months": 6,
+    }
+    response = client.post("/repayment/calculate", json=payload)
+    assert response.status_code == 200
+    data = response.json()["data"]
+
+    # Verify both monthly schedule and quarterly schedule exist
+    assert "schedule" in data
+    assert "quarterly_schedule" in data
+    assert len(data["schedule"]) == 84
+    assert len(data["quarterly_schedule"]) == 28
+    assert data["repayment_frequency"] == "Monthly (Quarterly roll-up available)"
+    assert "indicative_notice" in data
+
+    # Verify Quarter 1 and Quarter 2 are moratorium
+    q1 = data["quarterly_schedule"][0]
+    q2 = data["quarterly_schedule"][1]
+    assert q1["is_moratorium"] is True
+    assert q1["principal_paid"] == 0.0
+    assert q2["is_moratorium"] is True
+    assert q2["principal_paid"] == 0.0
+
+    # Verify sum of quarter 1 payments equals sum of month 1..3 installments
+    m1_3_pay = sum(data["schedule"][i]["installment_amount"] for i in range(3))
+    assert q1["total_payment"] == round(m1_3_pay, 2)
+
+
+def test_api_working_capital_calculate_phase_b5_breakdown():
+    """Phase B5: Verify /working-capital/calculate returns itemized breakdown."""
+    payload = {
+        "project_cost": 1000000.0,
+        "monthly_emi": 14834.86,
+    }
+    response = client.post("/working-capital/calculate", json=payload)
+    assert response.status_code == 200
+    data = response.json()["data"]
+
+    # All 10 requested fields
+    assert data["monthly_operating_cost"] == 95000.0
+    assert data["inventory"] == 45000.0
+    assert data["utilities"] == 4000.0
+    assert data["rent"] == 8000.0
+    assert data["labour"] == 25000.0
+    assert data["transportation"] == 8000.0
+    assert data["marketing"] == 3000.0
+    assert data["other"] == 2000.0
+    assert data["recommended_reserve"] == 285000.0
+    assert data["total_working_capital"] == 285000.0
+    assert data["is_indicative_estimate"] is True
+

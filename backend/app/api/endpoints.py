@@ -15,6 +15,7 @@ from app.engines.financial_engine import (
     select_scheme,
     calculate_emi,
     generate_repayment_schedule,
+    aggregate_quarterly_repayment,
     calculate_working_capital,
     FinancialValidationError,
     DISCLAIMER_TEXT,
@@ -222,6 +223,7 @@ async def calculate_repayment(request: RepaymentCalculateRequest):
         tenure_years=tenure,
         moratorium_months=moratorium,
     )
+    quarterly_schedule = aggregate_quarterly_repayment(schedule)
 
     return {
         "success": True,
@@ -231,8 +233,13 @@ async def calculate_repayment(request: RepaymentCalculateRequest):
             "tenure_years": tenure,
             "tenure_months": tenure * 12,
             "moratorium_months": moratorium,
+            "repayment_frequency": "Monthly (Quarterly roll-up available)",
             "total_installments": len(schedule),
+            "total_quarters": len(quarterly_schedule),
             "schedule": [item.model_dump() for item in schedule],
+            "quarterly_schedule": [item.model_dump() for item in quarterly_schedule],
+            "financial_disclaimer": DISCLAIMER_TEXT,
+            "indicative_notice": "Indicative repayment calculation. Verify applicable scheme terms before making financial decisions.",
         },
     }
 

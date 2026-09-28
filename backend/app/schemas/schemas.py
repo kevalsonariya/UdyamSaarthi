@@ -59,6 +59,20 @@ class RepaymentScheduleItem(BaseModel):
     principal: Optional[float] = None
     interest: Optional[float] = None
 
+class QuarterlyRepaymentItem(BaseModel):
+    quarter: int
+    year: int
+    is_moratorium: bool
+    opening_balance: float
+    principal_paid: float
+    interest_paid: float
+    total_payment: float
+    remaining_balance: float
+    principal_component: Optional[float] = None
+    interest_component: Optional[float] = None
+    installment_amount: Optional[float] = None
+    closing_balance: Optional[float] = None
+
 class FinancialCalculateRequest(BaseModel):
     available_margin: Optional[float] = Field(None, description="Available margin capital in INR")
     available_capital: Optional[float] = Field(None, description="Available capital alias for margin in INR")
@@ -107,6 +121,18 @@ class WorkingCapitalPlan(BaseModel):
     projected_monthly_net_profit: float
     break_even_monthly_revenue: float
     break_even_occupancy_or_capacity_percent: float
+    # Phase B5 Enhanced Structured Breakdown
+    monthly_operating_cost: Optional[float] = None
+    inventory: Optional[float] = None
+    utilities: Optional[float] = None
+    rent: Optional[float] = None
+    labour: Optional[float] = None
+    transportation: Optional[float] = None
+    marketing: Optional[float] = None
+    other: Optional[float] = None
+    recommended_reserve: Optional[float] = None
+    total_working_capital: Optional[float] = None
+    is_indicative_estimate: bool = True
 
 class MarketReachAnalysis(BaseModel):
     catchment_radius_km: int
@@ -200,6 +226,7 @@ class FullAnalysisResponse(BaseModel):
     scheme: SchemeRecommendation
     emi: EMIBreakdown
     repayment: List[RepaymentScheduleItem]
+    quarterly_repayment: Optional[List[QuarterlyRepaymentItem]] = None
     working_capital: WorkingCapitalPlan
     market: MarketReachAnalysis
     opportunities: OpportunityAnalysis

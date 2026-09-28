@@ -4,6 +4,7 @@ from app.engines.financial_engine import (
     calculate_financial_structure,
     route_scheme,
     calculate_emi,
+    aggregate_quarterly_repayment,
     calculate_working_capital_plan,
     DISCLAIMER_TEXT,
 )
@@ -38,6 +39,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         tenure_years=sch.tenure_years,
         moratorium_months=sch.moratorium_months,
     )
+    quarterly_schedule = aggregate_quarterly_repayment(schedule)
     wc = calculate_working_capital_plan(fin.project_cost, emi.monthly_emi)
 
     # 2. Dynamic business analysis
@@ -65,6 +67,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         "scheme": sch,
         "emi": emi,
         "repayment": schedule,
+        "quarterly_repayment": quarterly_schedule,
         "working_capital": wc,
     }
     ai_explanation = ai_advisory_service.generate_advisory_explanation(ai_context)
@@ -83,6 +86,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         "scheme": sch,
         "emi": emi,
         "repayment": schedule,
+        "quarterly_repayment": quarterly_schedule,
         "working_capital": wc,
         "location": clean_loc,
         "business_category": clean_cat,
@@ -102,6 +106,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         scheme=sch,
         emi=emi,
         repayment=schedule,
+        quarterly_repayment=quarterly_schedule,
         working_capital=wc,
         market=adv["market"],
         opportunities=adv["opportunities"],
