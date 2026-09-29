@@ -78,11 +78,13 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
         catchment_km = mkt.get("catchment_radius_km", 15)
 
         lang = str(context.get("language", "en")).lower()
+        from app.services.local_intelligence_service import LocalIntelligenceService
+        loc_cat_name = LocalIntelligenceService.get_localized_category_name(category, lang)
 
         if lang == "hi":
             summary = (
                 f"प्रोटोटाइप के संकेतात्मक स्थानीय प्रोफ़ाइल के अनुसार, {location} में ₹{capital:,.0f} के व्यक्तिगत मार्जिन के साथ "
-                f"{category} व्यवसाय शुरू करने पर ₹{project_cost:,.0f} का अनुमानित परियोजना पैमाना बनता है। "
+                f"{loc_cat_name} व्यवसाय शुरू करने पर ₹{project_cost:,.0f} का अनुमानित परियोजना पैमाना बनता है। "
                 f"सरकारी {scheme_name} के तहत, आप ₹{loan_amount:,.0f} तक के सांकेतिक ऋण के पात्र हो सकते हैं "
                 f"(औपचारिक बैंक मूल्यांकन के अधीन)।"
             )
@@ -131,7 +133,7 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
         elif lang == "gu":
             summary = (
                 f"પ્રોટોટાઇપના સૂચક સ્થાનિક પ્રોફાઇલ અનુસાર, {location} માં ₹{capital:,.0f} ના અંગત માર્જિન સાથે "
-                f"{category} વ્યવસાય શરૂ કરવાથી ₹{project_cost:,.0f} નું અંદાજિત પ્રોજેક્ટ સ્કેલ શક્ય બને છે. "
+                f"{loc_cat_name} વ્યવસાય શરૂ કરવાથી ₹{project_cost:,.0f} નું અંદાજિત પ્રોજેક્ટ સ્કેલ શક્ય બને છે. "
                 f"સરકારી {scheme_name} ના માપદંડો મુજબ, તમે ₹{loan_amount:,.0f} સુધીની સૂચક લોન માટે પાત્ર બની શકો છો "
                 f"(બેંક ઔપચારિક મૂલ્યાંકનને આધીન)."
             )

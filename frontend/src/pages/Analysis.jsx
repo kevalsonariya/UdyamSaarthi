@@ -62,7 +62,7 @@ export const Analysis = () => {
     analysisData.input.location === location &&
     analysisData.input.business_category === category &&
     Number(analysisData.input.available_capital) === capital &&
-    (!analysisData.input.language || analysisData.input.language === language)
+    analysisData.input.language === language
   );
 
   const [loading, setLoading] = useState(!isMatching);
@@ -164,9 +164,10 @@ export const Analysis = () => {
 
   const severityBadge = (severity) => {
     const sev = (severity || '').toLowerCase();
-    if (sev === 'high') return <Badge variant="danger">{severity}</Badge>;
-    if (sev === 'medium') return <Badge variant="warning">{severity}</Badge>;
-    return <Badge variant="info">{severity}</Badge>;
+    const label = t(`analysis.severityLevels.${sev}`) || severity;
+    if (sev === 'high') return <Badge variant="danger">{label}</Badge>;
+    if (sev === 'medium') return <Badge variant="warning">{label}</Badge>;
+    return <Badge variant="info">{label}</Badge>;
   };
 
   const hasLiveCompetitors = competitors?.some((c) => c.is_demo_data === false);
@@ -264,16 +265,16 @@ export const Analysis = () => {
         >
           <div className="space-y-3.5 text-xs text-slate-700">
             <div className="p-3.5 bg-white rounded-xl border border-emerald-200 space-y-1">
-              <span className="font-bold text-emerald-950 block">Executive Summary:</span>
+              <span className="font-bold text-emerald-950 block">{t('analysis.executiveSummaryLabel') || 'Executive Summary:'}</span>
               <p className="leading-relaxed text-slate-700">{analysisData.ai_explanation.summary}</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                <span className="font-bold text-slate-900 block">Local Market Insight:</span>
+                <span className="font-bold text-slate-900 block">{t('analysis.localMarketInsightLabel') || 'Local Market Insight:'}</span>
                 <p className="leading-relaxed text-slate-600">{analysisData.ai_explanation.market_insight}</p>
               </div>
               <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
-                <span className="font-bold text-slate-900 block">Why This Opportunity Matters:</span>
+                <span className="font-bold text-slate-900 block">{t('analysis.whyOpportunityMattersLabel') || 'Why This Opportunity Matters:'}</span>
                 <p className="leading-relaxed text-slate-600">{analysisData.ai_explanation.opportunity_explanation}</p>
               </div>
             </div>
@@ -320,7 +321,7 @@ export const Analysis = () => {
                   {market_reach?.local_area}
                 </span>
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Primary village settlements & weekly haat connections.
+                  {t('analysis.operationalAreaDesc') || 'Primary village settlements & weekly haat connections.'}
                 </p>
               </div>
             </div>
@@ -414,14 +415,14 @@ export const Analysis = () => {
                     <Lightbulb className="w-4 h-4" />
                   </div>
                   <Badge variant="primary" size="sm">
-                    {opp.type || opp.impact || 'Opportunity'}
+                    {t(`analysis.oppTypes.${opp.type}`) || t(`analysis.oppTypes.${opp.impact}`) || opp.type || opp.impact || 'Opportunity'}
                   </Badge>
                 </div>
                 <h4 className="text-xs font-bold text-slate-900 leading-snug">{opp.title}</h4>
                 <p className="text-xs text-slate-600 leading-relaxed">{opp.description}</p>
                 {opp.reason && (
                   <p className="text-[11px] text-slate-500 bg-white p-2 rounded-lg border border-slate-100">
-                    <span className="font-semibold text-slate-700">Driver:</span> {opp.reason}
+                    <span className="font-semibold text-slate-700">{t('analysis.opportunityDriver') || 'Driver:'}</span> {opp.reason}
                   </p>
                 )}
                 {opp.local_factor && (

@@ -6,7 +6,7 @@ pricing, and recommendation intelligence driven by:
 Zero static hardcoding. Every output adapts dynamically to the selected domain parameters.
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from app.data.categories_config import CATEGORIES_REGISTRY, CentralizedCategoriesConfig
 from app.schemas.schemas import (
     MarketReachAnalysis,
@@ -34,6 +34,7 @@ CATEGORY_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "Agricultural Input Store": {"hi": "कृषि इनपुट केंद्र (खाद-बीज)", "gu": "કૃષિ ઇનપુટ સ્ટોર (ખાતર-બિયારણ)"},
     "Grocery / Kirana": {"hi": "किराना दुकान", "gu": "કરિયાણાની દુકાન"},
     "Grocery": {"hi": "किराना दुकान", "gu": "કરિયાણાની દુકાન"},
+    "Kirana": {"hi": "किराना दुकान", "gu": "કરિયાણાની દુકાન"},
     "Food Processing": {"hi": "खाद्य प्रसंस्करण", "gu": "ખાદ્ય પ્રક્રિયા"},
     "Bakery": {"hi": "बेकरी व्यवसाय", "gu": "બેકરી વ્યવસાય"},
     "Snacks & Namkeen": {"hi": "नाश्ता एवं नमकीन", "gu": "નાસ્તા અને નમકીન"},
@@ -41,7 +42,9 @@ CATEGORY_TRANSLATIONS: Dict[str, Dict[str, str]] = {
     "Flour Mill": {"hi": "आटा चक्की", "gu": "લોટ દળવાની ઘંટી"},
     "Fruit & Vegetable Processing": {"hi": "फल एवं सब्जी प्रसंस्करण", "gu": "ફળ અને શાકભાજી પ્રોસેસિંગ"},
     "Textile & Clothing": {"hi": "वस्त्र एवं परिधान", "gu": "કાપડ અને વસ્ત્ર ઉત્પાદન"},
+    "Textile": {"hi": "वस्त्र एवं परिधान", "gu": "કાપડ અને વસ્ત્ર ઉત્પાદન"},
     "Tailoring & Embroidery": {"hi": "सिलाई एवं कढ़ाई", "gu": "દરજીકામ અને ભરતકામ"},
+    "Tailoring": {"hi": "सिलाई एवं कढ़ाई", "gu": "દરજીકામ અને ભરતકામ"},
     "Handicrafts": {"hi": "हस्तशिल्प", "gu": "હસ્તકલા"},
     "Pottery": {"hi": "मिट्टी के बर्तन / कुम्हार कला", "gu": "કુંભારીકામ / માટીના વાસણો"},
     "Furniture": {"hi": "फर्नीचर निर्माण", "gu": "ફર્નિચર વ્યવસાય"},
@@ -71,6 +74,289 @@ class LocalIntelligenceService:
         if lang_code in ["hi", "gu"] and cat_name in CATEGORY_TRANSLATIONS:
             return CATEGORY_TRANSLATIONS[cat_name].get(lang_code, cat_name)
         return cat_name
+
+    @classmethod
+    def get_localized_operational_risk(cls, raw_cat_name: str, loc_cat_name: str, town: str, lang: str) -> Tuple[str, str]:
+        """Returns localized operational risk title and mitigation strategy."""
+        cat_lower = raw_cat_name.lower()
+        if "dairy" in cat_lower:
+            if lang == "hi":
+                return (
+                    "मवेशी संक्रामक रोग एवं मौसमी चारे की कमी",
+                    f"पशुधन का पूर्ण बीमा करवाएं और शुष्क महीनों के लिए {town} के पास साइलेज चारे का सुरक्षित भंडारण करें।"
+                )
+            elif lang == "gu":
+                return (
+                    "પશુઓમાં રોગચાળો અને ઉનાળામાં ઘાસચારાની તંગી",
+                    f"પશુધનનો સંપૂર્ણ વીમો કરાવો અને ઉનાળાના મહિનાઓ માટે {town} નજીક સાયલેજ ઘાસચારાનો સંગ્રહ કરો."
+                )
+        elif "poultry" in cat_lower:
+            if lang == "hi":
+                return (
+                    "एवियन फ्लू / संक्रामक रोग एवं अत्यधिक गर्मी",
+                    f"सख्त जैव-सुरक्षा द्वार प्रोटोकॉल अपनाएं और {town} में गर्मियों के लिए फॉगर कूलिंग सिस्टम लगाएं।"
+                )
+            elif lang == "gu":
+                return (
+                    "બર્ડ ફ્લૂ / ચેપી રોગો અને ઉનાળામાં ગરમીનું જોખમ",
+                    f"કડક બાયો-સિક્યોરિટી નિયમો પાળો અને {town} માં ઉનાળા માટે શેડમાં ફોગર સિસ્ટમ લગાવો."
+                )
+        elif "textile" in cat_lower or "clothing" in cat_lower:
+            if lang == "hi":
+                return (
+                    "कच्चे कपड़े की कीमतों में उतार-चढ़ाव एवं रंग उपलब्धता",
+                    f"सूरत एवं अहमदाबाद कपड़ा क्लस्टर के थोक निर्माताओं के साथ अग्रिम आपूर्ति अनुबंध करें ताकि {town} में लागत स्थिर रहे।"
+                )
+            elif lang == "gu":
+                return (
+                    "કાચા કાપડના ભાવમાં વધઘટ અને રંગોની ઉપલબ્ધતા",
+                    f"સુરત અને અમદાવાદ ટેક્સટાઇલ ક્લસ્ટર સાથે સીધા કરાર કરી જથ્થાબંધ માલ મેળવો જેથી {town} માં ખર્ચ નિયંત્રણમાં રહે."
+                )
+        elif "grocery" in cat_lower or "kirana" in cat_lower:
+            if lang == "hi":
+                return (
+                    "शीघ्र खराब होने वाले सामान की बर्बादी एवं आपूर्ति विलंब",
+                    f"दैनिक इन्वेंट्री टर्नओवर बनाए रखें और {town} के 20 किमी दायरे में विश्वसनीय थोक व्यापारियों से सीधा संपर्क रखें।"
+                )
+            elif lang == "gu":
+                return (
+                    "બગડી જતી વસ્તુઓનું નુકસાન અને ડિલિવરી વિલંબ",
+                    f"રોજિંદો સ્ટોક ઝડપથી વેચો અને {town} ના 20 કિમી વિસ્તારમાં વિશ્વસનીય જથ્થાબંધ વેપારીઓ સાથે જોડાણ રાખો."
+                )
+
+        if lang == "hi":
+            return (
+                f"{loc_cat_name} कच्चे माल की आपूर्ति में व्यवधान",
+                f"{town} के 45 किमी के दायरे में कम से कम 2 वैकल्पिक थोक आपूर्तिकर्ताओं के साथ टाई-अप रखें ताकि मौसमी मांग में आपूर्ति बाधित न हो।"
+            )
+        elif lang == "gu":
+            return (
+                f"{loc_cat_name} કાચા માલની સપ્લાયમાં વિક્ષેપ",
+                f"{town} થી 45 કિમી ત્રિજ્યામાં ઓછામાં ઓછા 2 વૈકલ્પિક જથ્થાબંધ સપ્લાયર્સ સાથે જોડાણ રાખો જેથી મોસમી માંગમાં માલ અટક્યા વગર મળી રહે."
+            )
+        return (
+            "Raw Material Input Sourcing Disruptions",
+            f"Establish active tie-ups with at least 2 alternate wholesale suppliers within a 45 km radius of {town}."
+        )
+
+    @classmethod
+    def get_localized_technical_risk(cls, raw_cat_name: str, loc_cat_name: str, town: str, lang: str) -> Tuple[str, str]:
+        """Returns localized technical risk title and mitigation strategy."""
+        cat_lower = raw_cat_name.lower()
+        if "dairy" in cat_lower:
+            if lang == "hi":
+                return (
+                    "दूध चिलिंग उपकरण में बिजली कटौती या खराबी",
+                    "मिल्क चिलर के लिए स्वचालित जनरेटर बैकअप रखें और उपकरण विक्रेता से मासिक एएमसी (रखरखाव अनुबंध) लें।"
+                )
+            elif lang == "gu":
+                return (
+                    "દૂધ ચિલિંગ મશીનમાં પાવર કટ અથવા ટેકનિકલ ખામી",
+                    "બલ્ક મિલ્ક ચિલર માટે જનરેટર બેકઅપ રાખો અને સાધનોનું નિયમિત નિરીક્ષણ કરાવો."
+                )
+        elif "poultry" in cat_lower:
+            if lang == "hi":
+                return (
+                    "स्वचालित फीडर एवं शेड वेंटिलेशन प्रणाली में खराबी",
+                    "दैनिक वेंटिलेशन चेकलिस्ट अपनाएं और स्टैंडबाय बैटरी इनवर्टर बैकअप तैयार रखें।"
+                )
+            elif lang == "gu":
+                return (
+                    "ઓટોમેટિક ફીડર અને શેડ વેન્ટિલેશન સિસ્ટમમાં ખામી",
+                    "રોજિંદી સાધન તપાસ કરો અને સ્ટેન્ડબાય બેટરી ઇન્વર્ટર બેકઅપ તૈયાર રાખો."
+                )
+        elif "textile" in cat_lower or "clothing" in cat_lower:
+            if lang == "hi":
+                return (
+                    "सिलाई मशीनरी एवं कटिंग टेबल में रखरखाव संबंधी विलंब",
+                    "स्थानीय तकनीशियन के साथ त्वरित सर्विस अनुबंध रखें और आवश्यक स्पेयर पार्ट्स स्टॉक में रखें।"
+                )
+            elif lang == "gu":
+                return (
+                    "સિલાઈ મશીનરી અને કટીંગ ટેબલના મેન્ટેનન્સમાં વિલંબ",
+                    "સ્થાનિક કારીગર સાથે નિયમિત સર્વિસિંગ કરાવો અને જરૂરી સ્પેરપાર્ટ્સ સ્ટોકમાં રાખો."
+                )
+        elif "grocery" in cat_lower or "kirana" in cat_lower:
+            if lang == "hi":
+                return (
+                    "डिजिटल पीओएस बिलिंग टर्मिनल एवं इन्वेंट्री सॉफ्टवेयर में समस्या",
+                    "ऑफलाइन बिलिंग रजिस्टर की वैकल्पिक व्यवस्था रखें और दैनिक क्लाउड डेटा बैकअप लें।"
+                )
+            elif lang == "gu":
+                return (
+                    "ડિજિટલ POS બિલિંગ અને સ્ટોક સોફ્ટવેરમાં ખામી",
+                    "ઓફલાઇન બિલિંગ વ્યવસ્થા રાખો અને રોજિંદો ડેટા બેકઅપ લો."
+                )
+
+        if lang == "hi":
+            return (
+                f"{loc_cat_name} उपकरणों में तकनीकी खराबी",
+                "दैनिक निवारक रखरखाव चेकलिस्ट अपनाएं और सख्त गुणवत्ता मानकों का पालन करें।"
+            )
+        elif lang == "gu":
+            return (
+                f"{loc_cat_name} સાધનોમાં ટેકનિકલ ખામી",
+                "રોજિંદા સાધન નિરીક્ષણ અને સચોટ ગુણવત્તા નિયંત્રણના ધોરણો અમલમાં મૂકો."
+            )
+        return (
+            "Equipment Technical Malfunction",
+            "Implement daily preventive maintenance checklists and adhere to strict quality control protocols."
+        )
+
+    @classmethod
+    def get_localized_pricing_metrics(
+        cls, raw_cat_name: str, loc_cat_name: str, min_capex: float, cat_pricing: Dict[str, Any], lang: str
+    ) -> Tuple[str, str, str]:
+        """Returns localized (benchmark, unit_cost, retail_price) strings."""
+        cat_lower = raw_cat_name.lower()
+        if "dairy" in cat_lower:
+            if lang == "hi":
+                return (
+                    "1 लीटर ताजा गाय/भैंस दूध एवं 1 किलो ताजा पनीर",
+                    "₹42/लीटर (दूध) | ₹240/किलो (पनीर)",
+                    "₹58 - ₹64/लीटर (दूध) | ₹360 - ₹420/किलो (पनीर)",
+                )
+            elif lang == "gu":
+                return (
+                    "1 લિટર તાજું ગાય/ભેંસનું દૂધ અને 1 કિલો તાજું પનીર",
+                    "₹42/લિટર (દૂધ) | ₹240/કિલો (પનીર)",
+                    "₹58 - ₹64/લિટર (દૂધ) | ₹360 - ₹420/કિલો (પનીર)",
+                )
+        elif "poultry" in cat_lower:
+            if lang == "hi":
+                return (
+                    "1 किलो जीवित ब्रायलर पक्षी / 1 ट्रे (30 अंडे) फार्म अंडे",
+                    "₹75 - ₹85 / किलो जीवित पक्षी",
+                    "₹115 - ₹135 / किलो थोक बाज़ार",
+                )
+            elif lang == "gu":
+                return (
+                    "1 કિલો લાઇવ બ્રોઇલર પક્ષી / 1 ટ્રે (30 નંગ) ફાર્મ ઇંડા",
+                    "₹75 - ₹85 / કિલો લાઇવ પક્ષી",
+                    "₹115 - ₹135 / કિલો જથ્થાબંધ બજાર",
+                )
+        elif "textile" in cat_lower or "clothing" in cat_lower:
+            if lang == "hi":
+                return (
+                    "मानक सूती / सिंथेटिक परिधान इकाई (कुर्ती / कमीज / पैंट)",
+                    "₹220 - ₹350 प्रति तैयार वस्त्र इकाई",
+                    "₹450 - ₹650 प्रति परिधान इकाई",
+                )
+            elif lang == "gu":
+                return (
+                    "માનક સુતરાઉ / સિન્થેટિક વસ્ત્ર એકમ (કુર્તી / શર્ટ / પેન્ટ)",
+                    "₹220 - ₹350 પ્રતિ તૈયાર વસ્ત્ર એકમ",
+                    "₹450 - ₹650 પ્રતિ પરિધાન એકમ",
+                )
+        elif "grocery" in cat_lower or "kirana" in cat_lower:
+            if lang == "hi":
+                return (
+                    "मासिक मानक पारिवारिक राशन टोकरी (किराना पैकेज)",
+                    "₹1,800 - ₹2,200 प्रति मानक मासिक टोकरी",
+                    "₹2,400 - ₹2,900 प्रति घरेलू राशन टोकरी",
+                )
+            elif lang == "gu":
+                return (
+                    "માસિક માનક પારિવારિક રાશન કીટ (કરિયાણા પેકેજ)",
+                    "₹1,800 - ₹2,200 પ્રતિ માનક માસિક કીટ",
+                    "₹2,400 - ₹2,900 પ્રતિ પારિવારિક રાશન કીટ",
+                )
+
+        if lang == "hi":
+            return (
+                f"मानक {loc_cat_name} इकाई उत्पाद / सेवा पैकेज",
+                f"₹{int(min_capex * 0.005):,} - ₹{int(min_capex * 0.015):,} अनुमानित इकाई लागत",
+                f"₹{int(min_capex * 0.010):,} - ₹{int(min_capex * 0.025):,} स्थानीय खुदरा बेंचमार्क",
+            )
+        elif lang == "gu":
+            return (
+                f"માનક {loc_cat_name} એકમ ઉત્પાદન / સેવા પેકેજ",
+                f"₹{int(min_capex * 0.005):,} - ₹{int(min_capex * 0.015):,} અંદાજિત એકમ ખર્ચ",
+                f"₹{int(min_capex * 0.010):,} - ₹{int(min_capex * 0.025):,} સ્થાનિક છૂટક બેન્ચમાર્ક",
+            )
+
+        fallback_unit_cost = f"₹{int(min_capex * 0.005):,} - ₹{int(min_capex * 0.015):,} estimated unit cost"
+        fallback_retail = f"₹{int(min_capex * 0.010):,} - ₹{int(min_capex * 0.025):,} retail benchmark"
+        return (
+            cat_pricing.get("benchmark_product", f"Standard {raw_cat_name} Unit Product / Service Package"),
+            cat_pricing.get("unit_cost", fallback_unit_cost),
+            cat_pricing.get("retail_price", fallback_retail),
+        )
+
+    @classmethod
+    def get_localized_licenses(cls, raw_cat_name: str, lang: str) -> List[str]:
+        """Returns localized statutory licenses and registrations."""
+        is_food = any(k in raw_cat_name.lower() for k in ["dairy", "food", "grocery", "bakery", "snack", "pickle", "flour"])
+        if lang == "hi":
+            lics = [
+                "उद्यम एमएसएमई पंजीकरण प्रमाण पत्र (Udyam MSME)",
+                "स्थानीय ग्राम पंचायत / नगर पालिका व्यापार परमिट",
+                "दुकान एवं स्थापना अधिनियम पंजीकरण (Shop & Establishment)",
+            ]
+            if is_food:
+                lics.insert(1, "एफएसएसएआई (FSSAI) खाद्य सुरक्षा बुनियादी पंजीकरण")
+            return lics
+        elif lang == "gu":
+            lics = [
+                "ઉદ્યમ MSME નોંધણી પ્રમાણપત્ર (Udyam MSME)",
+                "સ્થાનિક ગ્રામ પંચાયત / નગરપાલિકા વ્યવસાય પરમિટ",
+                "ગુમાસ્તા ધારા નોંધણી (Shop & Establishment Act)",
+            ]
+            if is_food:
+                lics.insert(1, "FSSAI ખાદ્ય સુરક્ષા નોંધણી પ્રમાણપત્ર")
+            return lics
+        else:
+            lics = [
+                "Udyam MSME Registration Certificate",
+                "Local Gram Panchayat / Municipal Trade Permit",
+                "Shop & Establishment Act Registration",
+            ]
+            if is_food:
+                lics.insert(1, "FSSAI Basic Food Registration")
+            return lics
+
+    @classmethod
+    def get_localized_profile_details(
+        cls, cat: Dict[str, Any], loc_cat_name: str, town: str, lang: str
+    ) -> Tuple[List[str], List[str]]:
+        """Returns localized (primary_activities, key_equipment)."""
+        if lang == "hi":
+            acts = [
+                f"{loc_cat_name} के लिए स्थानीय थोक खरीद एवं इन्वेंट्री प्रबंधन",
+                f"{town} के ग्राहकों के लिए गुणवत्तापूर्ण आपूर्ति एवं त्वरित बिक्री",
+                "डिजिटल बिलिंग, ऑनलाइन यूपीआई भुगतान एवं ग्राहक सेवा प्रबंधन",
+            ]
+            eqs = [
+                f"{loc_cat_name} कार्य के लिए आवश्यक प्राथमिक उपकरण एवं मशीनरी",
+                "डिजिटल इलेक्ट्रॉनिक वजन कांटा, स्मार्टफोन एवं यूपीआई साउंडबॉक्स",
+                "सुरक्षित उत्पाद भंडारण एवं आकर्षक डिस्प्ले रैक",
+            ]
+            return acts, eqs
+        elif lang == "gu":
+            acts = [
+                f"{loc_cat_name} માટે સ્થાનિક જથ્થાબંધ ખરીદી અને સ્ટોક મેનેજમેન્ટ",
+                f"{town} ના ગ્રાહકો માટે ગુણવત્તાયુક્ત ઉત્પાદન અને વેચાણ સેવા",
+                "ડિજિટલ બિલિંગ, ઓનલાઇન UPI પેમેન્ટ અને ગ્રાહક સેવા વ્યવસ્થાપન",
+            ]
+            eqs = [
+                f"{loc_cat_name} કાર્ય માટે જરૂરી પ્રાથમિક સાધનો અને મશીનરી",
+                "ડિજિટલ ઇલેક્ટ્રોનિક વજન કાંટો, સ્માર્ટફોન અને UPI સાઉન્ડબોક્સ",
+                "સુરક્ષિત સંગ્રહ અને આકર્ષક ડિસ્પ્લે રેક",
+            ]
+            return acts, eqs
+        else:
+            return (
+                cat.get("primary_activities", [
+                    "Local procurement and inventory management",
+                    "Customer fulfillment and sales execution",
+                    "Quality assurance and after-sales service",
+                ]),
+                cat.get("key_equipment", [
+                    "Primary operational tools and machinery",
+                    "Electronic weighing scale and POS terminal",
+                    "Storage and display fixtures",
+                ]),
+            )
 
     @classmethod
     def resolve_category_meta(cls, raw_category: str) -> Dict[str, Any]:
@@ -499,7 +785,7 @@ class LocalIntelligenceService:
             strengths = [
                 f"{town} के स्थानीय समुदाय एवं परिवारों के साथ सीधा विश्वास-आधारित संबंध",
                 f"{district} के शहरी व्यावसायिक आउटलेट्स की तुलना में कम परिचालन एवं किराया खर्च",
-                f"विशिष्ट उत्पादों एवं सेवाओं ({', '.join(cat.get('subcategories', [])[:2])}) में त्वरित आपूर्ति",
+                f"विशिष्ट {loc_cat_name} उत्पादों एवं सेवाओं में त्वरित आपूर्ति",
             ]
             if capital >= min_capex * 1.5:
                 strengths.append(f"₹{capital:,.0f} का मजबूत प्रारंभिक पूंजी आवंटन जो परिचालन में सुरक्षा प्रदान करता है")
@@ -531,7 +817,7 @@ class LocalIntelligenceService:
             strengths = [
                 f"{town} ના સ્થાનિક સમાજ અને પરિવારો સાથે સીધો વિશ્વાસપૂર્ણ સંબંધ",
                 f"{district} ના મોટા શહેરી સ્ટોર્સ કરતાં ઓછો ઓવરહેડ અને ભાડા ખર્ચ",
-                f"વિશિષ્ટ કાર્યક્ષેત્રો ({', '.join(cat.get('subcategories', [])[:2])}) માં ઝડપી અને વિશ્વસનીય સેવા",
+                f"વિશિષ્ટ {loc_cat_name} ઉત્પાદનો અને સેવાઓમાં ઝડપી તથા વિશ્વસનીય કામગીરી",
             ]
             if capital >= min_capex * 1.5:
                 strengths.append(f"₹{capital:,.0f} ની પ્રારંભિક મૂડી જે વ્યવસાયને આર્થિક ટેકો પૂરો પાડે છે")
@@ -637,18 +923,14 @@ class LocalIntelligenceService:
                     ),
                 )
             )
-            # Risk 2: Operational
-            risk_op_title = cat_primary_risks[0] if cat_primary_risks else f"{loc_cat_name} कच्चे माल की आपूर्ति में व्यवधान"
-            risk_op_mit = cat_mitigations[0] if cat_mitigations else (
-                f"{town} के 45 किमी के दायरे में कम से कम 2 वैकल्पिक थोक आपूर्तिकर्ताओं के साथ टाई-अप रखें "
-                f"ताकि मौसमी मांग में भी आपूर्ति बाधित न हो।"
-            )
+            # Risk 2: Operational (category-aware)
+            op_title, op_mit = cls.get_localized_operational_risk(raw_cat_name, loc_cat_name, town, "hi")
             risks.append(
                 RiskItem(
-                    risk_title=risk_op_title,
+                    risk_title=op_title,
                     severity="Medium",
                     category="Operational",
-                    mitigation_strategy=risk_op_mit,
+                    mitigation_strategy=op_mit,
                 )
             )
             # Risk 3: Market
@@ -663,18 +945,16 @@ class LocalIntelligenceService:
                     ),
                 )
             )
-            # Risk 4: Technical
-            if len(cat_primary_risks) > 1:
-                risks.append(
-                    RiskItem(
-                        risk_title=cat_primary_risks[1],
-                        severity="Medium",
-                        category="Technical",
-                        mitigation_strategy=cat_mitigations[1] if len(cat_mitigations) > 1 else (
-                            "दैनिक निवारक रखरखाव चेकलिस्ट अपनाएं और सख्त गुणवत्ता मानकों का पालन करें।"
-                        ),
-                    )
+            # Risk 4: Technical (category-aware)
+            tech_title, tech_mit = cls.get_localized_technical_risk(raw_cat_name, loc_cat_name, town, "hi")
+            risks.append(
+                RiskItem(
+                    risk_title=tech_title,
+                    severity="Medium",
+                    category="Technical",
+                    mitigation_strategy=tech_mit,
                 )
+            )
 
         elif lang == "gu":
             # Risk 1: Financial
@@ -689,18 +969,14 @@ class LocalIntelligenceService:
                     ),
                 )
             )
-            # Risk 2: Operational
-            risk_op_title = cat_primary_risks[0] if cat_primary_risks else f"{loc_cat_name} કાચા માલની સપ્લાયમાં વિક્ષેપ"
-            risk_op_mit = cat_mitigations[0] if cat_mitigations else (
-                f"{town} થી 45 કિમી ત્રિજ્યામાં ઓછામાં ઓછા 2 વૈકલ્પિક જથ્થાબંધ સપ્લાયર્સ સાથે જોડાણ રાખો "
-                f"જેથી મોસમી માંગમાં પણ માલ અટક્યા વગર મળી રહે."
-            )
+            # Risk 2: Operational (category-aware)
+            op_title, op_mit = cls.get_localized_operational_risk(raw_cat_name, loc_cat_name, town, "gu")
             risks.append(
                 RiskItem(
-                    risk_title=risk_op_title,
+                    risk_title=op_title,
                     severity="Medium",
                     category="Operational",
-                    mitigation_strategy=risk_op_mit,
+                    mitigation_strategy=op_mit,
                 )
             )
             # Risk 3: Market
@@ -715,18 +991,16 @@ class LocalIntelligenceService:
                     ),
                 )
             )
-            # Risk 4: Technical
-            if len(cat_primary_risks) > 1:
-                risks.append(
-                    RiskItem(
-                        risk_title=cat_primary_risks[1],
-                        severity="Medium",
-                        category="Technical",
-                        mitigation_strategy=cat_mitigations[1] if len(cat_mitigations) > 1 else (
-                            "રોજિંદા સાધન નિરીક્ષણ અને સચોટ ગુણવત્તા નિયંત્રણના ધોરણો અમલમાં મૂકો."
-                        ),
-                    )
+            # Risk 4: Technical (category-aware)
+            tech_title, tech_mit = cls.get_localized_technical_risk(raw_cat_name, loc_cat_name, town, "gu")
+            risks.append(
+                RiskItem(
+                    risk_title=tech_title,
+                    severity="Medium",
+                    category="Technical",
+                    mitigation_strategy=tech_mit,
                 )
+            )
 
         else:
             # Default English
@@ -801,11 +1075,16 @@ class LocalIntelligenceService:
         min_capex = cat.get("typical_capex_min", 50000.0)
 
         # Dynamic category-specific pricing metrics
-        benchmark = cat_pricing.get("benchmark_product", f"Standard {raw_cat_name} Unit Product / Service Package")
-        fallback_unit_cost = f"₹{int(min_capex * 0.005):,} - ₹{int(min_capex * 0.015):,} estimated unit cost"
-        fallback_retail = f"₹{int(min_capex * 0.010):,} - ₹{int(min_capex * 0.025):,} retail benchmark"
-        unit_cost = cat_pricing.get("unit_cost", fallback_unit_cost)
-        retail_price = cat_pricing.get("retail_price", fallback_retail)
+        if lang in ["hi", "gu"]:
+            benchmark, unit_cost, retail_price = cls.get_localized_pricing_metrics(
+                raw_cat_name, loc_cat_name, min_capex, cat_pricing, lang
+            )
+        else:
+            benchmark = cat_pricing.get("benchmark_product", f"Standard {raw_cat_name} Unit Product / Service Package")
+            fallback_unit_cost = f"₹{int(min_capex * 0.005):,} - ₹{int(min_capex * 0.015):,} estimated unit cost"
+            fallback_retail = f"₹{int(min_capex * 0.010):,} - ₹{int(min_capex * 0.025):,} retail benchmark"
+            unit_cost = cat_pricing.get("unit_cost", fallback_unit_cost)
+            retail_price = cat_pricing.get("retail_price", fallback_retail)
         target_margin = cat_pricing.get("target_gross_margin_percent", 40.0)
 
         if lang == "hi":
@@ -872,6 +1151,7 @@ class LocalIntelligenceService:
         language: str = "en",
     ) -> List[CompetitorItem]:
         lang = (language or "en").lower().strip()
+        loc_cat_name = cls.get_localized_category_name(cat.get("name") or cat.get("display_name") or "General", lang)
         town = loc_info["town"]
         district = loc_info["district"]
         search_terms = cat.get("competitor_search_terms", ["local merchants", "traditional dealers"])
@@ -888,7 +1168,7 @@ class LocalIntelligenceService:
         if lang == "hi":
             competitors = [
                 CompetitorItem(
-                    name=f"स्थानीय {term1} ({town} क्षेत्र)",
+                    name=f"स्थानीय {loc_cat_name} विक्रेता ({town} क्षेत्र)",
                     type_of_business="पारंपरिक स्थानीय विक्रेता",
                     proximity=f"{town} मुख्य बाज़ार के 2 किमी के भीतर",
                     strengths="दीर्घकालिक स्थानीय संबंध एवं स्थापित उपस्थिति",
@@ -898,7 +1178,7 @@ class LocalIntelligenceService:
                     location_status=loc_status_hi,
                 ),
                 CompetitorItem(
-                    name=f"{district} क्षेत्रीय {term2} (क्लस्टर)",
+                    name=f"{district} क्षेत्रीय {loc_cat_name} डीलर (क्लस्टर)",
                     type_of_business="कस्बाई संगठित वितरक / डीलर",
                     proximity=f"{district} व्यापारिक केंद्र में 12-18 किमी दूर",
                     strengths="व्यापक स्टॉक वैरायटी एवं ब्रांड पहचान",
@@ -908,7 +1188,7 @@ class LocalIntelligenceService:
                     location_status=loc_status_hi,
                 ),
                 CompetitorItem(
-                    name=f"साप्ताहिक {term3} ({town} हाट)",
+                    name=f"साप्ताहिक {loc_cat_name} हाट विक्रेता ({town} हाट)",
                     type_of_business="अनौपचारिक साप्ताहिक विक्रेता",
                     proximity=f"{town} के साप्ताहिक हाट एवं ग्रामीण मेले",
                     strengths="कम लागत और आक्रामक अल्पकालिक छूट",
@@ -921,7 +1201,7 @@ class LocalIntelligenceService:
         elif lang == "gu":
             competitors = [
                 CompetitorItem(
-                    name=f"સ્થાનિક {term1} ({town} વિસ્તાર)",
+                    name=f"સ્થાનિક {loc_cat_name} વેપારી ({town} વિસ્તાર)",
                     type_of_business="પરંપરાગત સ્થાનિક વેપારી",
                     proximity=f"{town} મુખ્ય બજારથી 2 કિમી અંદર",
                     strengths="સ્થાનિક ગ્રાહકો સાથે જૂનો વિશ્વાસ અને સંબંધ",
@@ -931,7 +1211,7 @@ class LocalIntelligenceService:
                     location_status=loc_status_gu,
                 ),
                 CompetitorItem(
-                    name=f"{district} પ્રાદેશિક {term2} (ક્લસ્ટર)",
+                    name=f"{district} પ્રાદેશિક {loc_cat_name} ડીલર (ક્લસ્ટર)",
                     type_of_business="મોટા શહેરના ડીલર / ડિસ્ટ્રિબ્યુટર",
                     proximity=f"{district} બજારમાં 12-18 કિમી દૂર",
                     strengths="મોટો સ્ટોક અને પ્રખ્યાત બ્રાન્ડ્સ",
@@ -941,7 +1221,7 @@ class LocalIntelligenceService:
                     location_status=loc_status_gu,
                 ),
                 CompetitorItem(
-                    name=f"સાપ્તાહિક {term3} ({town} હાટ)",
+                    name=f"સાપ્તાહિક {loc_cat_name} હાટ વેપારી ({town} હાટ)",
                     type_of_business="સાપ્તાહિક હાટના ફેરિયા",
                     proximity=f"{town} આસપાસના ગ્રામીણ મેળાઓ",
                     strengths="ઓછો ખર્ચ અને સસ્તા ભાવો",
@@ -1119,11 +1399,7 @@ class LocalIntelligenceService:
                 f"Participate in district {district} MSME trade exhibitions and rural haats to expand customer reach.",
             ]
 
-        licenses = cat.get("mandatory_licenses", [
-            "Udyam MSME Registration Certificate",
-            "Local Gram Panchayat / Municipal Trade Permit",
-            "Shop & Establishment Act Registration",
-        ])
+        licenses = cls.get_localized_licenses(raw_cat_name, lang)
 
         return BusinessRecommendation(
             feasibility_score=score,
@@ -1173,20 +1449,14 @@ class LocalIntelligenceService:
         else:
             desc = f"Enterprise profile for {raw_cat_name} in {loc_info['clean_address']}, operating in the {cat.get('sector', 'Rural Enterprise')} sector."
 
+        acts, eqs = cls.get_localized_profile_details(cat, loc_cat_name, loc_info["town"], lang)
+
         return BusinessProfile(
             category_id=cat["id"],
             category_name=raw_cat_name if lang == "en" else loc_cat_name,
             description=desc,
-            primary_activities=cat.get("primary_activities", [
-                "Local procurement and inventory management",
-                "Customer fulfillment and sales execution",
-                "Quality assurance and after-sales service",
-            ]),
-            key_equipment=cat.get("key_equipment", [
-                "Primary operational tools and machinery",
-                "Electronic weighing scale and POS terminal",
-                "Storage and display fixtures",
-            ]),
+            primary_activities=acts,
+            key_equipment=eqs,
             typical_capex_range=f"₹{min_capex:,.0f} - ₹{max_capex:,.0f}",
             capital_adequacy=adequacy,
             target_location=loc_info["clean_address"],
