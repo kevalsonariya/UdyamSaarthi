@@ -43,11 +43,13 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
     wc = calculate_working_capital_plan(fin.project_cost, emi.monthly_emi)
 
     # 2. Dynamic business analysis
+    req_lang = getattr(request, "language", "en") or "en"
     adv = analyze_business_profile(
         location=clean_loc,
         business_category=clean_cat,
         available_capital=clean_cap,
         location_detail=request.location_detail,
+        language=req_lang,
     )
 
     # 3. Phase B4: AI Advisory / Explanation Layer (Strictly explains, never recalculates financial metrics)

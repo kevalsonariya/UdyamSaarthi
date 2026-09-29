@@ -155,9 +155,10 @@ def analyze_business_profile(
     available_capital: float,
     data_provider: Optional[BaseDataProvider] = None,
     location_detail: Optional[Any] = None,
+    language: str = "en",
 ) -> Dict[str, Any]:
     """
-    Executes dynamic business analysis based on location, business_category, and available_capital.
+    Executes dynamic business analysis based on location, business_category, available_capital, and language.
     Produces:
     - business
     - market
@@ -199,4 +200,6 @@ def analyze_business_profile(
         business_category=resolved_cat_name,
         available_capital=cap,
         location_detail=location_detail,
+        language=language,
     )
+

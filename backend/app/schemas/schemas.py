@@ -158,6 +158,8 @@ class MarketReachAnalysis(BaseModel):
     peak_demand_seasons: List[str]
     market_reach_summary: str
     is_demo_data: bool = True
+    is_estimate: bool = True
+    data_source: str = "Prototype heuristic"
 
 class OpportunityItem(BaseModel):
     title: str
@@ -193,6 +195,9 @@ class CompetitorItem(BaseModel):
     proximity: str
     strengths: str
     differentiation_strategy: str
+    is_demo_data: bool = True
+    data_source: str = "Indicative category-location profile"
+    location_status: str = "Location unavailable — live mapping planned for Phase B9"
 
 class PricingGuidance(BaseModel):
     benchmark_product_or_service: str
@@ -201,6 +206,9 @@ class PricingGuidance(BaseModel):
     target_gross_margin_percent: float
     pricing_strategy_notes: str
     is_demo_data: bool = True
+    is_estimate: bool = True
+    data_source: str = "Prototype category benchmark"
+
 
 class BusinessRecommendation(BaseModel):
     feasibility_score: int

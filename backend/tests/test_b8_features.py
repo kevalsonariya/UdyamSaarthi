@@ -267,3 +267,276 @@ def test_b8_1_language_synchronization():
     assert data["input"]["language"] == "hi"
     assert data["request_id"] == req_id
 
+
+# ==============================================================================
+# 8. MANDATORY 7 B8 MATRIX TESTS (REQUIREMENT 18)
+# ==============================================================================
+
+@pytest.mark.parametrize("location,category,capital", [
+    ("Anand, Gujarat", "Textile & Clothing", 100000.0),    # TEST 1
+    ("Anand, Gujarat", "Dairy", 100000.0),                 # TEST 2
+    ("Anand, Gujarat", "Poultry", 75000.0),                # TEST 3
+    ("Anand, Gujarat", "Grocery / Kirana", 50000.0),       # TEST 4
+    ("Anand, Gujarat", "Agriculture", 60000.0),            # TEST 5
+    ("Mehsana, Gujarat", "Dairy", 100000.0),               # TEST 6
+    ("Ahmedabad, Gujarat", "Textile & Clothing", 150000.0),# TEST 7
+])
+def test_b8_mandatory_matrix_endpoints(location, category, capital):
+    """
+    Verifies that all 7 required scenarios execute successfully and generate
+    category-specific, location-aware, and deterministic financial outputs.
+    """
+    resp = client.post("/business/analyze", json={
+        "location": location,
+        "business_category": category,
+        "available_capital": capital,
+        "language": "en",
+    })
+    assert resp.status_code == 200
+    res = resp.json()["data"]
+
+    # 1. Financial values must strictly adhere to deterministic rules
+    expected_project_cost = capital / 0.10
+    expected_loan = expected_project_cost * 0.90
+    assert res["financial"]["project_cost"] == expected_project_cost
+    assert res["financial"]["max_loan_amount"] == expected_loan
+    assert res["scheme"]["eligible_funding"] == expected_loan
+
+    # 2. Location-aware output
+    town = location.split(",")[0].strip()
+    assert town in res["market"]["market_reach_summary"] or town in res["recommendation"]["summary"]
+
+    # 3. Category-specific opportunities, SWOT, risks, pricing
+    opps = res["opportunities"]
+    assert len(opps["items"]) >= 3
+    assert len(res["swot"]["strengths"]) >= 3
+    assert len(res["risks"]) >= 3
+    assert res["pricing"]["suggested_retail_price"] != ""
+    assert res["pricing"]["benchmark_product_or_service"] != ""
+
+    # 4. Recommendation and AI Explanation exist
+    assert res["recommendation"]["feasibility_score"] >= 50
+    assert res["recommendation"]["summary"] != ""
+    assert res["ai_explanation"]["summary"] != ""
+    assert res["ai_explanation"]["market_insight"] != ""
+
+
+# ==============================================================================
+# 9. CROSS-CATEGORY DIFFERENTIATION (REQUIREMENT 18)
+# ==============================================================================
+
+def test_b8_cross_category_distinctness():
+    """Dairy, Poultry, and Grocery must produce materially distinct business intelligence."""
+    r_dairy = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat", "business_category": "Dairy", "available_capital": 80000.0,
+    }).json()["data"]
+
+    r_poultry = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat", "business_category": "Poultry", "available_capital": 80000.0,
+    }).json()["data"]
+
+    r_grocery = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat", "business_category": "Grocery / Kirana", "available_capital": 80000.0,
+    }).json()["data"]
+
+    # Pricing benchmark distinctness
+    assert r_dairy["pricing"]["benchmark_product_or_service"] != r_poultry["pricing"]["benchmark_product_or_service"]
+    assert r_poultry["pricing"]["benchmark_product_or_service"] != r_grocery["pricing"]["benchmark_product_or_service"]
+
+    # Retail price distinctness
+    assert r_dairy["pricing"]["suggested_retail_price"] != r_poultry["pricing"]["suggested_retail_price"]
+    assert r_poultry["pricing"]["suggested_retail_price"] != r_grocery["pricing"]["suggested_retail_price"]
+
+    # Equipment distinctness
+    assert r_dairy["business"]["key_equipment"] != r_poultry["business"]["key_equipment"]
+    assert r_poultry["business"]["key_equipment"] != r_grocery["business"]["key_equipment"]
+
+    # Opportunities distinctness
+    assert r_dairy["opportunities"]["items"][0]["title"] != r_poultry["opportunities"]["items"][0]["title"]
+
+
+
+# ==============================================================================
+# 10. LOCATION-AWARE DIFFERENTIATION (REQUIREMENT 25)
+# ==============================================================================
+
+def test_b8_location_differentiation_anand_vs_mehsana():
+    """Anand + Dairy vs Mehsana + Dairy must produce distinct territory narratives and demographics."""
+    r_anand = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat", "business_category": "Dairy", "available_capital": 100000.0,
+    }).json()["data"]
+
+    r_mehsana = client.post("/business/analyze", json={
+        "location": "Mehsana, Gujarat", "business_category": "Dairy", "available_capital": 100000.0,
+    }).json()["data"]
+
+    # Market narrative reflects specific town
+    assert "Anand" in r_anand["market"]["market_reach_summary"]
+    assert "Mehsana" in r_mehsana["market"]["market_reach_summary"]
+    assert r_anand["market"]["market_reach_summary"] != r_mehsana["market"]["market_reach_summary"]
+
+    # Competitor mapping adapts
+    assert any("Anand" in c["name"] or "Anand" in c["proximity"] for c in r_anand["competitors"])
+    assert any("Mehsana" in c["name"] or "Mehsana" in c["proximity"] for c in r_mehsana["competitors"])
+
+    # Demographics differ due to district economic profiles
+    assert r_anand["market"]["estimated_target_population"] != r_mehsana["market"]["estimated_target_population"]
+
+
+# ==============================================================================
+# 11. MULTILINGUAL CONTENT GENERATION (REQUIREMENT 26)
+# ==============================================================================
+
+def test_b8_multilingual_intelligence_generation():
+    """
+    Verifies that English, Hindi, and Gujarati requests generate localized
+    market, opportunities, SWOT, risks, recommendation, and AI advisory text,
+    while leaving deterministic financial numbers strictly identical.
+    """
+    params = {"location": "Anand, Gujarat", "business_category": "Poultry", "available_capital": 75000.0}
+
+    r_en = client.post("/business/analyze", json={**params, "language": "en"}).json()["data"]
+    r_hi = client.post("/business/analyze", json={**params, "language": "hi"}).json()["data"]
+    r_gu = client.post("/business/analyze", json={**params, "language": "gu"}).json()["data"]
+
+    # 1. Deterministic financial metrics are strictly invariant across languages
+    for res in [r_en, r_hi, r_gu]:
+        assert res["financial"]["project_cost"] == 750000.0
+        assert res["financial"]["max_loan_amount"] == 675000.0
+        assert res["scheme"]["interest_rate_percent"] == 8.0
+
+    # 2. Market Reach is localized
+    assert "Within the" in r_en["market"]["market_reach_summary"]
+    assert "वाणिज्यिक क्षेत्र" in r_hi["market"]["market_reach_summary"]
+    assert "વ્યાપારી ક્ષેત્ર" in r_gu["market"]["market_reach_summary"]
+
+    # 3. Opportunities are localized
+    assert "Rapidly growing" in r_en["opportunities"]["items"][0]["description"]
+    assert "बढ़ती मांग" in r_hi["opportunities"]["items"][0]["description"]
+    assert "વધતી માંગ" in r_gu["opportunities"]["items"][0]["description"]
+
+
+    # 4. SWOT is localized
+    assert "✓" not in r_en["swot"]["strengths"][0]  # raw text
+    assert "સ્થાનિક" in r_gu["swot"]["strengths"][0] or "પરિવારો" in r_gu["swot"]["strengths"][0]
+    assert "स्थानीय" in r_hi["swot"]["strengths"][0] or "परिवारों" in r_hi["swot"]["strengths"][0]
+
+    # 5. Risks are localized
+    assert "Seasonal" in r_en["risks"][0]["risk_title"]
+    assert "मौसमी" in r_hi["risks"][0]["risk_title"]
+    assert "મોસમી" in r_gu["risks"][0]["risk_title"]
+
+    # 6. Recommendation is localized
+    assert "Feasible" in r_en["recommendation"]["feasibility_rating"]
+    assert "व्यवहार्य" in r_hi["recommendation"]["feasibility_rating"]
+    assert "અનુકૂળ" in r_gu["recommendation"]["feasibility_rating"]
+
+    # 7. AI Explanation is localized
+    assert r_en["ai_explanation"]["summary"] != r_hi["ai_explanation"]["summary"]
+    assert r_hi["ai_explanation"]["summary"] != r_gu["ai_explanation"]["summary"]
+    assert "उद्यम" in r_hi["ai_explanation"]["summary"] or "ऋण" in r_hi["ai_explanation"]["summary"]
+    assert "સાહસ" in r_gu["ai_explanation"]["summary"] or "લોન" in r_gu["ai_explanation"]["summary"]
+
+
+# ==============================================================================
+# 12. PHASE B8.2 DEMO DATA TRANSPARENCY & HARDENING
+# ==============================================================================
+
+def test_b8_2_competitor_transparency_and_metadata():
+    """Verify competitor profiles are clearly labeled as demo data with B9 disclaimer and generic names."""
+    resp = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat",
+        "business_category": "Dairy",
+        "available_capital": 100000.0,
+        "language": "en",
+    })
+    assert resp.status_code == 200
+    data = resp.json()["data"]
+
+    competitors = data["competitors"]
+    assert len(competitors) >= 3
+
+    for comp in competitors:
+        # A. Competitor profiles have is_demo_data = true
+        assert comp.get("is_demo_data") is True
+        # Transparent data source
+        assert comp.get("data_source") == "Indicative category-location profile"
+        # No fake coordinates or fake map links; clear B9 notice
+        assert "planned for Phase B9" in comp.get("location_status", "")
+        # No fabricated real-world brand names such as "Anand Amul"
+        assert "amul" not in comp.get("name", "").lower()
+
+
+def test_b8_2_market_catchment_and_pricing_transparency():
+    """Verify market catchment and pricing have is_estimate=True and indicative data sources."""
+    resp = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat",
+        "business_category": "Poultry",
+        "available_capital": 75000.0,
+        "language": "en",
+    })
+    assert resp.status_code == 200
+    data = resp.json()["data"]
+
+    market = data["market"]
+    assert market.get("is_estimate") is True
+    assert market.get("data_source") == "Prototype heuristic"
+
+    pricing = data["pricing"]
+    assert pricing.get("is_estimate") is True
+    assert pricing.get("data_source") == "Prototype category benchmark"
+
+    # Financial engine invariants remain untouched
+    assert data["financial"]["project_cost"] == 750000.0
+    assert data["financial"]["max_loan_amount"] == 675000.0
+
+
+def test_b8_2_dairy_to_poultry_strict_regression():
+    """
+    Search 1: Anand, Dairy, ₹1,00,000
+    Search 2: Anand, Poultry, ₹75,000
+    Verify Search 2 contains Poultry intelligence, ₹7,50,000 cost, ₹6,75,000 loan, and 0 stale Dairy references.
+    """
+    req_1_id = "b82-search1-dairy"
+    resp_1 = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat",
+        "business_category": "Dairy",
+        "available_capital": 100000.0,
+        "language": "en",
+        "request_id": req_1_id,
+    })
+    assert resp_1.status_code == 200
+    data_1 = resp_1.json()["data"]
+    assert data_1["financial"]["project_cost"] == 1000000.0
+    assert data_1["financial"]["max_loan_amount"] == 900000.0
+    assert "dairy" in data_1["business"]["category_name"].lower()
+
+    req_2_id = "b82-search2-poultry"
+    resp_2 = client.post("/business/analyze", json={
+        "location": "Anand, Gujarat",
+        "business_category": "Poultry",
+        "available_capital": 75000.0,
+        "language": "en",
+        "request_id": req_2_id,
+    })
+    assert resp_2.status_code == 200
+    data_2 = resp_2.json()["data"]
+
+    # Verify Search 2 financials
+    assert data_2["financial"]["project_cost"] == 750000.0
+    assert data_2["financial"]["max_loan_amount"] == 675000.0
+    assert data_2["business"]["category_name"] == "Poultry"
+
+    # AI Advisory must contain 0 stale Dairy references
+    ai_summary = data_2["ai_explanation"]["summary"].lower()
+    ai_market = data_2["ai_explanation"]["market_insight"].lower()
+    assert "poultry" in ai_summary
+    assert "dairy" not in ai_summary
+    assert "dairy" not in ai_market
+
+    # Opportunities must contain 0 stale Dairy references
+    opp_titles = [item["title"].lower() for item in data_2["opportunities"]["items"]]
+    assert not any("milk" in t or "dairy" in t for t in opp_titles)
+
+
+

@@ -73,7 +73,7 @@ CATEGORIES_REGISTRY: List[Dict[str, Any]] = [
         "typical_capex_min": 75000.0,
         "typical_capex_max": 2000000.0,
         "subcategories": ["Milk Collection Centre", "Livestock Rearing", "Paneer & Curd Processing", "Indigenous Ghee"],
-        "competitor_search_terms": ["Amul village society", "private dairy aggregators", "local dudh mandali", "sweet shop contractors"],
+        "competitor_search_terms": ["village milk cooperative society", "private dairy aggregators", "local dudh mandali", "sweet shop contractors"],
         "primary_activities": ["Hygienic morning/evening milk collection", "Fat and SNF digital testing", "Chilled bulk storage", "Local door-to-door distribution"],
         "key_equipment": ["Bulk milk chiller (300-500L)", "Digital fat analyzer", "Stainless steel 40L cans", "Cream separator"],
         "mandatory_licenses": ["FSSAI Basic Food Registration", "Panchayat Livestock Clearance", "Udyam MSME Certificate"],

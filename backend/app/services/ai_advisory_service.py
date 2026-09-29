@@ -81,15 +81,16 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
 
         if lang == "hi":
             summary = (
-                f"{location} में ₹{capital:,.0f} के व्यक्तिगत मार्जिन के साथ {category} व्यवसाय शुरू करने पर "
-                f"कुल ₹{project_cost:,.0f} का उद्यम पैमाना संभव होता है। सरकारी {scheme_name} के तहत, "
-                f"आप ₹{loan_amount:,.0f} के रियायती ऋण के पात्र हैं, जो आपके उद्यम को मजबूत नींव प्रदान करता है।"
+                f"प्रोटोटाइप के संकेतात्मक स्थानीय प्रोफ़ाइल के अनुसार, {location} में ₹{capital:,.0f} के व्यक्तिगत मार्जिन के साथ "
+                f"{category} व्यवसाय शुरू करने पर ₹{project_cost:,.0f} का अनुमानित परियोजना पैमाना बनता है। "
+                f"सरकारी {scheme_name} के तहत, आप ₹{loan_amount:,.0f} तक के सांकेतिक ऋण के पात्र हो सकते हैं "
+                f"(औपचारिक बैंक मूल्यांकन के अधीन)।"
             )
 
             market_insight = (
-                f"{location} के आसपास आपके {catchment_km} किमी के स्थानीय बाज़ार क्षेत्र में, ग्राहक वर्तमान में "
-                f"{category} उत्पादों के लिए दूर के कस्बों में जाते हैं। अपना केंद्र स्थानीय रूप से खोलने पर "
-                f"दैनिक मांग और साप्ताहिक बाज़ार की बिक्री कम किराए पर प्राप्त होगी।"
+                f"{location} के आसपास {catchment_km} किमी के संकेतात्मक कैचमेंट अनुमान के आधार पर, "
+                f"स्थानीय स्तर पर केंद्र खोलने से दैनिक मांग और साप्ताहिक बाज़ार की बिक्री प्राप्त करने का अवसर है। "
+                f"नोट: सभी बाज़ार आंकड़े प्रोटोटाइप अनुमान हैं।"
             )
 
             opportunity_explanation = (
@@ -103,16 +104,15 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
             )
 
             financial_explanation = (
-                f"आपकी ₹{capital:,.0f} की व्यक्तिगत पूंजी अनिवार्य 10% प्रमोटर अंशदान के रूप में कार्य करती है। "
-                f"सरकारी योजना शेष 90% (₹{loan_amount:,.0f}) का वित्तपोषण करती है। यह संरचना आपके व्यक्तिगत ऋण को "
-                f"संतुलित रखती है और मशीनरी व इन्वेंटरी के लिए पर्याप्त कार्यशील पूंजी सुनिश्चित करती है।"
+                f"सांकेतिक नियोजन गणना: आपकी ₹{capital:,.0f} की व्यक्तिगत पूंजी अनिवार्य 10% प्रमोटर अंशदान के रूप में कार्य करती है। "
+                f"सरकारी योजना शेष 90% (₹{loan_amount:,.0f}) का वित्तपोषण मॉडल करती है। "
+                f"अंतिम स्वीकृति और शर्तें बैंक के औपचारिक मूल्यांकन पर निर्भर करती हैं।"
             )
 
             scheme_explanation = (
-                f"आपको {interest_rate}% की रियायती वार्षिक दर पर {scheme_name} आवंटित की गई है। "
-                f"महत्वपूर्ण रूप से, यह योजना आपको {moratorium_months} महीने की छूट अवधि (मोराटोरियम) देती है जिसमें कोई मूलधन "
-                f"नहीं लिया जाता है। आपकी नियमित ईएमआई ₹{monthly_emi:,.0f} केवल महीने {moratorium_months + 1} से शुरू होती है, "
-                f"जिससे आपको पूर्ण किस्त चुकाने से पहले स्थिर बिक्री प्राप्त करने का समय मिलता है।"
+                f"संकेतात्मक मानकों के अनुसार, {scheme_name} में {interest_rate}% की रियायती वार्षिक दर और {moratorium_months} महीने "
+                f"की छूट अवधि (मोराटोरियम) शामिल है। सांकेतिक नियमित ईएमआई ₹{monthly_emi:,.0f} केवल महीने {moratorium_months + 1} "
+                f"से शुरू होने का अनुमान है।"
             )
 
             recommended_actions = [
@@ -130,15 +130,16 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
             ]
         elif lang == "gu":
             summary = (
-                f"{location} માં ₹{capital:,.0f} ના અંગત માર્જિન સાથે {category} વ્યવસાય શરૂ કરવાથી "
-                f"કુલ ₹{project_cost:,.0f} નું સાહસ સ્કેલ શક્ય બને છે. સરકારી {scheme_name} હેઠળ, "
-                f"તમે ₹{loan_amount:,.0f} ની સબસિડીયુક્ત લોન માટે પાત્ર ઠરો છો, જે તમારા ઉદ્યોગને મજબૂત પાયો આપે છે."
+                f"પ્રોટોટાઇપના સૂચક સ્થાનિક પ્રોફાઇલ અનુસાર, {location} માં ₹{capital:,.0f} ના અંગત માર્જિન સાથે "
+                f"{category} વ્યવસાય શરૂ કરવાથી ₹{project_cost:,.0f} નું અંદાજિત પ્રોજેક્ટ સ્કેલ શક્ય બને છે. "
+                f"સરકારી {scheme_name} ના માપદંડો મુજબ, તમે ₹{loan_amount:,.0f} સુધીની સૂચક લોન માટે પાત્ર બની શકો છો "
+                f"(બેંક ઔપચારિક મૂલ્યાંકનને આધીન)."
             )
 
             market_insight = (
-                f"{location} ની આસપાસ તમારા {catchment_km} કિમીના સ્થાનિક બજાર વિસ્તારમાં, ગ્રાહકો હાલમાં "
-                f"{category} સામાન માટે દૂરના શહેરોમાં જાય છે. તમારું કેન્દ્ર સ્થાનિક સ્તરે શરૂ કરવાથી "
-                f"ઓછા ભાડા ખર્ચે દૈનિક માંગ અને સાપ્તાહિક હાટનો વેપાર મળી શકશે."
+                f"{location} ની આસપાસ {catchment_km} કિમીના સૂચક બજાર વિસ્તાર અંદાજ મુજબ, "
+                f"સ્થાનિક સ્તરે કેન્દ્ર શરૂ કરવાથી ઓછા ભાડા ખર્ચે દૈનિક માંગ અને હાટનો વેપાર મેળવવાની તક છે. "
+                f"નોંધ: તમામ બજાર આંકડા પ્રોટોટાઇપ અંદાજ છે."
             )
 
             opportunity_explanation = (
@@ -152,16 +153,15 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
             )
 
             financial_explanation = (
-                f"તમારી ₹{capital:,.0f} ની અંગત મૂડી ફરજિયાત 10% પ્રમોટર હિસ્સા તરીકે કાર્ય કરે છે. "
-                f"સરકારી યોજના બાકીના 90% (₹{loan_amount:,.0f}) નું ધિરાણ પૂરું પાડે છે. આ માળખું તમારા અંગત દેવાને "
-                f"મર્યાદિત રાખે છે અને મશીનરી તેમજ સ્ટોક માટે પૂરતી કાર્યકારી મૂડી સુનિશ્ચિત કરે છે."
+                f"સૂચક આયોજન ગણતરી: તમારી ₹{capital:,.0f} ની અંગત મૂડી ફરજિયાત 10% પ્રમોટર હિસ્સા તરીકે કાર્ય કરે છે. "
+                f"સરકારી યોજના બાકીના 90% (₹{loan_amount:,.0f}) નું ધિરાણ મોડેલ કરે છે. "
+                f"આખરી મંજૂરી અને શરતો બેંકની ઔપચારિક ચકાસણી પર આધારિત રહેશે."
             )
 
             scheme_explanation = (
-                f"તમને {interest_rate}% ના વાર્ષિક રાહત દરે {scheme_name} ફાળવવામાં આવી છે. "
-                f"મહત્વપૂર્ણ રીતે, આ યોજના તમને {moratorium_months} મહિનાનો મુદલ રાહત ગાળો (મોરેટોરિયમ) આપે છે જેમાં કોઈ મુદલ હપ્તો "
-                f"વસૂલવામાં આવતો નથી. તમારી નિયમિત ઈએમઆઈ ₹{monthly_emi:,.0f} માત્ર {moratorium_months + 1} મા મહિનાથી શરૂ થશે, "
-                f"જેથી સંપૂર્ણ હપ્તા ચૂકવતા પહેલા સ્થિર વેચાણ સુધી પહોંચવાનો સમય મળે છે."
+                f"સૂચક બેંચમાર્ક અનુસાર, {scheme_name} હેઠળ {interest_rate}% વાર્ષિક દર અને {moratorium_months} મહિનાનો "
+                f"રાહત ગાળો (મોરેટોરિયમ) મોડેલ થયેલ છે. અંદાજિત નિયમિત ઈએમઆઈ ₹{monthly_emi:,.0f} માત્ર {moratorium_months + 1} "
+                f"મા મહિનાથી શરૂ થવાનું અનુમાન છે."
             )
 
             recommended_actions = [
@@ -179,15 +179,16 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
             ]
         else:
             summary = (
-                f"Starting a {category} business in {location} with your personal margin of ₹{capital:,.0f} "
-                f"enables a total setup budget of ₹{project_cost:,.0f}. Under the government's {scheme_name}, "
-                f"you qualify for ₹{loan_amount:,.0f} in low-interest financing, giving your enterprise strong foundation."
+                f"Based on the prototype's indicative local market profile, starting a {category} business in {location} "
+                f"with an indicative personal margin of ₹{capital:,.0f} enables a planned project scale of ₹{project_cost:,.0f}. "
+                f"Under the indicative benchmark parameters of {scheme_name}, you may qualify for up to ₹{loan_amount:,.0f} "
+                f"in structured financing (subject to formal bank appraisal)."
             )
 
             market_insight = (
-                f"Within your {catchment_km} km local market area surrounding {location}, customers currently travel to "
-                f"larger centers for reliable {category} products. Opening your center locally will capture routine daily demand "
-                f"and weekly mandi footfall with lower rental overhead."
+                f"Based on indicative catchment estimates within {catchment_km} km of {location}, opening your center locally "
+                f"offers an opportunity to capture routine daily demand and weekly mandi footfall with lower rental overhead. "
+                f"Note: All market and competitor figures are prototype heuristics."
             )
 
             opportunity_explanation = (
@@ -201,16 +202,15 @@ class DeterministicAdvisoryFallback(BaseAIProvider):
             )
 
             financial_explanation = (
-                f"Your personal equity of ₹{capital:,.0f} serves as the mandatory 10% promoter contribution. "
-                f"The government scheme funds the remaining 90% (₹{loan_amount:,.0f}). This structure keeps your personal debt "
-                f"proportional and ensures you have adequate working capital for machinery and stock."
+                f"Indicative planning calculation: Your personal equity of ₹{capital:,.0f} serves as the mandatory 10% promoter contribution. "
+                f"The benchmark scheme models the remaining 90% (₹{loan_amount:,.0f}) as loan financing. Final sanction and terms depend on "
+                f"formal lending appraisal."
             )
 
             scheme_explanation = (
-                f"You have been allocated the {scheme_name} at a subsidized annual rate of {interest_rate}%. "
-                f"Critically, this scheme grants you a {moratorium_months}-month grace period (moratorium) during which no loan principal "
-                f"is collected. Your regular EMI of ₹{monthly_emi:,.0f} begins only in Month {moratorium_months + 1}, allowing you to "
-                f"reach stable sales before paying full installments."
+                f"Under indicative benchmark parameters, the {scheme_name} models an interest rate of {interest_rate}% with an estimated "
+                f"{moratorium_months}-month grace period (moratorium). The indicative monthly EMI of ₹{monthly_emi:,.0f} begins in "
+                f"Month {moratorium_months + 1}, subject to bank sanction."
             )
 
             recommended_actions = [

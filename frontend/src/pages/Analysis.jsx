@@ -14,6 +14,7 @@ import {
   Sparkles,
   Info,
   MapPin,
+  MapPinOff,
   Store,
   Banknote,
   ShieldAlert,
@@ -280,20 +281,30 @@ export const Analysis = () => {
       <Card
         title={t('analysis.marketReachTitle')}
         subtitle={t('analysis.marketReachSubtitle')}
+        badge={
+          <Badge variant="warning" size="sm">
+            {t('analysis.indicativeEstimateBadge')}
+          </Badge>
+        }
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
           {/* Territory & Channels (2 cols) */}
           <div className="lg:col-span-2 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl">
-                <span className="text-[11px] font-bold text-emerald-800 uppercase block mb-1">
-                  {t('analysis.consumerReachLabel')}
-                </span>
+                <div className="flex items-center justify-between gap-1 mb-1">
+                  <span className="text-[11px] font-bold text-emerald-800 uppercase block">
+                    {t('analysis.consumerReachLabel')}
+                  </span>
+                  <Badge variant="warning" size="sm">
+                    {t('analysis.indicativeEstimateBadge')}
+                  </Badge>
+                </div>
                 <span className="text-xl font-extrabold text-emerald-950">
                   {market_reach?.estimated_consumer_reach}
                 </span>
                 <p className="text-[11px] text-emerald-700 mt-1">
-                  Total accessible rural population within reachable travel time.
+                  {t('analysis.indicativeCatchmentDesc')}
                 </p>
               </div>
 
@@ -533,6 +544,11 @@ export const Analysis = () => {
         <Card
           title={t('analysis.competitorsTitle')}
           subtitle={t('analysis.competitorsSubtitle')}
+          badge={
+            <Badge variant="warning" size="sm">
+              {t('analysis.demoCompetitorBadge')}
+            </Badge>
+          }
         >
           <div className="space-y-3 text-xs">
             {competitors?.map((comp, idx) => (
@@ -540,10 +556,10 @@ export const Analysis = () => {
                 key={idx}
                 className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2">
                   <span className="font-bold text-slate-900 text-sm">{comp.name}</span>
-                  <Badge variant="default" size="sm">
-                    {comp.pricing_tier}
+                  <Badge variant="warning" size="sm">
+                    {t('analysis.demoDataLabel')}
                   </Badge>
                 </div>
                 <div className="text-slate-500">
@@ -551,6 +567,10 @@ export const Analysis = () => {
                 </div>
                 <div className="pt-1 text-[11px] text-amber-900 font-medium">
                   <strong>{t('analysis.unmetGapLabel')} </strong> {comp.weakness}
+                </div>
+                <div className="pt-2 border-t border-slate-200/80 flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                  <MapPinOff className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>{comp.location_status || t('analysis.locationUnavailableB9')}</span>
                 </div>
               </div>
             ))}
@@ -561,17 +581,27 @@ export const Analysis = () => {
         <Card
           title={t('analysis.pricingTitle')}
           subtitle={t('analysis.pricingSubtitle')}
+          badge={
+            <Badge variant="warning" size="sm">
+              {t('analysis.indicativePricingBadge')}
+            </Badge>
+          }
         >
           <div className="space-y-4 text-xs">
             <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-500 font-semibold block uppercase text-[11px] mb-1">
-                {t('analysis.priceRangeLabel')}
-              </span>
+              <div className="flex items-center justify-between gap-1 mb-1">
+                <span className="text-slate-500 font-semibold block uppercase text-[11px]">
+                  {t('analysis.priceRangeLabel')}
+                </span>
+                <Badge variant="warning" size="sm">
+                  {t('analysis.indicativeEstimateBadge')}
+                </Badge>
+              </div>
               <span className="text-2xl font-extrabold text-emerald-900 block">
                 {pricing?.estimated_price_range}
               </span>
               <p className="text-slate-500 text-[11px] mt-1">
-                Competitive band accommodating local household budgets.
+                {t('analysis.categoryBenchmarkSource')} — {t('analysis.indicativePricingBadge')}.
               </p>
             </div>
 

@@ -63,13 +63,23 @@ export const bizApi = {
       const popEst = marketRaw.estimated_target_population ?? 20000;
       const channels = (marketRaw.high_demand_local_channels || []).map((ch, i) => ({
         name: ch,
-        description: `Local high-demand channel identified for ${formatted.business_category} in ${formatted.location}.`,
-        suitability: i === 0 ? 'Primary (High Volume)' : 'Secondary / Complementary',
+        description: formatted.language === 'hi'
+          ? `${formatted.location} में ${formatted.business_category} के लिए पहचाना गया उच्च-मांग चैनल।`
+          : formatted.language === 'gu'
+          ? `${formatted.location} માં ${formatted.business_category} માટે ઓળખાયેલ સ્થાનિક ઉચ્ચ-માંગ ચેનલ.`
+          : `Local high-demand channel identified for ${formatted.business_category} in ${formatted.location}.`,
+        suitability: i === 0
+          ? (formatted.language === 'hi' ? 'प्राथमिक (उच्च मात्रा)' : formatted.language === 'gu' ? 'મુખ્ય ચેનલ (વધુ વેચાણ)' : 'Primary (High Volume)')
+          : (formatted.language === 'hi' ? 'पूरक / द्वितीयक' : formatted.language === 'gu' ? 'ગૌણ ચેનલ' : 'Secondary / Complementary'),
       }));
       const segments = (marketRaw.primary_customer_segments || []).map((seg, i) => ({
         name: seg,
         percentage: i === 0 ? 50 : (i === 1 ? 30 : 20),
-        demand: 'Regular repeat demand within local catchment territory',
+        demand: formatted.language === 'hi'
+          ? 'स्थानीय क्षेत्र के भीतर नियमित आवर्ती मांग'
+          : formatted.language === 'gu'
+          ? 'સ્થાનિક વિસ્તારમાં નિયમિત આવર્તક માંગ'
+          : 'Regular repeat demand within local catchment territory',
       }));
 
       // Normalize opportunities into a clean array suitable for .map()
@@ -123,7 +133,13 @@ export const bizApi = {
       // Normalize risks
       const risksArray = (raw.risks || []).map((r) => ({
         title: r.risk_title || r.title || 'Operational Risk',
-        description: r.description || `Category: ${r.category || r.risk_category || 'General Operational'} • Evaluated for local business context.`,
+        description: r.description || (
+          formatted.language === 'hi'
+            ? `श्रेणी: ${r.category || 'परिचालन'} • स्थानीय व्यापार संदर्भ के लिए मूल्यांकित।`
+            : formatted.language === 'gu'
+            ? `શ્રેણી: ${r.category || 'ઓપરેશનલ'} • સ્થાનિક વ્યાપાર સંદર્ભ માટે મૂલ્યાંકન કરેલ.`
+            : `Category: ${r.category || r.risk_category || 'General Operational'} • Evaluated for local business context.`
+        ),
         severity: r.severity || 'Medium',
         mitigation: r.mitigation_strategy || r.mitigation || 'Maintain 3-month operating reserve and monitor supplier lead times.',
       }));
@@ -133,8 +149,10 @@ export const bizApi = {
         name: c.name || c.competitor_name || 'Local Merchant',
         type: c.type || c.type_of_business || 'Local Enterprise',
         presence: c.presence || c.proximity || `Operating within ${catchmentKm} km radius`,
-        pricing_tier: c.pricing_tier || 'Standard Local Pricing',
-        weakness: c.weakness || c.differentiation_strategy || 'Opportunity for higher quality, transparent pricing, and digital payments.',
+        pricing_tier: c.pricing_tier || (
+          formatted.language === 'hi' ? 'मानक स्थानीय मूल्य' : formatted.language === 'gu' ? 'સ્થાનિક બજાર ભાવ' : 'Standard Local Pricing'
+        ),
+        weakness: c.differentiation_strategy || c.weakness || 'Opportunity for higher quality, transparent pricing, and digital payments.',
       }));
 
       // Normalize pricing
@@ -142,7 +160,13 @@ export const bizApi = {
       const pricingObj = {
         estimated_price_range: pricingRaw.suggested_retail_price || pricingRaw.estimated_price_range || 'Competitive Local Band',
         purchasing_power_context: pricingRaw.benchmark_product_or_service
-          ? `Benchmark standard: ${pricingRaw.benchmark_product_or_service}. Estimated production cost: ${pricingRaw.estimated_unit_production_cost || 'N/A'}. Target margin: ${pricingRaw.target_gross_margin_percent ?? 35}%.`
+          ? (
+            formatted.language === 'hi'
+              ? `मानक बेंचमार्क: ${pricingRaw.benchmark_product_or_service}। अनुमानित उत्पादन लागत: ${pricingRaw.estimated_unit_production_cost || 'उपलब्ध नहीं'}। लक्षित सकल मार्जिन: ${pricingRaw.target_gross_margin_percent ?? 35}%।`
+              : formatted.language === 'gu'
+              ? `માનક બેન્ચમાર્ક: ${pricingRaw.benchmark_product_or_service}. અંદાજિત ઉત્પાદન ખર્ચ: ${pricingRaw.estimated_unit_production_cost || 'N/A'}. લક્ષિત ગ્રોસ માર્જિન: ${pricingRaw.target_gross_margin_percent ?? 35}%.`
+              : `Benchmark standard: ${pricingRaw.benchmark_product_or_service}. Estimated production cost: ${pricingRaw.estimated_unit_production_cost || 'N/A'}. Target margin: ${pricingRaw.target_gross_margin_percent ?? 35}%.`
+          )
           : (pricingRaw.purchasing_power_context || 'Tailored to rural purchasing power and local wallet-share.'),
         suggested_approach: pricingRaw.pricing_strategy_notes || pricingRaw.suggested_approach || 'Value-based tiered pricing accommodating local household budgets.',
       };
