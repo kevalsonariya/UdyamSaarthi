@@ -4,11 +4,25 @@ from pydantic import BaseModel, Field
 class HealthResponse(BaseModel):
     status: str = "ok"
 
+class LocationData(BaseModel):
+    raw_input: str
+    village_town_city: Optional[str] = None
+    taluka_subdistrict: Optional[str] = None
+    district: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = "India"
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    formatted_address: Optional[str] = None
+    provider: Optional[str] = "local_catalog"
+
 class BusinessInputRequest(BaseModel):
     location: Optional[Any] = Field(None, json_schema_extra={"example": "Anand, Gujarat"})
     business_category: Optional[Any] = Field(None, json_schema_extra={"example": "Textile & Clothing"})
     available_capital: Optional[Any] = Field(None, description="Available margin capital in INR")
     language: Optional[str] = Field("en", description="Presentation language: en, hi, gu")
+    location_detail: Optional[LocationData] = Field(None, description="Structured location model if available")
+
 
 class FinancialStructuring(BaseModel):
     available_capital: float
@@ -236,5 +250,36 @@ class FullAnalysisResponse(BaseModel):
     competitors: List[CompetitorItem]
     pricing: PricingGuidance
     recommendation: BusinessRecommendation
+    location_detail: Optional[LocationData] = None
     ai_explanation: Optional[AIExplanation] = None
     disclaimer: str
+
+class CategoryMetadataItem(BaseModel):
+    id: str
+    name: str
+    display_name: str
+    sector: str
+    typical_capex_min: float
+    typical_capex_max: float
+    subcategories: List[str]
+    competitor_search_terms: List[str]
+    primary_activities: List[str]
+    key_equipment: List[str]
+    mandatory_licenses: List[str]
+    location_factors: Optional[Dict[str, Any]] = None
+    market_profile: Optional[Dict[str, Any]] = None
+    opportunity_profile: Optional[Dict[str, Any]] = None
+    risk_profile: Optional[Dict[str, Any]] = None
+    pricing_profile: Optional[Dict[str, Any]] = None
+
+class CategoriesListResponse(BaseModel):
+    success: bool = True
+    total: int
+    categories: List[CategoryMetadataItem]
+
+class LocationSuggestResponse(BaseModel):
+    success: bool = True
+    total: int
+    query: str
+    suggestions: List[LocationData]
+

@@ -8,6 +8,9 @@ from app.schemas.schemas import (
     EMICalculateRequest,
     RepaymentCalculateRequest,
     WorkingCapitalCalculateRequest,
+    CategoriesListResponse,
+    CategoryMetadataItem,
+    LocationSuggestResponse,
 )
 from app.engines.financial_engine import (
     calculate_project_cost,
@@ -22,8 +25,41 @@ from app.engines.financial_engine import (
 )
 from app.services.advisory_service import perform_complete_analysis
 from app.utils.pdf_generator import generate_pdf_report
+from app.data.categories_config import CATEGORIES_REGISTRY
+from app.data.location_provider import get_location_provider
 
 router = APIRouter()
+
+
+@router.get("/categories", response_model=CategoriesListResponse)
+async def get_categories():
+    """
+    Phase B7: Centralized business category configuration endpoint.
+    Returns all 31 supported rural micro-enterprise categories with structured metadata.
+    """
+    categories = [CategoryMetadataItem(**cat) for cat in CATEGORIES_REGISTRY]
+    return {
+        "success": True,
+        "total": len(categories),
+        "categories": categories,
+    }
+
+
+@router.get("/locations/suggest", response_model=LocationSuggestResponse)
+async def suggest_locations(q: str = "", limit: int = 8):
+    """
+    Phase B7: Dynamic location autocomplete & geocoding suggestion endpoint.
+    Returns structured location models for rural centers, talukas, and town districts.
+    """
+    provider = get_location_provider()
+    suggestions = provider.search_locations(query=q, limit=limit)
+    return {
+        "success": True,
+        "total": len(suggestions),
+        "query": q,
+        "suggestions": suggestions,
+    }
+
 
 
 @router.post("/business/analyze", response_model=FullAnalysisResponse)

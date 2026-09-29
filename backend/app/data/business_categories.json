@@ -3,10 +3,11 @@
     {
       "id": "textile_clothing",
       "name": "Textile & Clothing",
-      "aliases": ["textile", "clothing", "apparel", "garment", "garments", "fabric", "textiles", "readymade"],
+      "aliases": ["textile & clothing", "textile", "clothing", "apparel", "garment", "garments", "fabric", "textiles", "readymade", "tailoring & embroidery", "tailoring", "embroidery"],
       "description": "Retail, micro-stitching, and distribution of readymade garments, ethnic wear, and durable agrarian fabrics.",
       "typical_capex_min": 50000.0,
       "typical_capex_max": 1500000.0,
+
       "primary_activities": [
         "Procurement of wholesale fabric and finished garments",
         "Micro-tailoring and customer alterations",
@@ -74,7 +75,7 @@
     {
       "id": "grocery",
       "name": "Grocery",
-      "aliases": ["grocery", "kirana", "provision", "general store", "retail grocery", "supermarket", "fmcg"],
+      "aliases": ["grocery", "grocery / kirana", "kirana", "provision", "general store", "retail grocery", "supermarket", "fmcg", "kirana store"],
       "description": "Essential FMCG, grains, spices, packaged staples, and daily household provisions store for rural and semi-urban localities.",
       "typical_capex_min": 40000.0,
       "typical_capex_max": 1000000.0,
@@ -109,7 +110,7 @@
     {
       "id": "food_processing",
       "name": "Food Processing",
-      "aliases": ["food processing", "bakery", "spice processing", "flour mill", "pickles", "agro processing", "snack manufacturing"],
+      "aliases": ["food processing", "bakery", "spice processing", "flour mill", "pickles", "agro processing", "snack manufacturing", "snacks & namkeen", "namkeen", "pickles & papad", "fruit & vegetable processing"],
       "description": "Micro-processing and packaging of agro-produce into value-added food items such as spices, flour, pickles, snacks, and baked goods.",
       "typical_capex_min": 60000.0,
       "typical_capex_max": 2500000.0,
@@ -145,7 +146,7 @@
     {
       "id": "agriculture",
       "name": "Agriculture",
-      "aliases": ["agriculture", "farming", "agro", "horticulture", "organic farming", "crop farming", "polyhouse"],
+      "aliases": ["agriculture", "farming", "agro", "horticulture", "organic farming", "crop farming", "polyhouse", "poultry", "goat farming", "fisheries", "beekeeping", "nursery & plant business", "nursery", "agricultural equipment rental", "agricultural input store"],
       "description": "High-value horticulture, organic vegetable cultivation, precision micro-irrigation, and nursery seedling supply.",
       "typical_capex_min": 50000.0,
       "typical_capex_max": 1800000.0,
@@ -181,7 +182,7 @@
     {
       "id": "handicrafts",
       "name": "Handicrafts",
-      "aliases": ["handicrafts", "handicraft", "pottery", "weaving", "artisanal", "woodcraft", "embroidery", "brassware"],
+      "aliases": ["handicrafts", "handicraft", "pottery", "weaving", "artisanal", "woodcraft", "embroidery", "brassware", "furniture", "bamboo products", "bamboo", "leather products", "leather"],
       "description": "Traditional artisanal manufacturing of handloom fabrics, pottery, woodcraft, embroidery, and cultural home decor artifacts.",
       "typical_capex_min": 30000.0,
       "typical_capex_max": 800000.0,
@@ -217,8 +218,9 @@
     {
       "id": "services",
       "name": "Services",
-      "aliases": ["services", "service", "repair", "automotive repair", "electrical services", "salon", "micro-logistics", "csc"],
+      "aliases": ["services", "service", "repair", "automotive repair", "electrical services", "salon", "micro-logistics", "csc", "mobile repair", "electronics repair", "two-wheeler repair", "computer / printing centre", "digital services", "transport / local logistics", "beauty & salon"],
       "description": "Community services including two-wheeler/tractor repair, electrical servicing, grooming salon, and common service center (CSC) operations.",
+
       "typical_capex_min": 35000.0,
       "typical_capex_max": 1200000.0,
       "primary_activities": [

@@ -22,13 +22,20 @@ const formatPayload = (data) => {
 
   const lang = data.language || (typeof window !== 'undefined' ? localStorage.getItem('udyamsaarthi_language') : 'en') || 'en';
 
-  return {
+  const payload = {
     location: (data.location || 'Anand, Gujarat').trim(),
     business_category: (data.business_category || 'Textile & Clothing').trim(),
     available_capital: capital,
     language: lang,
   };
+
+  if (data.location_detail) {
+    payload.location_detail = data.location_detail;
+  }
+
+  return payload;
 };
+
 
 export const bizApi = {
   /**

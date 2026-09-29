@@ -116,6 +116,8 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         competitors=adv["competitors"],
         pricing=adv["pricing"],
         recommendation=adv["recommendation"],
+        location_detail=getattr(request, "location_detail", None),
         ai_explanation=ai_explanation,
         disclaimer=DISCLAIMER_TEXT,
     )
+

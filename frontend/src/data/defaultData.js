@@ -10,15 +10,10 @@ export const DEFAULT_DEMO_SCENARIO = {
   moratorium_months: 6,
 };
 
-export const BUSINESS_CATEGORIES = [
-  "Textile & Clothing",
-  "Grocery",
-  "Dairy",
-  "Food Processing",
-  "Agriculture",
-  "Handicrafts",
-  "Services",
-];
+import { BUSINESS_CATEGORIES as FULL_CATEGORIES } from "./categoriesConfig";
+
+export const BUSINESS_CATEGORIES = FULL_CATEGORIES.map((c) => c.value);
+
 
 export const POPULAR_LOCATIONS = [
   "Anand, Gujarat",
