@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { BizSahayakProvider } from './hooks/useBizSahayak';
+import { LanguageProvider } from './context/LanguageContext';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
@@ -12,7 +13,8 @@ import Report from './pages/Report';
 function App() {
   return (
     <ErrorBoundary>
-      <BizSahayakProvider>
+      <LanguageProvider>
+        <BizSahayakProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MainLayout />}>
@@ -27,7 +29,8 @@ function App() {
           </Routes>
         </BrowserRouter>
       </BizSahayakProvider>
-    </ErrorBoundary>
+    </LanguageProvider>
+  </ErrorBoundary>
   );
 }
 

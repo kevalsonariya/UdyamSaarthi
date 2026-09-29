@@ -38,10 +38,12 @@ import { useBizSahayak } from '../hooks/useBizSahayak';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 import { FINANCIAL_DISCLAIMER } from '../data/defaultData';
 import { bizApi } from '../services/api';
+import { useTranslation } from '../context/LanguageContext';
 
 export const Report = () => {
   const navigate = useNavigate();
   const { inputData, analysisData, financialData, setFinancialData, resetToDemoScenario } = useBizSahayak();
+  const { t, getCategoryLabel } = useTranslation();
 
   const [downloading, setDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
@@ -73,7 +75,7 @@ export const Report = () => {
           setFinancialData(data);
         } catch (err) {
           console.error('Error fetching financial plan:', err);
-          setError('Failed to prepare report data.');
+          setError(t('common.errorMessage'));
         } finally {
           setLoading(false);
         }
@@ -101,7 +103,7 @@ export const Report = () => {
       link.href = url;
       const cleanLocation = location.replace(/[^a-zA-Z0-9]/g, '_');
       const cleanCategory = category.replace(/[^a-zA-Z0-9]/g, '_');
-      link.setAttribute('download', `BizSahayak_BusinessPlan_${cleanCategory}_${cleanLocation}.pdf`);
+      link.setAttribute('download', `UdyamSaarthi_BusinessPlan_${cleanCategory}_${cleanLocation}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -131,9 +133,9 @@ export const Report = () => {
     return (
       <div className="py-12">
         <ErrorState
-          title="Could Not Generate Business Plan Report"
-          message={error || 'Unable to retrieve financial structure for report.'}
-          retryLabel="Retry"
+          title={t('common.errorTitle')}
+          message={error || t('common.errorMessage')}
+          retryLabel={t('common.retry')}
           onRetry={() => window.location.reload()}
         />
       </div>
@@ -149,19 +151,19 @@ export const Report = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-emerald-800 text-white flex items-center justify-center font-black text-2xl shadow-md">
-              BS
+              US
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-black text-emerald-950 tracking-tight">
-                  Biz<span className="text-amber-600">Sahayak</span>
+                  Udyam<span className="text-amber-600">Saarthi</span>
                 </span>
                 <span className="text-xs uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  Official Dossier
+                  {t('report.officialDossier')}
                 </span>
               </div>
               <h1 className="text-sm font-semibold text-slate-500 mt-0.5">
-                Comprehensive Bank-Ready Business Plan
+                {t('report.dossierSubtitle')}
               </h1>
             </div>
           </div>
@@ -174,7 +176,7 @@ export const Report = () => {
               onClick={handleStartNewAnalysis}
               icon={RotateCcw}
             >
-              Start New Analysis
+              {t('report.startNewBtn')}
             </Button>
             <Button
               variant="primary"
@@ -184,7 +186,7 @@ export const Report = () => {
               icon={Download}
               className="shadow-sm font-bold"
             >
-              Download PDF
+              {downloading ? t('report.generatingPdf') : t('report.downloadPdfBtn')}
             </Button>
           </div>
         </div>
@@ -192,24 +194,34 @@ export const Report = () => {
         {/* Header Metadata Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">Enterprise Category</span>
-            <span className="font-bold text-slate-900 text-sm mt-1 block">{category}</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('report.enterpriseCategory')}
+            </span>
+            <span className="font-bold text-slate-900 text-sm mt-1 block">
+              {getCategoryLabel(category)}
+            </span>
           </div>
 
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">Target Location</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('report.targetLocation')}
+            </span>
             <span className="font-bold text-slate-900 text-sm mt-1 block">{location}</span>
           </div>
 
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">Promoter Margin</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('report.promoterEquity')}
+            </span>
             <span className="font-bold text-emerald-800 text-sm mt-1 block">
               {formatCurrency(financial.available_capital)} (10%)
             </span>
           </div>
 
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">Generated Date</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('report.generatedDate')}
+            </span>
             <span className="font-bold text-slate-800 text-sm mt-1 block">{generatedDate}</span>
           </div>
         </div>
@@ -220,14 +232,15 @@ export const Report = () => {
             <div className="flex items-center gap-2">
               <CheckCircle className="w-5 h-5 text-emerald-700 shrink-0" />
               <span>
-                <strong>Success!</strong> Official Business Plan dossier has been compiled and downloaded successfully.
+                <strong>Success! </strong>
+                {t('report.successBanner')}
               </span>
             </div>
             <button
               onClick={() => setDownloadSuccess(false)}
               className="text-emerald-700 hover:text-emerald-900 font-bold ml-2 cursor-pointer"
             >
-              Dismiss
+              {t('report.dismiss')}
             </button>
           </div>
         )}
@@ -237,38 +250,50 @@ export const Report = () => {
       <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
         <Info className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="text-xs text-amber-950 leading-relaxed">
-          <strong className="font-bold">Official Disclaimer: </strong>
+          <strong className="font-bold">{t('report.officialDisclaimer')} </strong>
           {FINANCIAL_DISCLAIMER}
         </div>
       </div>
 
       {/* 1. Business Overview */}
       <Card
-        title="1. Business Overview"
-        subtitle="Executive operational profile and promoter equity structure"
-        badge={<Badge variant="primary">Verified</Badge>}
+        title={t('analysis.businessSummaryTitle')}
+        subtitle={t('analysis.businessSummarySubtitle')}
+        badge={<Badge variant="primary">{t('report.verifiedBadge')}</Badge>}
       >
         <div className="space-y-4 text-xs sm:text-sm">
           <p className="text-slate-700 leading-relaxed">
-            The proposed micro-enterprise in <strong>{category}</strong> is to be established in{' '}
-            <strong>{location}</strong>. The business model combines direct local retail, wholesale supply to neighboring weekly haats, and customized value-added orders for rural institutions.
+            {t('report.enterpriseSummary', {
+              category: getCategoryLabel(category),
+              location,
+              capital: formatCurrency(financial.available_capital),
+              projectCost: formatCurrency(financial.project_cost),
+              loanAmount: formatCurrency(scheme.eligible_funding),
+              scheme: scheme.scheme_name,
+            })}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
             <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
-              <span className="text-slate-500 font-medium block">Promoter Margin (10%):</span>
+              <span className="text-slate-500 font-medium block">
+                {t('report.promoterEquity')}
+              </span>
               <span className="text-base font-bold text-slate-900 mt-1 block">
                 {formatCurrency(financial.available_capital)}
               </span>
             </div>
             <div className="p-3.5 bg-emerald-50/70 rounded-xl border border-emerald-200 text-xs">
-              <span className="text-emerald-800 font-medium block">Total Project Cost:</span>
+              <span className="text-emerald-800 font-medium block">
+                {t('financial.projectCost')}
+              </span>
               <span className="text-base font-extrabold text-emerald-950 mt-1 block">
                 {formatCurrency(financial.project_cost)}
               </span>
             </div>
             <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
-              <span className="text-slate-500 font-medium block">Loan Sizing (90%):</span>
+              <span className="text-slate-500 font-medium block">
+                {t('financial.maxLoan')}
+              </span>
               <span className="text-base font-bold text-slate-900 mt-1 block">
                 {formatCurrency(scheme.eligible_funding)}
               </span>
@@ -281,8 +306,8 @@ export const Report = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 2. Market Opportunity */}
         <Card
-          title="2. Market Opportunity"
-          subtitle="Identified demand drivers favoring this enterprise"
+          title={t('analysis.opportunitiesTitle')}
+          subtitle={t('analysis.opportunitiesSubtitle')}
         >
           <div className="space-y-3 text-xs">
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-2.5">
@@ -317,20 +342,20 @@ export const Report = () => {
 
         {/* 3. Market Reach */}
         <Card
-          title="3. Market Reach"
-          subtitle="Simulated Local Market Estimate of consumer catchment territory"
+          title={t('analysis.marketReachTitle')}
+          subtitle={t('analysis.marketReachSubtitle')}
         >
           <div className="space-y-3.5 text-xs">
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600 font-medium">Catchment Radius:</span>
+              <span className="text-slate-600 font-medium">{t('analysis.catchmentLabel')}:</span>
               <span className="font-bold text-slate-900">0 – 15 km Radius</span>
             </div>
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600 font-medium">Target Population Reach:</span>
+              <span className="text-slate-600 font-medium">{t('analysis.populationLabel')}:</span>
               <span className="font-bold text-emerald-800">18,500 – 24,000 residents</span>
             </div>
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600 font-medium">Primary Segments:</span>
+              <span className="text-slate-600 font-medium">{t('analysis.segmentsTitle')}</span>
               <span className="font-bold text-slate-900">Farming Families, Salaried Workers, Youth</span>
             </div>
             <p className="text-slate-500 pt-1 leading-relaxed text-[11px]">
@@ -342,12 +367,12 @@ export const Report = () => {
 
       {/* 4. SWOT Analysis (2x2 Grid) */}
       <Card
-        title="4. SWOT Analysis"
-        subtitle="Situational appraisal matrix across internal and external factors"
+        title={t('analysis.swotTitle')}
+        subtitle={t('analysis.swotSubtitle')}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1.5">
-            <span className="font-bold text-emerald-950 block">Strengths</span>
+            <span className="font-bold text-emerald-950 block">{t('analysis.strengths')}</span>
             <ul className="text-slate-700 space-y-1 list-disc list-inside">
               <li>Low establishment overhead compared to town showrooms.</li>
               <li>Direct community trust and flexible customized service.</li>
@@ -355,7 +380,7 @@ export const Report = () => {
           </div>
 
           <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl space-y-1.5">
-            <span className="font-bold text-amber-950 block">Weaknesses</span>
+            <span className="font-bold text-amber-950 block">{t('analysis.weaknesses')}</span>
             <ul className="text-slate-700 space-y-1 list-disc list-inside">
               <li>Limited initial inventory prior to bank loan drawdown.</li>
               <li>Need to transition from manual to digital accounting.</li>
@@ -363,7 +388,7 @@ export const Report = () => {
           </div>
 
           <div className="p-3.5 bg-sky-50/70 border border-sky-200 rounded-xl space-y-1.5">
-            <span className="font-bold text-sky-950 block">Opportunities</span>
+            <span className="font-bold text-sky-950 block">{t('analysis.opportunities')}</span>
             <ul className="text-slate-700 space-y-1 list-disc list-inside">
               <li>Subsidized interest credit under {scheme.scheme_name}.</li>
               <li>Tie-ups with local village cooperatives and schools.</li>
@@ -371,7 +396,7 @@ export const Report = () => {
           </div>
 
           <div className="p-3.5 bg-red-50/70 border border-red-200 rounded-xl space-y-1.5">
-            <span className="font-bold text-red-950 block">Threats</span>
+            <span className="font-bold text-red-950 block">{t('analysis.threats')}</span>
             <ul className="text-slate-700 space-y-1 list-disc list-inside">
               <li>Extended credit expectations from farmers during harvest gaps.</li>
               <li>Raw material price fluctuations during off-season months.</li>
@@ -383,7 +408,10 @@ export const Report = () => {
       {/* 5. Risks & 6. Competitors (2 cols) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 5. Risks */}
-        <Card title="5. Risk Identification & Mitigation" subtitle="Operational resilience measures">
+        <Card
+          title={t('analysis.risksTitle')}
+          subtitle={t('analysis.risksSubtitle')}
+        >
           <div className="space-y-3 text-xs">
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
               <div className="flex justify-between items-center">
@@ -391,7 +419,7 @@ export const Report = () => {
                 <Badge variant="warning" size="sm">Medium</Badge>
               </div>
               <p className="text-slate-600">
-                <strong>Mitigation:</strong> Use {scheme.moratorium_months}-month moratorium to build a 3-month operational buffer.
+                <strong>{t('analysis.mitigationLabel')}</strong> Use {scheme.moratorium_months}-month moratorium to build a 3-month operational buffer.
               </p>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
@@ -400,14 +428,17 @@ export const Report = () => {
                 <Badge variant="danger" size="sm">High</Badge>
               </div>
               <p className="text-slate-600">
-                <strong>Mitigation:</strong> Implement a cash-first policy with small discounts for upfront UPI payments.
+                <strong>{t('analysis.mitigationLabel')}</strong> Implement a cash-first policy with small discounts for upfront UPI payments.
               </p>
             </div>
           </div>
         </Card>
 
         {/* 6. Competitors */}
-        <Card title="6. Competitor Mapping" subtitle="Local landscape within 10 km radius">
+        <Card
+          title={t('analysis.competitorsTitle')}
+          subtitle={t('analysis.competitorsSubtitle')}
+        >
           <div className="space-y-3 text-xs">
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
               <div>
@@ -430,14 +461,17 @@ export const Report = () => {
       {/* 7. Pricing & 8. Recommendation (2 cols) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 7. Pricing */}
-        <Card title="7. Product Market Value & Pricing" subtitle="Target corridor based on rural wallet-share">
+        <Card
+          title={t('analysis.pricingTitle')}
+          subtitle={t('analysis.pricingSubtitle')}
+        >
           <div className="space-y-3 text-xs">
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">Suggested Price Range:</span>
+              <span className="text-slate-600">{t('analysis.priceRangeLabel')}:</span>
               <span className="font-bold text-emerald-900 text-sm">₹220 – ₹850</span>
             </div>
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-              <span className="font-bold text-slate-900">Pricing Strategy:</span>
+              <span className="font-bold text-slate-900">{t('analysis.suggestedApproachTitle')}:</span>
               <p className="text-slate-600">
                 Tiered pricing: competitive everyday items build store footfall; customized and festival items deliver 35-40% gross margins.
               </p>
@@ -446,11 +480,16 @@ export const Report = () => {
         </Card>
 
         {/* 8. Business Recommendation */}
-        <Card title="8. Business Recommendation" subtitle="Final feasibility verdict">
+        <Card
+          title={t('analysis.recommendationTitle')}
+          subtitle={t('analysis.recommendationSubtitle')}
+        >
           <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2 text-xs">
             <div className="flex items-center justify-between">
-              <span className="font-extrabold text-emerald-950 text-sm">Rule-Based Advisory Feasibility Score: 83/100</span>
-              <Badge variant="primary">Recommended</Badge>
+              <span className="font-extrabold text-emerald-950 text-sm">
+                {t('analysis.scoreBadge', { score: 83 })}
+              </span>
+              <Badge variant="primary">{t('report.recommendedBadge')}</Badge>
             </div>
             <p className="text-slate-700 leading-relaxed">
               The proposed enterprise demonstrates favorable unit economics and satisfies all credit underwriting parameters for{' '}
@@ -462,29 +501,35 @@ export const Report = () => {
 
       {/* Financial Sizing & Scheme Table (Sections 9 - 15) */}
       <Card
-        title="Financial Structuring & Loan Appraisal (Sections 9 – 15)"
-        subtitle="Deterministic calculations verified by the financial engine"
+        title={t('financial.structuringTitle')}
+        subtitle={t('financial.loanTermsSubtitle', { scheme: scheme.scheme_name })}
         badge={<Badge variant="primary">{scheme.scheme_name}</Badge>}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">9. Project Cost</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('financial.projectCost')}
+            </span>
             <span className="text-lg font-black text-emerald-950 mt-1 block">
               {formatCurrency(financial.project_cost)}
             </span>
-            <span className="text-[11px] text-slate-500">Margin Capital / 10%</span>
+            <span className="text-[11px] text-slate-500">{t('financial.projectCostSub')}</span>
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">10. Loan Amount</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('financial.maxLoan')}
+            </span>
             <span className="text-lg font-black text-emerald-950 mt-1 block">
               {formatCurrency(scheme.eligible_funding)}
             </span>
-            <span className="text-[11px] text-slate-500">90% of Project Cost</span>
+            <span className="text-[11px] text-slate-500">{t('financial.maxLoanSub')}</span>
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">11. Scheme</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('financial.selectedScheme')}
+            </span>
             <span className="text-sm font-bold text-slate-900 mt-1 block">
               {scheme.scheme_name}
             </span>
@@ -492,74 +537,80 @@ export const Report = () => {
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">12. Interest Rate</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('financial.interestRate')}
+            </span>
             <span className="text-lg font-black text-amber-900 mt-1 block">
               {formatPercentage(scheme.interest_rate_percent)} p.a.
             </span>
-            <span className="text-[11px] text-slate-500">Fixed subsidized rate</span>
+            <span className="text-[11px] text-slate-500">{t('financial.fixedAnnual')}</span>
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">13. Monthly EMI</span>
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('financial.monthlyEmi')}
+            </span>
             <span className="text-lg font-black text-emerald-950 mt-1 block">
               {formatCurrency(emi.monthly_emi)}
             </span>
             <span className="text-[11px] text-slate-500">
-              For {emi.post_moratorium_tenure_months} post-moratorium months
+              {t('financial.emiApplicableFor', { months: emi.post_moratorium_tenure_months })}
             </span>
           </div>
 
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 font-semibold block uppercase">14. Moratorium Period</span>
-            <span className="text-lg font-black text-sky-950 mt-1 block">
-              {scheme.moratorium_months} Months
+            <span className="text-slate-500 font-semibold block uppercase">
+              {t('financial.moratoriumPeriod')}
             </span>
-            <span className="text-[11px] text-slate-500">₹0 principal due during gestation</span>
+            <span className="text-lg font-black text-sky-950 mt-1 block">
+              {scheme.moratorium_months} {t('financial.months')}
+            </span>
+            <span className="text-[11px] text-slate-500">{t('financial.zeroPrincipal')}</span>
           </div>
         </div>
 
         {/* 15. Repayment Summary */}
         <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div>
-            <span className="font-bold text-slate-900 block">15. Repayment Summary:</span>
+            <span className="font-bold text-slate-900 block">{t('financial.repaymentTitle')}:</span>
             <span className="text-slate-600">
-              Total loan tenure is {scheme.tenure_years} Years ({scheme.tenure_months} Months). Total interest payable is{' '}
-              <strong>{formatCurrency(emi.total_interest_payable)}</strong>. Total repayment is{' '}
+              {t('financial.loanTenure')}: {scheme.tenure_years} {t('financial.years')} ({scheme.tenure_months} {t('financial.months')}). {t('financial.totalInterest')}:{' '}
+              <strong>{formatCurrency(emi.total_interest_payable)}</strong>. {t('financial.totalRepayment')}:{' '}
               <strong>{formatCurrency(emi.total_repayment_amount)}</strong>.
             </span>
           </div>
           <Badge variant="primary" size="md" className="shrink-0 self-start sm:self-center">
-            {scheme.tenure_years} Years Amortization
+            {scheme.tenure_years} {t('financial.years')} Amortization
           </Badge>
         </div>
       </Card>
 
       {/* 16. Working Capital Planning */}
       <Card
-        title="16. Working Capital Planning"
-        subtitle="Monthly operating expense allocation and break-even targets"
+        title={t('financial.workingCapitalTitle')}
+        subtitle={t('financial.workingCapitalSubtitle')}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 block">Monthly OPEX:</span>
+            <span className="text-slate-500 block">{t('financial.monthlyOperatingCost')}:</span>
             <span className="text-sm font-bold text-slate-900 mt-1 block">
               {formatCurrency(working_capital.total_monthly_operating_expense)}
             </span>
           </div>
           <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl">
-            <span className="text-amber-800 block">3-Month Liquidity Reserve:</span>
+            <span className="text-amber-800 block">{t('financial.recommendedReserve')}:</span>
             <span className="text-sm font-bold text-amber-950 mt-1 block">
               {formatCurrency(working_capital.recommended_3_months_reserve)}
             </span>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-slate-500 block">Break-Even Monthly Revenue:</span>
+            <span className="text-slate-500 block">{t('financial.breakEvenRevenue')}:</span>
             <span className="text-sm font-bold text-slate-900 mt-1 block">
               {formatCurrency(working_capital.break_even_monthly_revenue)}
             </span>
           </div>
           <div className="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl">
-            <span className="text-emerald-800 block">Projected Monthly Net Profit:</span>
+            <span className="text-emerald-800 block">{t('financial.projectedProfit')}:</span>
             <span className="text-sm font-extrabold text-emerald-950 mt-1 block">
               {formatCurrency(working_capital.projected_monthly_net_profit)}
             </span>
@@ -569,17 +620,17 @@ export const Report = () => {
 
       {/* 17. Recommended Next Steps */}
       <Card
-        title="17. Recommended Next Steps for Promoter"
-        subtitle="Actionable 90-day execution roadmap and strategic guidance"
+        title={t('analysis.recommendedNextActions')}
+        subtitle={t('analysis.recommendationSubtitle')}
         badge={
           <Badge variant="success">
-            {analysisData?.ai_explanation?.is_ai_generated ? "AI-Assisted Roadmap" : "Advisory Roadmap"}
+            {analysisData?.ai_explanation?.is_ai_generated ? t('report.aiRoadmapBadge') : t('report.advisoryRoadmapBadge')}
           </Badge>
         }
       >
         <div className="space-y-3 text-xs text-slate-700">
           {(analysisData?.ai_explanation?.next_steps || [
-            `Submit this compiled BizSahayak business plan dossier to the designated nodal rural credit officer under ${scheme.scheme_name}.`,
+            `Submit this compiled UdyamSaarthi business plan dossier to the designated nodal rural credit officer under ${scheme.scheme_name}.`,
             "Procure primary machinery and install essential fittings using the initial capital drawdown during Month 1.",
             `Utilize the ${scheme.moratorium_months}-month moratorium grace period to build operating reserves before regular principal repayments begin.`,
             "Launch community outreach and establish local supply partnerships.",
@@ -589,7 +640,9 @@ export const Report = () => {
                 {idx + 1}
               </div>
               <div>
-                <span className="font-bold text-slate-900 block">Milestone {idx + 1}:</span>
+                <span className="font-bold text-slate-900 block">
+                  {t('report.milestone', { number: idx + 1 })}
+                </span>
                 <p className="text-slate-600 mt-0.5">{step}</p>
               </div>
             </div>
@@ -604,7 +657,7 @@ export const Report = () => {
           onClick={handleStartNewAnalysis}
           icon={RotateCcw}
         >
-          Start New Analysis
+          {t('report.startNewBtn')}
         </Button>
         <div className="flex items-center gap-3">
           <Button
@@ -612,7 +665,7 @@ export const Report = () => {
             onClick={() => window.print()}
             icon={Printer}
           >
-            Print Dossier
+            {t('report.printBtn')}
           </Button>
           <Button
             variant="primary"
@@ -622,7 +675,7 @@ export const Report = () => {
             icon={Download}
             className="font-bold shadow-md"
           >
-            Download PDF
+            {downloading ? t('report.generatingPdf') : t('report.downloadPdfBtn')}
           </Button>
         </div>
       </div>

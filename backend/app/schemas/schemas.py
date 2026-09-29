@@ -8,6 +8,7 @@ class BusinessInputRequest(BaseModel):
     location: Optional[Any] = Field(None, json_schema_extra={"example": "Anand, Gujarat"})
     business_category: Optional[Any] = Field(None, json_schema_extra={"example": "Textile & Clothing"})
     available_capital: Optional[Any] = Field(None, description="Available margin capital in INR")
+    language: Optional[str] = Field("en", description="Presentation language: en, hi, gu")
 
 class FinancialStructuring(BaseModel):
     available_capital: float

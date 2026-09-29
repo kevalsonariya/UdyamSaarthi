@@ -20,10 +20,13 @@ const formatPayload = (data) => {
     throw new Error('Valid available margin capital is required');
   }
 
+  const lang = data.language || (typeof window !== 'undefined' ? localStorage.getItem('udyamsaarthi_language') : 'en') || 'en';
+
   return {
     location: (data.location || 'Anand, Gujarat').trim(),
     business_category: (data.business_category || 'Textile & Clothing').trim(),
     available_capital: capital,
+    language: lang,
   };
 };
 

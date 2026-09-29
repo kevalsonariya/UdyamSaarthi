@@ -55,6 +55,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         "location": clean_loc,
         "business_category": clean_cat,
         "available_capital": clean_cap,
+        "language": getattr(request, "language", "en") or "en",
         "business": adv["business"],
         "market": adv["market"],
         "opportunities": adv["opportunities"],

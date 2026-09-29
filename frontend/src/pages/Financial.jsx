@@ -48,10 +48,12 @@ import {
 import { useBizSahayak } from '../hooks/useBizSahayak';
 import { formatCurrency, formatPercentage } from '../utils/formatters';
 import { bizApi } from '../services/api';
+import { useTranslation } from '../context/LanguageContext';
 
 export const Financial = () => {
   const navigate = useNavigate();
   const { inputData, analysisData, financialData, setFinancialData } = useBizSahayak();
+  const { t, getCategoryLabel } = useTranslation();
 
   const [loading, setLoading] = useState(!financialData);
   const [error, setError] = useState(null);
@@ -75,7 +77,7 @@ export const Financial = () => {
       setFinancialData(data);
     } catch (err) {
       console.error('Failed to load financial plan:', err);
-      setError('Unable to load deterministic financial calculation. Please retry.');
+      setError(t('financial.errorTitle'));
     } finally {
       setLoading(false);
     }
@@ -96,9 +98,9 @@ export const Financial = () => {
     return (
       <div className="py-12">
         <ErrorState
-          title="Financial Plan Could Not Be Loaded"
-          message={error || 'Failed to retrieve deterministic financial structuring values.'}
-          retryLabel="Retry Financial Engine"
+          title={t('financial.errorTitle')}
+          message={error || t('common.errorMessage')}
+          retryLabel={t('financial.retryBtn')}
           onRetry={fetchFinancialPlan}
         />
       </div>
@@ -223,12 +225,15 @@ export const Financial = () => {
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header */}
       <SectionHeader
-        title="Financial Structuring & Loan Sizing"
-        subtitle={`Deterministic financial model, government scheme routing, and debt appraisal for ${category} in ${location}.`}
+        title={t('financial.headerTitle')}
+        subtitle={t('financial.headerSubtitle', {
+          category: getCategoryLabel(category),
+          location,
+        })}
         icon={PieChartIcon}
         badge={
           <Badge variant="primary" size="md">
-            Step 3 of 4 • Financials
+            {t('financial.stepBadge')}
           </Badge>
         }
         action={
@@ -239,7 +244,7 @@ export const Financial = () => {
             icon={ArrowRight}
             className="shadow-sm font-semibold"
           >
-            View Final Business Plan
+            {t('financial.viewReportBtn')}
           </Button>
         }
       />
@@ -248,9 +253,8 @@ export const Financial = () => {
       <div className="bg-amber-50/90 border border-amber-200/90 rounded-2xl p-4 flex items-start gap-3 shadow-2xs">
         <Info className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
         <div className="text-xs text-amber-950 leading-relaxed">
-          <strong className="font-bold">Indicative repayment calculation: </strong>
-          {financial.financial_disclaimer ||
-            'Verify applicable scheme terms before making financial decisions.'}
+          <strong className="font-bold">{t('financial.disclaimerNotice')}</strong>
+          {financial.financial_disclaimer || t('financial.disclaimerText')}
         </div>
       </div>
 
@@ -259,34 +263,34 @@ export const Financial = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <Banknote className="w-4 h-4 text-emerald-700" />
-            Financial Structuring
+            {t('financial.structuringTitle')}
           </h3>
-          <Badge variant="neutral" size="sm">Deterministic Formula</Badge>
+          <Badge variant="neutral" size="sm">{t('financial.deterministicBadge')}</Badge>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
-            label="Available Capital"
+            label={t('financial.availableCapital')}
             value={formatCurrency(financial.available_capital)}
-            subtext="10% Promoter Contribution"
+            subtext={t('financial.promoterEquitySub')}
             variant="secondary"
             icon={Banknote}
           />
           <StatCard
-            label="Project Cost"
+            label={t('financial.projectCost')}
             value={formatCurrency(financial.project_cost)}
-            subtext="Calculated as Margin / 10%"
+            subtext={t('financial.projectCostSub')}
             variant="primary"
             icon={PieChartIcon}
           />
           <StatCard
-            label="Maximum Loan Amount"
+            label={t('financial.maxLoan')}
             value={formatCurrency(scheme.eligible_funding)}
-            subtext="90% Debt Component"
+            subtext={t('financial.maxLoanSub')}
             variant="info"
             icon={ShieldCheck}
           />
           <StatCard
-            label="Selected Scheme"
+            label={t('financial.selectedScheme')}
             value={scheme.scheme_name}
             subtext={scheme.scheme_code || 'Government Priority Credit'}
             variant="warning"
@@ -297,57 +301,57 @@ export const Financial = () => {
 
       {/* 2. LOAN TERMS */}
       <Card
-        title="Loan Terms & Scheme Specifications"
-        subtitle={`Official debt terms deterministically routed under ${scheme.scheme_name}`}
+        title={t('financial.loanTermsTitle')}
+        subtitle={t('financial.loanTermsSubtitle', { scheme: scheme.scheme_name })}
         badge={<Badge variant="primary" size="md">{scheme.scheme_name}</Badge>}
       >
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-emerald-800 uppercase block">
-                Interest Rate
+                {t('financial.interestRate')}
               </span>
               <span className="text-2xl font-extrabold text-emerald-950">
                 {formatPercentage(scheme.interest_rate_percent)}
               </span>
               <span className="text-[11px] text-emerald-700 block">
-                Fixed annual rate
+                {t('financial.fixedAnnual')}
               </span>
             </div>
 
             <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-amber-800 uppercase block">
-                Loan Tenure
+                {t('financial.loanTenure')}
               </span>
               <span className="text-2xl font-extrabold text-amber-950">
-                {scheme.tenure_years} Years
+                {scheme.tenure_years} {t('financial.years')}
               </span>
               <span className="text-[11px] text-amber-700 block">
-                {scheme.tenure_months} total months
+                {t('financial.totalMonths', { months: scheme.tenure_months })}
               </span>
             </div>
 
             <div className="p-4 bg-sky-50/70 border border-sky-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-sky-800 uppercase block">
-                Moratorium Period
+                {t('financial.moratoriumPeriod')}
               </span>
               <span className="text-2xl font-extrabold text-sky-950">
-                {scheme.moratorium_months} Months
+                {scheme.moratorium_months} {t('financial.months')}
               </span>
               <span className="text-[11px] text-sky-700 block">
-                Grace on principal
+                {t('financial.graceOnPrincipal')}
               </span>
             </div>
 
             <div className="p-4 bg-purple-50/70 border border-purple-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-purple-800 uppercase block">
-                Repayment Frequency
+                {t('financial.repaymentFreq')}
               </span>
               <span className="text-xl font-extrabold text-purple-950">
-                Monthly
+                {t('financial.monthlyFreq')}
               </span>
               <span className="text-[11px] text-purple-700 block">
-                Quarterly roll-up enabled
+                {t('financial.quarterlyRollup')}
               </span>
             </div>
           </div>
@@ -356,7 +360,7 @@ export const Financial = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
               <span className="font-bold text-slate-800 block text-xs uppercase tracking-wider">
-                Eligibility & Scheme Guidelines
+                {t('financial.eligibilityTitle')}
               </span>
               <ul className="space-y-1.5 text-slate-600">
                 {scheme.eligibility_criteria?.map((item, idx) => (
@@ -370,7 +374,7 @@ export const Financial = () => {
 
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
               <span className="font-bold text-slate-800 block text-xs uppercase tracking-wider">
-                Key Scheme Benefits & Guarantee
+                {t('financial.keyBenefitsTitle')}
               </span>
               <ul className="space-y-1.5 text-slate-600">
                 {scheme.key_benefits?.map((item, idx) => (
@@ -389,21 +393,21 @@ export const Financial = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* EMI Summary Card */}
         <Card
-          title="EMI Summary"
-          subtitle="Post-moratorium amortized monthly installment calculation"
+          title={t('financial.emiSummaryTitle')}
+          subtitle={t('financial.emiSummarySubtitle')}
         >
           <div className="space-y-3.5 text-xs text-slate-700">
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">Sanctioned Loan Principal:</span>
+              <span className="text-slate-600">{t('financial.sanctionedPrincipal')}</span>
               <span className="font-bold text-slate-900">
                 {formatCurrency(emi.principal_amount)}
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl">
               <div>
-                <span className="font-bold text-emerald-950 block">Monthly EMI:</span>
+                <span className="font-bold text-emerald-950 block">{t('financial.monthlyEmi')}</span>
                 <span className="text-[11px] text-emerald-700">
-                  Applicable for {emi.post_moratorium_tenure_months} months post-moratorium
+                  {t('financial.emiApplicableFor', { months: emi.post_moratorium_tenure_months })}
                 </span>
               </div>
               <span className="text-base font-extrabold text-emerald-900">
@@ -411,13 +415,13 @@ export const Financial = () => {
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">Total Interest Payable:</span>
+              <span className="text-slate-600">{t('financial.totalInterest')}</span>
               <span className="font-bold text-amber-800">
                 {formatCurrency(emi.total_interest_payable)}
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">Total Repayment Amount:</span>
+              <span className="text-slate-600">{t('financial.totalRepayment')}</span>
               <span className="font-bold text-slate-900">
                 {formatCurrency(emi.total_repayment_amount)}
               </span>
@@ -427,32 +431,37 @@ export const Financial = () => {
 
         {/* Moratorium Handling Card */}
         <Card
-          title="Moratorium Grace Period"
-          subtitle="Statutory gestation protection during business setup"
+          title={t('financial.moratoriumTitle')}
+          subtitle={t('financial.moratoriumSubtitle')}
         >
           <div className="space-y-3.5 text-xs text-slate-700">
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">Moratorium Duration:</span>
-              <span className="font-bold text-slate-900">{emi.moratorium_months} Months</span>
+              <span className="text-slate-600">{t('financial.moratoriumDuration')}</span>
+              <span className="font-bold text-slate-900">
+                {emi.moratorium_months} {t('financial.months')}
+              </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">Principal Due in Moratorium:</span>
-              <span className="font-bold text-emerald-800">₹0 (Zero Principal)</span>
+              <span className="text-slate-600">{t('financial.principalInMoratorium')}</span>
+              <span className="font-bold text-emerald-800">{t('financial.zeroPrincipal')}</span>
             </div>
             <div className="flex justify-between items-center p-3 bg-amber-50/70 border border-amber-200 rounded-xl">
-              <span className="text-slate-700">Simple Monthly Interest:</span>
+              <span className="text-slate-700">{t('financial.simpleInterest')}</span>
               <span className="font-bold text-amber-900">
                 {formatCurrency(emi.moratorium_monthly_interest)}
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-slate-600">First Full EMI Starts:</span>
-              <span className="font-bold text-slate-900">Month {emi.moratorium_months + 1}</span>
+              <span className="text-slate-600">{t('financial.firstEmiStarts')}</span>
+              <span className="font-bold text-slate-900">
+                {t('financial.monthNum', { month: emi.moratorium_months + 1 })}
+              </span>
             </div>
             <p className="text-slate-500 pt-1 leading-relaxed text-[11px]">
-              During the {emi.moratorium_months}-month grace period, only simple interest is serviced.
-              Principal amortization begins at Month {emi.moratorium_months + 1}, giving the enterprise
-              time to ramp up sales and establish positive operating cashflow.
+              {t('financial.moratoriumExpl', {
+                months: emi.moratorium_months,
+                startMonth: emi.moratorium_months + 1,
+              })}
             </p>
           </div>
         </Card>
@@ -460,15 +469,15 @@ export const Financial = () => {
 
       {/* 4. REPAYMENT SCHEDULE WITH MONTHLY & QUARTERLY VIEWS */}
       <Card
-        title="Repayment Schedule"
+        title={t('financial.repaymentTitle')}
         subtitle={
           repaymentView === 'monthly'
-            ? `Deterministic month-by-month amortization schedule (${scheduleArray.length} total months)`
-            : `Deterministic quarterly roll-up presentation (${quarterlyScheduleArray.length} total quarters)`
+            ? t('financial.repaymentMonthlySub', { count: scheduleArray.length })
+            : t('financial.repaymentQuarterlySub', { count: quarterlyScheduleArray.length })
         }
         badge={
           <Badge variant="neutral" size="sm">
-            Indicative Repayment Schedule
+            {t('financial.scheduleBadge')}
           </Badge>
         }
         action={
@@ -487,7 +496,7 @@ export const Financial = () => {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Monthly View
+                {t('financial.monthlyViewBtn')}
               </button>
               <button
                 type="button"
@@ -501,7 +510,7 @@ export const Financial = () => {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                Quarterly View
+                {t('financial.quarterlyViewBtn')}
               </button>
             </div>
 
@@ -513,8 +522,8 @@ export const Financial = () => {
               icon={showFullSchedule ? ChevronUp : ChevronDown}
             >
               {showFullSchedule
-                ? `Show First ${initialDisplayCount}`
-                : `View All (${activeSchedule.length})`}
+                ? t('financial.showFirstBtn', { count: initialDisplayCount })
+                : t('financial.viewAllBtn', { count: activeSchedule.length })}
             </Button>
           </div>
         }
@@ -559,23 +568,23 @@ export const Financial = () => {
                 <tr className="border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
                   {repaymentView === 'monthly' ? (
                     <>
-                      <th className="py-2.5 px-3">Month</th>
-                      <th className="py-2.5 px-3">Type</th>
-                      <th className="py-2.5 px-3 text-right">Opening Balance</th>
-                      <th className="py-2.5 px-3 text-right">EMI / Payment</th>
-                      <th className="py-2.5 px-3 text-right">Principal</th>
-                      <th className="py-2.5 px-3 text-right">Interest</th>
-                      <th className="py-2.5 px-3 text-right">Remaining Balance</th>
+                      <th className="py-2.5 px-3">{t('financial.tableMonth')}</th>
+                      <th className="py-2.5 px-3">{t('financial.tableType')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableOpening')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableEmiPayment')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tablePrincipal')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableInterest')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableRemaining')}</th>
                     </>
                   ) : (
                     <>
-                      <th className="py-2.5 px-3">Quarter</th>
-                      <th className="py-2.5 px-3">Phase</th>
-                      <th className="py-2.5 px-3 text-right">Opening Balance</th>
-                      <th className="py-2.5 px-3 text-right">Total Payment (Quarter)</th>
-                      <th className="py-2.5 px-3 text-right">Principal Paid</th>
-                      <th className="py-2.5 px-3 text-right">Interest Paid</th>
-                      <th className="py-2.5 px-3 text-right">Remaining Balance</th>
+                      <th className="py-2.5 px-3">{t('financial.tableQuarter')}</th>
+                      <th className="py-2.5 px-3">{t('financial.tablePhase')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableOpening')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableTotalPayment')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tablePrincipalPaid')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableInterestPaid')}</th>
+                      <th className="py-2.5 px-3 text-right">{t('financial.tableRemaining')}</th>
                     </>
                   )}
                 </tr>
@@ -590,16 +599,16 @@ export const Financial = () => {
                         }`}
                       >
                         <td className="py-2.5 px-3 font-semibold text-slate-800">
-                          Month {row.month}
+                          {t('financial.monthNum', { month: row.month })}
                         </td>
                         <td className="py-2.5 px-3">
                           {row.is_moratorium ? (
                             <Badge variant="warning" size="sm">
-                              Moratorium
+                              {t('financial.moratoriumTag')}
                             </Badge>
                           ) : (
                             <Badge variant="primary" size="sm">
-                              Regular EMI
+                              {t('financial.regularEmiTag')}
                             </Badge>
                           )}
                         </td>
@@ -628,16 +637,16 @@ export const Financial = () => {
                         }`}
                       >
                         <td className="py-2.5 px-3 font-semibold text-slate-800">
-                          Quarter {row.quarter} (Yr {row.year})
+                          {t('financial.tableQuarter')} {row.quarter} (Yr {row.year})
                         </td>
                         <td className="py-2.5 px-3">
                           {row.is_moratorium ? (
                             <Badge variant="warning" size="sm">
-                              Moratorium Quarter
+                              {t('financial.moratoriumQuarterTag')}
                             </Badge>
                           ) : (
                             <Badge variant="primary" size="sm">
-                              Amortized Payment
+                              {t('financial.amortizedPaymentTag')}
                             </Badge>
                           )}
                         </td>
@@ -669,8 +678,10 @@ export const Financial = () => {
                 onClick={() => setShowFullSchedule(true)}
                 className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 cursor-pointer"
               >
-                + Display all remaining {activeSchedule.length - initialDisplayCount}{' '}
-                {repaymentView === 'monthly' ? 'installment months' : 'quarters'}
+                {t('financial.displayRemaining', {
+                  count: activeSchedule.length - initialDisplayCount,
+                  unit: repaymentView === 'monthly' ? t('financial.monthsUnit') : t('financial.quartersUnit'),
+                })}
               </button>
             </div>
           )}
@@ -679,11 +690,11 @@ export const Financial = () => {
 
       {/* 5. WORKING CAPITAL PLANNING SECTION */}
       <Card
-        title="Working Capital & Operational Expense Breakdown"
-        subtitle="Itemized operational cost requirements and recommended liquidity buffer"
+        title={t('financial.workingCapitalTitle')}
+        subtitle={t('financial.workingCapitalSubtitle')}
         badge={
           <Badge variant="neutral" size="sm">
-            Demo/Indicative Estimate
+            {t('financial.demoEstimateBadge')}
           </Badge>
         }
       >
@@ -692,8 +703,8 @@ export const Financial = () => {
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2.5 text-xs text-slate-600">
             <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
             <span>
-              <strong>Planning Notice: </strong>
-              The working-capital calculation is presented as an indicative operational estimate for cashflow planning, not a guaranteed funding sanction. Ratios are aligned to standard priority-sector enterprise benchmarks.
+              <strong>{t('financial.planningNoticeTitle')}</strong>
+              {t('financial.planningNoticeText')}
             </span>
           </div>
 
@@ -701,37 +712,37 @@ export const Financial = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-emerald-800 uppercase block">
-                Estimated Monthly Operating Cost
+                {t('financial.monthlyOperatingCost')}
               </span>
               <span className="text-2xl font-extrabold text-emerald-950">
                 {formatCurrency(monthlyOpex)}
               </span>
               <span className="text-[11px] text-emerald-700 block">
-                9.5% of total project cost
+                {t('financial.monthlyOpexSub')}
               </span>
             </div>
 
             <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-amber-800 uppercase block">
-                Recommended 3-Month Reserve
+                {t('financial.recommendedReserve')}
               </span>
               <span className="text-2xl font-extrabold text-amber-950">
                 {formatCurrency(recommendedReserve)}
               </span>
               <span className="text-[11px] text-amber-700 block">
-                Liquidity buffer for harvest cycles
+                {t('financial.reserveSub')}
               </span>
             </div>
 
             <div className="p-4 bg-sky-50/70 border border-sky-200 rounded-xl space-y-1">
               <span className="text-xs font-semibold text-sky-800 uppercase block">
-                Total Working Capital Requirement
+                {t('financial.totalWorkingCapital')}
               </span>
               <span className="text-2xl font-extrabold text-sky-950">
                 {formatCurrency(totalWorkingCapital)}
               </span>
               <span className="text-[11px] text-sky-700 block">
-                Initial operational liquidity
+                {t('financial.workingCapitalSub')}
               </span>
             </div>
           </div>
@@ -741,60 +752,60 @@ export const Financial = () => {
             <div className="space-y-2.5 text-xs">
               <h4 className="font-bold text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
                 <Boxes className="w-3.5 h-3.5 text-emerald-700" />
-                Itemized Operating Expenses (Monthly OPEX):
+                {t('financial.itemizedOpexTitle')}
               </h4>
               <div className="space-y-2">
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Boxes className="w-3.5 h-3.5 text-slate-400" />
-                    Inventory Requirement:
+                    {t('financial.inventory')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(inventoryReq)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Users className="w-3.5 h-3.5 text-slate-400" />
-                    Labour / Personnel:
+                    {t('financial.labour')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(labourCost)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Building className="w-3.5 h-3.5 text-slate-400" />
-                    Rent:
+                    {t('financial.rent')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(rentCost)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Zap className="w-3.5 h-3.5 text-slate-400" />
-                    Utilities:
+                    {t('financial.utilities')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(utilitiesCost)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Truck className="w-3.5 h-3.5 text-slate-400" />
-                    Transportation / Logistics:
+                    {t('financial.transportation')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(transportCost)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Megaphone className="w-3.5 h-3.5 text-slate-400" />
-                    Marketing:
+                    {t('financial.marketing')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(marketingCost)}</span>
                 </div>
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
                   <span className="text-slate-600 flex items-center gap-2">
                     <Briefcase className="w-3.5 h-3.5 text-slate-400" />
-                    Other Operating Expenses:
+                    {t('financial.other')}
                   </span>
                   <span className="font-bold text-slate-900">{formatCurrency(otherCost)}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl font-bold">
-                  <span className="text-emerald-950">Total Monthly Operating Cost:</span>
+                  <span className="text-emerald-950">{t('financial.totalMonthlyCost')}</span>
                   <span className="text-emerald-900 text-sm">{formatCurrency(monthlyOpex)}</span>
                 </div>
               </div>
@@ -804,35 +815,35 @@ export const Financial = () => {
             <div className="space-y-2.5 text-xs">
               <h4 className="font-bold text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
                 <TrendingUp className="w-3.5 h-3.5 text-amber-700" />
-                Cashflow Viability & Revenue Benchmarks:
+                {t('financial.viabilityTitle')}
               </h4>
               <div className="space-y-2">
                 <div className="p-3 bg-amber-50/70 border border-amber-200 rounded-xl space-y-1">
-                  <span className="text-slate-600 block">Recommended Working Capital Reserve:</span>
+                  <span className="text-slate-600 block">{t('financial.recommendedReserveCard')}</span>
                   <span className="text-lg font-extrabold text-amber-900 block">
                     {formatCurrency(recommendedReserve)}
                   </span>
                   <p className="text-[11px] text-amber-800">
-                    Provides a 3-month operational buffer to absorb seasonal rural harvest credit cycles.
+                    {t('financial.reserveExplanation')}
                   </p>
                 </div>
 
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
-                  <span className="text-slate-600">Break-Even Monthly Revenue:</span>
+                  <span className="text-slate-600">{t('financial.breakEvenRevenue')}</span>
                   <span className="font-bold text-slate-900">
                     {formatCurrency(working_capital.break_even_monthly_revenue)}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200">
-                  <span className="text-slate-600">Projected Monthly Revenue:</span>
+                  <span className="text-slate-600">{t('financial.projectedRevenue')}</span>
                   <span className="font-bold text-emerald-800">
                     {formatCurrency(working_capital.projected_monthly_revenue)}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center p-2.5 bg-emerald-50/70 border border-emerald-200 rounded-xl">
-                  <span className="font-bold text-emerald-950">Projected Net Monthly Profit:</span>
+                  <span className="font-bold text-emerald-950">{t('financial.projectedProfit')}</span>
                   <span className="font-extrabold text-emerald-900 text-sm">
                     {formatCurrency(working_capital.projected_monthly_net_profit)}
                   </span>
@@ -846,24 +857,24 @@ export const Financial = () => {
       {/* 6. AI FINANCIAL EXPLANATION (Preserved from Phase B4) */}
       {analysisData?.ai_explanation && (
         <Card
-          title="AI Advisory: Financial Structuring & Scheme Explained"
-          subtitle="Clear breakdown of how your debt is structured and why the moratorium benefits you"
+          title={t('financial.aiAdvisoryFinTitle')}
+          subtitle={t('financial.aiAdvisoryFinSubtitle')}
           badge={
             <Badge variant="primary" size="sm">
-              AI Advisory Explanation
+              {t('financial.aiAdvisoryFinBadge')}
             </Badge>
           }
           className="border-emerald-200 bg-emerald-50/20"
         >
           <div className="space-y-3.5 text-xs text-slate-700">
             <div className="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
-              <span className="font-bold text-slate-900 block">Capital & Equity Structure:</span>
+              <span className="font-bold text-slate-900 block">{t('financial.equityStructureTitle')}</span>
               <p className="leading-relaxed text-slate-600">
                 {analysisData.ai_explanation.financial_explanation}
               </p>
             </div>
             <div className="p-3.5 bg-white rounded-xl border border-slate-200 space-y-1">
-              <span className="font-bold text-slate-900 block">Moratorium Grace Period Impact:</span>
+              <span className="font-bold text-slate-900 block">{t('financial.moratoriumImpactTitle')}</span>
               <p className="leading-relaxed text-slate-600">
                 {analysisData.ai_explanation.scheme_explanation}
               </p>
@@ -875,9 +886,8 @@ export const Financial = () => {
       {/* 7. DISCLAIMER FOOTER */}
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-500 leading-relaxed text-center">
         <p>
-          <strong>Statutory Disclaimer: </strong>
-          Indicative calculation for planning purposes. Verify applicable scheme terms before making financial decisions.
-          All figures are computed deterministically under established micro-credit norms.
+          <strong>{t('financial.footerDisclaimerTitle')}</strong>
+          {t('financial.footerDisclaimerText')}
         </p>
       </div>
 
@@ -888,7 +898,7 @@ export const Financial = () => {
           onClick={() => navigate('/analysis')}
           icon={RotateCcw}
         >
-          ← Back to Advisory Analysis
+          {t('financial.backToAnalysisBtn')}
         </Button>
         <Button
           variant="primary"
@@ -897,7 +907,7 @@ export const Financial = () => {
           icon={ArrowRight}
           className="w-full sm:w-auto font-bold shadow-md"
         >
-          View Final Business Plan & Download Dossier
+          {t('financial.viewFinalReportBtn')}
         </Button>
       </div>
     </div>

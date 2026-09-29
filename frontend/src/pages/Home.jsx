@@ -18,10 +18,12 @@ import { Button, Card, Badge } from '../components/common';
 import { DEFAULT_DEMO_SCENARIO } from '../data/defaultData';
 import { formatCurrency } from '../utils/formatters';
 import { useBizSahayak } from '../hooks/useBizSahayak';
+import { useTranslation } from '../context/LanguageContext';
 
 export const Home = () => {
   const navigate = useNavigate();
   const { setInputData } = useBizSahayak();
+  const { t, getCategoryLabel } = useTranslation();
 
   const handleStartAnalysis = () => {
     navigate('/business-input');
@@ -38,44 +40,26 @@ export const Home = () => {
 
   const features = [
     {
-      title: 'Hyper-Local Market Insights',
-      description:
-        'Evaluate catchment radius, nearby village demand clusters, and consumer purchasing patterns tailored to your location.',
+      title: t('home.feat1Title'),
+      description: t('home.feat1Desc'),
       icon: Compass,
       color: 'bg-emerald-50 text-emerald-800 border-emerald-200',
     },
     {
-      title: 'Business Opportunity Analysis',
-      description:
-        'Discover high-potential product categories, local supply chain advantages, and gaps left by existing competitors.',
-      icon: TrendingUp,
-      color: 'bg-amber-50 text-amber-800 border-amber-200',
-    },
-    {
-      title: 'Financial Planning',
-      description:
-        'Deterministic project sizing where your available margin represents 10% and institutional debt covers up to 90%.',
+      title: t('home.feat2Title'),
+      description: t('home.feat2Desc'),
       icon: Calculator,
       color: 'bg-sky-50 text-sky-800 border-sky-200',
     },
     {
-      title: 'Scheme Recommendation',
-      description:
-        'Automatic routing to government lending schemes (Micro Finance Scheme vs. Term Loan Scheme) based on verified cost thresholds.',
-      icon: ShieldCheck,
-      color: 'bg-indigo-50 text-indigo-800 border-indigo-200',
-    },
-    {
-      title: 'EMI & Repayment Planning',
-      description:
-        'Transparent monthly installment calculations with moratorium grace period guidelines so cashflow stays healthy from day one.',
+      title: t('home.feat3Title'),
+      description: t('home.feat3Desc'),
       icon: Calendar,
       color: 'bg-teal-50 text-teal-800 border-teal-200',
     },
     {
-      title: 'Downloadable Business Plan',
-      description:
-        'Export a professional, bank-ready PDF appraisal report formatted in simple plain language for immediate loan submission.',
+      title: t('home.feat4Title'),
+      description: t('home.feat4Desc'),
       icon: FileCheck2,
       color: 'bg-rose-50 text-rose-800 border-rose-200',
     },
@@ -87,20 +71,20 @@ export const Home = () => {
       <section className="text-center max-w-3xl mx-auto pt-4 sm:pt-10 space-y-6">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/90 border border-emerald-200 text-emerald-950 text-xs font-bold shadow-2xs">
           <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
-          <span>AI-Driven Rural Micro-Entrepreneur Advisory</span>
+          <span>{t('home.heroBadge')}</span>
         </div>
 
         <div className="space-y-3">
           <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-tight">
-            Biz<span className="text-amber-600">Sahayak</span>
+            Udyam<span className="text-amber-600">Saarthi</span>
           </h1>
-          <p className="text-xl sm:text-2xl font-bold text-emerald-900 tracking-tight">
-            "From Business Idea → Business Insight → Financial Plan."
+          <p className="text-lg sm:text-2xl font-bold text-emerald-900 tracking-tight">
+            "{t('nav.tagline')}"
           </p>
         </div>
 
-        <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-          Turn your business idea into a localized feasibility report and financial plan.
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          {t('home.heroSubtitle')}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -109,18 +93,18 @@ export const Home = () => {
             size="lg"
             onClick={handleStartAnalysis}
             icon={ArrowRight}
-            className="w-full sm:w-auto text-base px-8 py-3.5 shadow-md hover:shadow-lg"
+            className="w-full sm:w-auto text-base px-8 py-3.5 shadow-md hover:shadow-lg font-bold"
           >
-            Start Your Business Analysis
+            {t('home.startPlanningBtn')}
           </Button>
 
           <Button
             variant="outline"
             size="lg"
             onClick={handleLaunchDemo}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto font-semibold"
           >
-            Explore Anand, Gujarat Demo
+            {t('input.loadDemoBtn')}
           </Button>
         </div>
       </section>
@@ -129,10 +113,10 @@ export const Home = () => {
       <section className="max-w-4xl mx-auto">
         <Card
           className="border-emerald-200 bg-gradient-to-br from-emerald-50/70 via-white to-amber-50/40"
-          title="Default Evaluation Scenario"
+          title="SIH26091 Benchmark Evaluation Scenario"
           badge={
             <Badge variant="primary" size="sm">
-              SIH26091 Benchmark
+              {t('nav.sihBadge')}
             </Badge>
           }
         >
@@ -143,7 +127,7 @@ export const Home = () => {
               </div>
               <div>
                 <span className="text-xs text-slate-500 font-semibold block uppercase">
-                  Location
+                  {t('analysis.locationTag')}
                 </span>
                 <span className="text-sm sm:text-base font-bold text-slate-800">
                   {DEFAULT_DEMO_SCENARIO.location}
@@ -157,10 +141,10 @@ export const Home = () => {
               </div>
               <div>
                 <span className="text-xs text-slate-500 font-semibold block uppercase">
-                  Category
+                  {t('analysis.categoryTag')}
                 </span>
                 <span className="text-sm sm:text-base font-bold text-slate-800">
-                  {DEFAULT_DEMO_SCENARIO.business_category}
+                  {getCategoryLabel(DEFAULT_DEMO_SCENARIO.business_category)}
                 </span>
               </div>
             </div>
@@ -171,7 +155,7 @@ export const Home = () => {
               </div>
               <div>
                 <span className="text-xs text-slate-500 font-semibold block uppercase">
-                  Margin Capital
+                  {t('analysis.capitalTag')}
                 </span>
                 <span className="text-sm sm:text-base font-bold text-emerald-800">
                   {formatCurrency(DEFAULT_DEMO_SCENARIO.available_capital)}
@@ -184,7 +168,7 @@ export const Home = () => {
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
               <span>
-                Deterministic sizing: <strong className="text-slate-800">₹10 Lakh Project</strong>{' '}
+                {t('financial.deterministicBadge')}: <strong className="text-slate-800">₹10 Lakh Project Cost</strong>{' '}
                 → <strong className="text-emerald-900">{DEFAULT_DEMO_SCENARIO.scheme_name}</strong>
               </span>
             </span>
@@ -194,7 +178,7 @@ export const Home = () => {
               onClick={handleLaunchDemo}
               icon={ArrowRight}
             >
-              Load This Case
+              {t('input.loadDemoBtn')}
             </Button>
           </div>
         </Card>
@@ -204,14 +188,14 @@ export const Home = () => {
       <section className="max-w-5xl mx-auto space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Complete End-to-End Advisory Journey
+            {t('home.featuresTitle')}
           </h2>
           <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto">
-            Everything a rural entrepreneur needs to validate an idea and secure institutional credit.
+            {t('home.featuresSubtitle')}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {features.map((feat, idx) => {
             const Icon = feat.icon;
             return (
@@ -240,10 +224,10 @@ export const Home = () => {
         <div className="relative z-10 space-y-4 text-center sm:text-left sm:flex sm:items-center sm:justify-between sm:space-y-0 gap-6">
           <div className="space-y-2 max-w-lg">
             <h3 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Ready to structure your business?
+              {t('home.ctaTitle')}
             </h3>
             <p className="text-emerald-100 text-sm leading-relaxed">
-              Enter your location, select your enterprise type, and provide your available margin capital.
+              {t('home.ctaSubtitle')}
             </p>
           </div>
           <Button
@@ -253,7 +237,7 @@ export const Home = () => {
             icon={ArrowRight}
             className="w-full sm:w-auto shrink-0 shadow-lg text-amber-950 font-bold"
           >
-            Start Your Business Analysis
+            {t('home.ctaBtn')}
           </Button>
         </div>
       </section>

@@ -91,7 +91,7 @@ def generate_pdf_report(data: Dict[str, Any]) -> bytes:
 
     story = []
 
-    story.append(Paragraph("BizSahayak / UdyamSaarthi", title_style))
+    story.append(Paragraph("UdyamSaarthi", title_style))
     story.append(Paragraph("From Business Idea &rarr; Business Insight &rarr; Financial Plan", tagline_style))
     story.append(Paragraph("SIH26091 &bull; AI-Driven Hyper-Local Business Advisory & Financial Structuring Dossier", body_style))
     story.append(Spacer(1, 8))

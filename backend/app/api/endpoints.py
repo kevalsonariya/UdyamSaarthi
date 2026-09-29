@@ -286,7 +286,7 @@ async def generate_report_pdf(request: BusinessInputRequest):
     try:
         full_data = perform_complete_analysis(request)
         pdf_bytes = generate_pdf_report(full_data.dict())
-        filename = f"BizSahayak_Plan_{request.business_category.replace(' ', '_')}_{int(request.available_capital)}.pdf"
+        filename = f"UdyamSaarthi_Plan_{request.business_category.replace(' ', '_')}_{int(request.available_capital)}.pdf"
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
