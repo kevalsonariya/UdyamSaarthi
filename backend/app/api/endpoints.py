@@ -351,12 +351,19 @@ async def calculate_wc(request: WorkingCapitalCalculateRequest):
 @router.post("/report/generate")
 async def generate_report_pdf(request: BusinessInputRequest):
     """
-    Renders and streams downloadable ReportLab PDF dossier.
+    Phase B11: Renders and streams downloadable multilingual ReportLab PDF dossier.
+    Supports English (en), Hindi (hi), Gujarati (gu) via 'language' field.
+    Financial values are invariant — only text labels change per language.
     """
     try:
+        lang = (getattr(request, "language", "en") or "en").lower().strip()
+        if lang not in ("en", "hi", "gu"):
+            lang = "en"
+        lang_tag = {"en": "EN", "hi": "HI", "gu": "GU"}[lang]
         full_data = perform_complete_analysis(request)
-        pdf_bytes = generate_pdf_report(full_data.dict())
-        filename = f"UdyamSaarthi_Plan_{request.business_category.replace(' ', '_')}_{int(request.available_capital)}.pdf"
+        pdf_bytes = generate_pdf_report(full_data.model_dump(), language=lang)
+        safe_cat = request.business_category.replace(" ", "_").replace("&", "and")
+        filename = f"UdyamSaarthi_Business_Plan_{lang_tag}.pdf"
         return Response(
             content=pdf_bytes,
             media_type="application/pdf",
