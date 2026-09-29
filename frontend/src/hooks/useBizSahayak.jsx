@@ -21,12 +21,27 @@ export const BizSahayakProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const clearAnalysisData = () => setAnalysisData(null);
+  const clearFinancialData = () => setFinancialData(null);
+  const clearAllAnalysis = () => {
+    setAnalysisData(null);
+    setFinancialData(null);
+  };
+
+  const updateInputData = (newInput) => {
+    setInputData(newInput);
+    setAnalysisData(null);
+    setFinancialData(null);
+  };
+
   const resetToDemoScenario = () => {
     setInputData({
       location: DEFAULT_DEMO_SCENARIO.location,
       business_category: DEFAULT_DEMO_SCENARIO.business_category,
       available_capital: DEFAULT_DEMO_SCENARIO.available_capital,
     });
+    setAnalysisData(null);
+    setFinancialData(null);
   };
 
   return (
@@ -34,10 +49,14 @@ export const BizSahayakProvider = ({ children }) => {
       value={{
         inputData,
         setInputData,
+        updateInputData,
         analysisData,
         setAnalysisData,
+        clearAnalysisData,
         financialData,
         setFinancialData,
+        clearFinancialData,
+        clearAllAnalysis,
         loading,
         setLoading,
         error,

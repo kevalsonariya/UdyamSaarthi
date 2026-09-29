@@ -624,12 +624,12 @@ export const Report = () => {
         subtitle={t('analysis.recommendationSubtitle')}
         badge={
           <Badge variant="success">
-            {analysisData?.ai_explanation?.is_ai_generated ? t('report.aiRoadmapBadge') : t('report.advisoryRoadmapBadge')}
+            {analysisData?.ai_explanation?.is_ai_generated && (!analysisData.input || analysisData.input.business_category === category) ? t('report.aiRoadmapBadge') : t('report.advisoryRoadmapBadge')}
           </Badge>
         }
       >
         <div className="space-y-3 text-xs text-slate-700">
-          {(analysisData?.ai_explanation?.next_steps || [
+          {((!analysisData?.input || (analysisData.input.business_category === category && Number(analysisData.input.available_capital) === capital)) && analysisData?.ai_explanation?.next_steps ? analysisData.ai_explanation.next_steps : [
             `Submit this compiled UdyamSaarthi business plan dossier to the designated nodal rural credit officer under ${scheme.scheme_name}.`,
             "Procure primary machinery and install essential fittings using the initial capital drawdown during Month 1.",
             `Utilize the ${scheme.moratorium_months}-month moratorium grace period to build operating reserves before regular principal repayments begin.`,

@@ -245,6 +245,7 @@ export const translations = {
       recommendedNextActions: 'Recommended Next Actions for Promoter:',
       modifyInputBtn: 'Modify Business Input',
       proceedToFinancialBtn: 'Proceed to Financial Structuring & Scheme Selection',
+      updatingAnalysis: 'Updating local business analysis...',
     },
 
     // Financial Page
@@ -661,6 +662,7 @@ export const translations = {
       recommendedNextActions: 'प्रवर्तक के लिए अनुशंसित अगले कदम:',
       modifyInputBtn: 'व्यापार इनपुट संशोधित करें',
       proceedToFinancialBtn: 'वित्तीय योजना एवं ऋण चयन की ओर बढ़ें',
+      updatingAnalysis: 'स्थानीय व्यापार विश्लेषण अपडेट हो रहा है...',
     },
 
     // Financial Page
@@ -1073,6 +1075,7 @@ export const translations = {
       recommendedNextActions: 'પ્રમોટર માટે ભલામણ કરેલ આગળના પગલાં:',
       modifyInputBtn: 'બિઝનેસ ઇનપુટ સુધારો',
       proceedToFinancialBtn: 'નાણાકીય આયોજન અને યોજના પસંદગી તરફ આગળ વધો',
+      updatingAnalysis: 'સ્થાનિક વ્યાપાર વિશ્લેષણ અપડેટ થઈ રહ્યું છે...',
     },
 
     // Financial Page

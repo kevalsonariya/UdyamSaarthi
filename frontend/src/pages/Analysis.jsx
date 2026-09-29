@@ -46,56 +46,106 @@ const SEGMENT_COLORS = ['#15803d', '#d97706', '#0284c7'];
 export const Analysis = () => {
   const navigate = useNavigate();
   const { inputData, analysisData, setAnalysisData } = useBizSahayak();
-  const { t, getCategoryLabel } = useTranslation();
+  const { t, getCategoryLabel, language } = useTranslation();
 
-  const [loading, setLoading] = useState(!analysisData);
-  const [error, setError] = useState(null);
-
-  const location = inputData.location || 'Anand, Gujarat';
-  const category = inputData.business_category || 'Textile & Clothing';
+  const location = (inputData.location || 'Anand, Gujarat').trim();
+  const category = (inputData.business_category || 'Textile & Clothing').trim();
   const capital = Number(inputData.available_capital) || 100000;
 
-  const fetchAnalysis = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await bizApi.analyzeBusiness({
-        location,
-        business_category: category,
-        available_capital: capital,
-      });
-      setAnalysisData(data);
-    } catch (err) {
-      console.error('Failed to load analysis:', err);
-      setError(t('analysis.errorMessage'));
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Verify that currently held analysisData matches the active input parameters
+  const isMatching = Boolean(
+    analysisData &&
+    analysisData.input &&
+    analysisData.input.location === location &&
+    analysisData.input.business_category === category &&
+    Number(analysisData.input.available_capital) === capital &&
+    (!analysisData.input.language || analysisData.input.language === language)
+  );
+
+  const [loading, setLoading] = useState(!isMatching);
+  const [error, setError] = useState(null);
+  const activeRequestIdRef = React.useRef(null);
 
   useEffect(() => {
-    // If not already in cache or if input changed, fetch
-    if (!analysisData) {
-      fetchAnalysis();
+    // If the currently stored analysisData already matches the inputs, no re-fetch needed
+    if (isMatching) {
+      setLoading(false);
+      setError(null);
+      return;
     }
-  }, [location, category, capital]);
 
-  if (loading) {
-    return <AnalysisSkeleton />;
+    // New/different parameters requested: clear old state immediately & initiate fresh analysis
+    setLoading(true);
+    setError(null);
+
+    const controller = new AbortController();
+    const requestId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `req_${Date.now()}_${Math.random()}`;
+    activeRequestIdRef.current = requestId;
+
+    const runFetch = async () => {
+      try {
+        const data = await bizApi.analyzeBusiness({
+          location,
+          business_category: category,
+          available_capital: capital,
+          language,
+          request_id: requestId,
+          location_detail: inputData.location_detail,
+        }, { signal: controller.signal });
+
+        // Race condition guard: only the latest active request is allowed to commit to state
+        if (activeRequestIdRef.current === requestId) {
+          setAnalysisData(data);
+          setLoading(false);
+          setError(null);
+        }
+      } catch (err) {
+        if (err.name === 'AbortError' || err.isAborted) {
+          // Superseded by a newer request; discard silently
+          return;
+        }
+        if (activeRequestIdRef.current === requestId) {
+          console.error('Failed to load analysis:', err);
+          setError(err.message || t('analysis.errorMessage') || 'Unable to generate analysis for the selected business. Please try again.');
+          setLoading(false);
+        }
+      }
+    };
+
+    runFetch();
+
+    return () => {
+      controller.abort();
+    };
+  }, [location, category, capital, language, isMatching]);
+
+  // Loading state: do NOT show mixed old and new data while updating
+  if (loading || !isMatching) {
+    return <AnalysisSkeleton message={t('analysis.updatingAnalysis') || 'Updating local business analysis...'} />;
   }
 
+  // Error state: show clean retry UI if analysis generation failed
   if (error || !analysisData) {
     return (
       <div className="py-12">
         <ErrorState
           title={t('analysis.errorTitle')}
-          message={error || t('analysis.errorMessage')}
+          message={error || t('analysis.errorMessage') || 'Unable to generate analysis for the selected business. Please try again.'}
           retryLabel={t('analysis.retryBtn')}
-          onRetry={fetchAnalysis}
+          onRetry={() => {
+            setError(null);
+            setLoading(true);
+            setAnalysisData(null);
+          }}
         />
       </div>
     );
   }
+
+  // Single Source of Truth: All sections render strictly from the matching atomic analysisData
+  const displayLocation = analysisData.location || analysisData.input?.location || location;
+  const displayCategory = analysisData.business_category || analysisData.input?.business_category || category;
+  const displayCapital = analysisData.available_capital ?? analysisData.input?.available_capital ?? capital;
 
   const {
     is_verified,
@@ -120,8 +170,8 @@ export const Analysis = () => {
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header */}
       <SectionHeader
-        title={t('analysis.headerTitle', { category: getCategoryLabel(category) })}
-        subtitle={t('analysis.headerSubtitle', { location })}
+        title={t('analysis.headerTitle', { category: getCategoryLabel(displayCategory) })}
+        subtitle={t('analysis.headerSubtitle', { location: displayLocation })}
         icon={Compass}
         badge={
           <Badge variant="primary" size="md">
@@ -165,7 +215,7 @@ export const Analysis = () => {
               <span className="text-xs text-slate-500 font-semibold block uppercase">
                 {t('analysis.locationTag')}
               </span>
-              <span className="text-sm font-bold text-slate-900">{location}</span>
+              <span className="text-sm font-bold text-slate-900">{displayLocation}</span>
             </div>
           </div>
 
@@ -177,7 +227,7 @@ export const Analysis = () => {
               <span className="text-xs text-slate-500 font-semibold block uppercase">
                 {t('analysis.categoryTag')}
               </span>
-              <span className="text-sm font-bold text-slate-900">{getCategoryLabel(category)}</span>
+              <span className="text-sm font-bold text-slate-900">{getCategoryLabel(displayCategory)}</span>
             </div>
           </div>
 
@@ -189,7 +239,7 @@ export const Analysis = () => {
               <span className="text-xs text-slate-500 font-semibold block uppercase">
                 {t('analysis.capitalTag')}
               </span>
-              <span className="text-sm font-bold text-emerald-800">{formatCurrency(capital)}</span>
+              <span className="text-sm font-bold text-emerald-800">{formatCurrency(displayCapital)}</span>
             </div>
           </div>
         </div>
@@ -337,23 +387,34 @@ export const Analysis = () => {
         title={t('analysis.opportunitiesTitle')}
         subtitle={t('analysis.opportunitiesSubtitle')}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {opportunities?.map((opp, idx) => (
             <div
               key={idx}
-              className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between space-y-3"
+              className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between space-y-3 hover:border-slate-300 transition-colors"
             >
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="p-2 rounded-lg bg-emerald-100 text-emerald-800">
                     <Lightbulb className="w-4 h-4" />
                   </div>
                   <Badge variant="primary" size="sm">
-                    {opp.impact}
+                    {opp.type || opp.impact || 'Opportunity'}
                   </Badge>
                 </div>
                 <h4 className="text-xs font-bold text-slate-900 leading-snug">{opp.title}</h4>
                 <p className="text-xs text-slate-600 leading-relaxed">{opp.description}</p>
+                {opp.reason && (
+                  <p className="text-[11px] text-slate-500 bg-white p-2 rounded-lg border border-slate-100">
+                    <span className="font-semibold text-slate-700">Driver:</span> {opp.reason}
+                  </p>
+                )}
+                {opp.local_factor && (
+                  <div className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-800 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+                    <MapPin className="w-3 h-3 shrink-0 text-emerald-600" />
+                    <span>{opp.local_factor}</span>
+                  </div>
+                )}
               </div>
             </div>
           ))}

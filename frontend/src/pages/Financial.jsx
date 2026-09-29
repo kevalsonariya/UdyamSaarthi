@@ -84,8 +84,13 @@ export const Financial = () => {
   };
 
   useEffect(() => {
-    // If not already fetched or capital changed, retrieve from backend service
-    if (!financialData || financialData.financial?.available_capital !== capital) {
+    // If not already fetched or parameters changed, retrieve from backend service
+    const matchesCurrent = Boolean(
+      financialData &&
+      financialData.financial?.available_capital === capital &&
+      (!financialData.input || (financialData.input.business_category === category && financialData.input.location === location))
+    );
+    if (!matchesCurrent) {
       fetchFinancialPlan();
     }
   }, [capital, category, location]);
@@ -855,7 +860,8 @@ export const Financial = () => {
       </Card>
 
       {/* 6. AI FINANCIAL EXPLANATION (Preserved from Phase B4) */}
-      {analysisData?.ai_explanation && (
+      {analysisData?.ai_explanation &&
+       (!analysisData.input || (analysisData.input.business_category === category && Number(analysisData.input.available_capital) === capital)) && (
         <Card
           title={t('financial.aiAdvisoryFinTitle')}
           subtitle={t('financial.aiAdvisoryFinSubtitle')}

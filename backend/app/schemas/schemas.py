@@ -22,6 +22,7 @@ class BusinessInputRequest(BaseModel):
     available_capital: Optional[Any] = Field(None, description="Available margin capital in INR")
     language: Optional[str] = Field("en", description="Presentation language: en, hi, gu")
     location_detail: Optional[LocationData] = Field(None, description="Structured location model if available")
+    request_id: Optional[str] = Field(None, description="Optional client request ID for concurrency tracking")
 
 
 class FinancialStructuring(BaseModel):
@@ -158,10 +159,19 @@ class MarketReachAnalysis(BaseModel):
     market_reach_summary: str
     is_demo_data: bool = True
 
+class OpportunityItem(BaseModel):
+    title: str
+    type: str = Field(..., description="High Growth, Unmet Need, Ecosystem Driver, Seasonal Opportunity, Customer Segment Opportunity, or Channel Opportunity")
+    description: str
+    reason: str
+    local_factor: str
+    impact: Optional[str] = "High"
+
 class OpportunityAnalysis(BaseModel):
-    high_growth_segments: List[str]
-    unmet_local_needs: List[str]
-    ecosystem_growth_drivers: List[str]
+    high_growth_segments: List[str] = Field(default_factory=list)
+    unmet_local_needs: List[str] = Field(default_factory=list)
+    ecosystem_growth_drivers: List[str] = Field(default_factory=list)
+    items: List[OpportunityItem] = Field(default_factory=list)
     is_demo_data: bool = True
 
 class SWOTAnalysis(BaseModel):
@@ -231,6 +241,8 @@ class AIExplanation(BaseModel):
 
 class FullAnalysisResponse(BaseModel):
     success: bool = True
+    request_id: Optional[str] = None
+    input: Optional[Dict[str, Any]] = None
     data: Optional[Dict[str, Any]] = None
     metadata: Optional[Dict[str, Any]] = None
     business: Optional[Dict[str, Any]] = None

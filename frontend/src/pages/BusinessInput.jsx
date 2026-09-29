@@ -37,7 +37,7 @@ import { useTranslation } from '../context/LanguageContext';
 
 export const BusinessInput = () => {
   const navigate = useNavigate();
-  const { inputData, setInputData } = useBizSahayak();
+  const { inputData, setInputData, updateInputData } = useBizSahayak();
   const { t, getCategoryLabel } = useTranslation();
 
   const [location, setLocation] = useState(inputData.location || '');
@@ -117,7 +117,7 @@ export const BusinessInput = () => {
       location_detail: selectedLocation,
     };
 
-    setInputData(preparedPayload);
+    updateInputData(preparedPayload);
 
     // Smooth navigation transition
     setTimeout(() => {

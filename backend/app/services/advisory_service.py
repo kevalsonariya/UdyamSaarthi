@@ -47,6 +47,7 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
         location=clean_loc,
         business_category=clean_cat,
         available_capital=clean_cap,
+        location_detail=request.location_detail,
     )
 
     # 3. Phase B4: AI Advisory / Explanation Layer (Strictly explains, never recalculates financial metrics)
@@ -74,7 +75,17 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
     ai_explanation = ai_advisory_service.generate_advisory_explanation(ai_context)
 
     # 4. Assemble complete structured payload matching Phase B3 & B4 specifications
+    req_id = getattr(request, "request_id", None)
+    input_snapshot = {
+        "location": clean_loc,
+        "business_category": clean_cat,
+        "available_capital": clean_cap,
+        "language": getattr(request, "language", "en") or "en",
+    }
+
     data_payload = {
+        "request_id": req_id,
+        "input": input_snapshot,
         "business": adv["business"],
         "market": adv["market"],
         "opportunities": adv["opportunities"],
@@ -97,6 +108,8 @@ def perform_complete_analysis(request: BusinessInputRequest) -> FullAnalysisResp
 
     return FullAnalysisResponse(
         success=True,
+        request_id=req_id,
+        input=input_snapshot,
         data=data_payload,
         metadata=adv["metadata"],
         business=adv["business"],

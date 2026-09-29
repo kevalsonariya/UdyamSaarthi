@@ -33,6 +33,10 @@ const formatPayload = (data) => {
     payload.location_detail = data.location_detail;
   }
 
+  if (data.request_id) {
+    payload.request_id = data.request_id;
+  }
+
   return payload;
 };
 
@@ -42,10 +46,15 @@ export const bizApi = {
    * Complete business feasibility, market reach, SWOT, risk, pricing and recommendation
    * POST /business/analyze
    */
-  analyzeBusiness: async (payload) => {
+  analyzeBusiness: async (payload, options = {}) => {
     const formatted = formatPayload(payload);
+    const reqId = payload.request_id || formatted.request_id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `req_${Date.now()}`);
+    formatted.request_id = reqId;
+
     try {
-      const response = await apiClient.post('/business/analyze', formatted);
+      const response = await apiClient.post('/business/analyze', formatted, {
+        signal: options?.signal,
+      });
       const raw = response.data?.data ?? response.data;
 
       // Extract market information cleanly
@@ -68,33 +77,47 @@ export const bizApi = {
       if (Array.isArray(raw.opportunities)) {
         oppArray = raw.opportunities;
       } else if (raw.opportunities && typeof raw.opportunities === 'object') {
-        const highGrowth = raw.opportunities.high_growth_segments || [];
-        const unmetNeeds = raw.opportunities.unmet_local_needs || [];
-        const drivers = raw.opportunities.ecosystem_growth_drivers || [];
+        if (Array.isArray(raw.opportunities.items) && raw.opportunities.items.length > 0) {
+          oppArray = raw.opportunities.items.map((item) => ({
+            title: item.title,
+            type: item.type || 'High Growth',
+            description: item.description,
+            reason: item.reason,
+            local_factor: item.local_factor,
+            impact: item.impact || item.type || 'High Growth',
+          }));
+        } else {
+          const highGrowth = raw.opportunities.high_growth_segments || [];
+          const unmetNeeds = raw.opportunities.unmet_local_needs || [];
+          const drivers = raw.opportunities.ecosystem_growth_drivers || [];
 
-        highGrowth.forEach((item) => {
-          oppArray.push({
-            title: item,
-            description: `High-growth segment identified for ${formatted.business_category} in ${formatted.location}.`,
-            impact: 'High Growth',
+          highGrowth.forEach((item) => {
+            oppArray.push({
+              title: item,
+              type: 'High Growth',
+              description: `High-growth segment identified for ${formatted.business_category} in ${formatted.location}.`,
+              impact: 'High Growth',
+            });
           });
-        });
 
-        unmetNeeds.forEach((item) => {
-          oppArray.push({
-            title: item,
-            description: `Unmet local community demand representing an immediate market entry advantage.`,
-            impact: 'Unmet Need',
+          unmetNeeds.forEach((item) => {
+            oppArray.push({
+              title: item,
+              type: 'Unmet Need',
+              description: `Unmet local community demand representing an immediate market entry advantage.`,
+              impact: 'Unmet Need',
+            });
           });
-        });
 
-        drivers.forEach((item) => {
-          oppArray.push({
-            title: item,
-            description: `Regional ecosystem enabler supporting long-term operational viability.`,
-            impact: 'Ecosystem Driver',
+          drivers.forEach((item) => {
+            oppArray.push({
+              title: item,
+              type: 'Ecosystem Driver',
+              description: `Regional ecosystem enabler supporting long-term operational viability.`,
+              impact: 'Ecosystem Driver',
+            });
           });
-        });
+        }
       }
 
       // Normalize risks
@@ -139,11 +162,19 @@ export const bizApi = {
       };
 
       return {
+        request_id: raw.request_id || reqId,
+        input: {
+          location: raw.location || formatted.location,
+          business_category: raw.business_category || formatted.business_category,
+          available_capital: raw.available_capital || formatted.available_capital,
+          language: formatted.language || 'en',
+        },
         is_verified: true,
         source: 'backend_analysis_engine',
         location: raw.location || formatted.location,
         business_category: raw.business_category || formatted.business_category,
         available_capital: raw.available_capital || formatted.available_capital,
+        business: raw.business || null,
         business_summary: {
           location: raw.location || formatted.location,
           business_category: raw.business_category || formatted.business_category,
@@ -177,155 +208,28 @@ export const bizApi = {
         competitors: compArray,
         pricing: pricingObj,
         recommendation: recObj,
+        financial: raw.financial || null,
+        scheme: raw.scheme || null,
+        emi: raw.emi || null,
+        repayment: raw.repayment || null,
+        working_capital: raw.working_capital || null,
         ai_explanation: raw.ai_explanation || null,
         raw_backend_data: raw,
       };
     } catch (error) {
+      if (axios.isCancel(error) || error.name === 'CanceledError' || error.name === 'AbortError') {
+        const cancelErr = new Error('Request aborted');
+        cancelErr.name = 'AbortError';
+        cancelErr.isAborted = true;
+        throw cancelErr;
+      }
       console.warn('Backend /business/analyze request error:', error.message);
-      // Fallback to maintain 100% demo uptime if backend is momentarily interrupted
-      return {
-        is_verified: false,
-        source: 'prototype_simulation',
-        location: formatted.location,
-        business_category: formatted.business_category,
-        available_capital: formatted.available_capital,
-        business_summary: {
-          location: formatted.location,
-          business_category: formatted.business_category,
-          available_capital: formatted.available_capital,
-          readiness_level: 'High Initial Potential',
-        },
-        market_reach: {
-          estimated_consumer_reach: '18,500 – 24,000 residents',
-          local_area: `0 – 15 km catchment radius surrounding ${formatted.location}`,
-          distribution_channels: [
-            {
-              name: 'Direct Counter & Retail Storefront',
-              description: 'High walk-in visibility on village market road or town bazaar.',
-              suitability: 'Primary (60% volume)',
-            },
-            {
-              name: 'Weekly Village Haats & Mandi Stalls',
-              description: 'Access to rotating weekly agricultural gatherings in neighboring talukas.',
-              suitability: 'Secondary (25% volume)',
-            },
-            {
-              name: 'Direct Institutional & Bulk Orders',
-              description: 'Orders from local schools, cooperatives, and small workshops.',
-              suitability: 'High-Margin (15% volume)',
-            },
-          ],
-          customer_segments: [
-            { name: 'Agricultural Families', percentage: 45, demand: 'Durable, cost-effective essentials' },
-            { name: 'Town Salaried & Shop Owners', percentage: 30, demand: 'Daily consumables & regular upgrades' },
-            { name: 'Youth & Students', percentage: 25, demand: 'Modern styles & custom preferences' },
-          ],
-        },
-        opportunities: [
-          {
-            title: 'Cluster Supply-Chain Advantage',
-            description: `Proximity to key regional raw material corridors for ${formatted.business_category} reduces freight overhead.`,
-            impact: 'High Impact',
-          },
-          {
-            title: 'Underserved Semi-Rural Demand',
-            description: 'Local consumers travel 20-30 km to major district hubs; a nearby center retains local spending.',
-            impact: 'High Impact',
-          },
-          {
-            title: 'Seasonal Surge Capitalization',
-            description: 'Agricultural harvest payouts and local festival seasons consistently deliver 2x sales peaks.',
-            impact: 'Moderate Impact',
-          },
-        ],
-        swot: {
-          strengths: [
-            'Direct relationship and trust with local village panchayats and community.',
-            'Significantly lower operational rental overhead compared to urban establishments.',
-            'High operational agility to tailor offerings to local cultural preferences.',
-            'Promoter commitment with skin in the game through 10% margin equity.',
-          ],
-          weaknesses: [
-            'Initial working capital constraints limiting bulk raw material purchases.',
-            'Early reliance on manual processing prior to machinery scale-up.',
-            'Informal bookkeeping that requires transition to structured digital accounting.',
-            'Initial brand awareness limited to immediate 5 km radius.',
-          ],
-          opportunities: [
-            'Leverage government interest-subsidized credit schemes with moratorium benefits.',
-            'Establish direct supply agreements with local institutional cooperatives.',
-            'Adopt UPI and digital cataloging via WhatsApp Business to expand radius.',
-            'Introduce value-added custom services that competitors do not provide.',
-          ],
-          threats: [
-            'Temporary cash flow delays when rural customers face harvest payment lags.',
-            'Raw material wholesale price volatility during off-peak seasons.',
-            'Competition from low-quality, unorganized mobile haat traders.',
-            'Dependence on local power stability for machinery operations.',
-          ],
-        },
-        risks: [
-          {
-            title: 'Seasonal Demand & Cashflow Fluctuations',
-            description: 'Revenue peaks during post-harvest months but can soften during monsoon periods.',
-            severity: 'Medium',
-            mitigation: 'Utilize loan moratorium to build a 2-month cash buffer and maintain multi-product lines.',
-          },
-          {
-            title: 'Supplier Raw Material Price Volatility',
-            description: 'Unanticipated increases in wholesale inputs could squeeze operating margins.',
-            severity: 'Medium',
-            mitigation: 'Form bulk-buying syndicates with neighboring micro-entrepreneurs and secure fixed short-term contracts.',
-          },
-          {
-            title: 'Informal Credit Demands by Buyers',
-            description: 'Rural customers often expect extended credit terms until crop sales are realized.',
-            severity: 'High',
-            mitigation: 'Enforce a strict cash-first or 50% advance policy on customized orders with small discounts for upfront UPI payments.',
-          },
-        ],
-        competitors: [
-          {
-            name: 'Local Legacy Traders',
-            type: 'Traditional Brick & Mortar',
-            presence: 'Established village market location',
-            pricing_tier: 'Standard / High',
-            weakness: 'Limited variety, rigid payment terms, outdated product lines',
-          },
-          {
-            name: 'Weekly Haat Vendors',
-            type: 'Informal Mobile Traders',
-            presence: 'Available 1-2 days per week',
-            pricing_tier: 'Low / Budget',
-            weakness: 'Inconsistent quality, zero after-sales service or customization',
-          },
-          {
-            name: 'Nearby Town Retail Outlets',
-            type: 'Commercial Semi-Urban Hub',
-            presence: '15-20 km distance',
-            pricing_tier: 'High',
-            weakness: 'Inconvenient travel cost and time for routine rural purchases',
-          },
-        ],
-        pricing: {
-          estimated_price_range: '₹220 – ₹850',
-          purchasing_power_context:
-            'Average rural household ticket size per purchase is ₹400 – ₹700, with high willingness to pay for proven durability.',
-          suggested_approach:
-            'Value-Based Tiered Pricing: Price essential daily volume items at competitive entry points (₹250-₹400) to build footfall, while keeping higher margin (35-42%) offerings for festive and customized orders.',
-        },
-        recommendation: {
-          score: 83,
-          status: 'Recommended for Financial Structuring',
-          headline: `Feasible Micro-Enterprise Opportunity in ${formatted.location}`,
-          summary: `The proposed ${formatted.business_category} enterprise shows a robust local feasibility score of 83/100. Strong regional demand, manageable competitor density, and available credit schemes make this a viable candidate for financing.`,
-          key_actions: [
-            'Secure shop premise along high-footfall village connective road or haat junction.',
-            'Proceed with deterministic loan sizing under recommended government lending scheme.',
-            'Allocate 60% of project financing to productive machinery and 25% to initial inventory buffer.',
-          ],
-        },
-      };
+      throw new Error(
+        error.response?.data?.detail?.message ||
+        error.response?.data?.detail ||
+        error.message ||
+        'Unable to generate analysis for the selected business. Please try again.'
+      );
     }
   },
 
@@ -396,6 +300,11 @@ export const bizApi = {
       ]);
 
       return {
+        input: {
+          location: formatted.location,
+          business_category: formatted.business_category,
+          available_capital: formatted.available_capital,
+        },
         financial,
         scheme,
         emi,
@@ -408,6 +317,11 @@ export const bizApi = {
         const full = await apiClient.post('/business/analyze', formatted);
         const fullData = full.data?.data ?? full.data;
         return {
+          input: {
+            location: formatted.location,
+            business_category: formatted.business_category,
+            available_capital: formatted.available_capital,
+          },
           financial: fullData.financial,
           scheme: fullData.scheme,
           emi: fullData.emi,
