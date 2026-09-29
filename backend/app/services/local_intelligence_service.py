@@ -1218,9 +1218,21 @@ class LocalIntelligenceService:
         swot = cls.generate_swot(cat, loc_info, cap, language=lang)
         risks = cls.generate_risks(cat, loc_info, cap, language=lang)
         pricing = cls.generate_pricing(cat, loc_info, cap, language=lang)
-        comps = cls.generate_competitors(cat, loc_info, cap, language=lang)
+        
+        # Phase B9: Real Local Competitor Mapping via CompetitorService
+        from app.services.competitor_service import competitor_service
+        comps = competitor_service.find_competitors(
+            location=location,
+            category=business_category,
+            capital=cap,
+            location_detail=location_detail,
+            language=lang,
+        )
+
         rec = cls.generate_recommendation(cat, loc_info, cap, language=lang)
         profile = cls.generate_business_profile(cat, loc_info, cap, language=lang, raw_category=business_category)
+
+        has_live_competitors = any(not getattr(c, "is_demo_data", True) for c in comps)
 
         return {
             "business": profile.model_dump(),
@@ -1232,9 +1244,14 @@ class LocalIntelligenceService:
             "pricing": pricing,
             "recommendation": rec,
             "metadata": {
-                "data_source": "prototype_demo_data",
-                "is_live_data": False,
-                "note": "Prototype demo datasets. Dynamic simulated local market estimates tailored for advisory and business planning.",
-                "version": "2.0-b8",
+                "data_source": "google_places_api" if has_live_competitors else "prototype_demo_data",
+                "is_live_data": has_live_competitors,
+                "is_live_competitor_data": has_live_competitors,
+                "note": (
+                    "Live verified competitor mapping retrieved via Google Places API."
+                    if has_live_competitors
+                    else "Prototype demo datasets. Dynamic simulated local market estimates tailored for advisory and business planning."
+                ),
+                "version": "2.0-b9",
             },
         }

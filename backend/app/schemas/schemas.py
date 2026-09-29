@@ -198,6 +198,40 @@ class CompetitorItem(BaseModel):
     is_demo_data: bool = True
     data_source: str = "Indicative category-location profile"
     location_status: str = "Location unavailable — live mapping planned for Phase B9"
+    # Phase B9 Real Provider Fields
+    category: Optional[str] = None
+    address: Optional[str] = None
+    distance_km: Optional[float] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    place_id: Optional[str] = None
+    map_url: Optional[str] = None
+    website_url: Optional[str] = None
+    rating: Optional[float] = None
+    review_count: Optional[int] = None
+    source: Optional[str] = None
+    is_estimate: bool = False
+    retrieved_at: Optional[str] = None
+
+class CompetitorSearchRequest(BaseModel):
+    location: str
+    business_category: str
+    request_id: Optional[str] = None
+    language: Optional[str] = "en"
+    radius_km: Optional[float] = None
+    location_detail: Optional[LocationData] = None
+
+class CompetitorSearchData(BaseModel):
+    request_id: Optional[str] = None
+    input: Dict[str, Any]
+    competitors: List[CompetitorItem]
+    is_live_data: bool = False
+    source: str = "Google Places API"
+
+class CompetitorSearchResponse(BaseModel):
+    success: bool = True
+    data: CompetitorSearchData
+
 
 class PricingGuidance(BaseModel):
     benchmark_product_or_service: str

@@ -11,6 +11,8 @@ from app.schemas.schemas import (
     CategoriesListResponse,
     CategoryMetadataItem,
     LocationSuggestResponse,
+    CompetitorSearchRequest,
+    CompetitorSearchResponse,
 )
 from app.engines.financial_engine import (
     calculate_project_cost,
@@ -68,6 +70,38 @@ async def analyze_business(request: BusinessInputRequest):
     Complete end-to-end hyper-local business advisory and financial structuring.
     """
     return perform_complete_analysis(request)
+
+
+@router.post("/competitors/search", response_model=CompetitorSearchResponse)
+async def search_competitors_endpoint(request: CompetitorSearchRequest):
+    """
+    Phase B9: Dedicated real competitor discovery endpoint.
+    Accepts location, business_category, optional request_id, and language.
+    Returns discovered real competitors from Google Places API or demo fallback.
+    """
+    from app.services.competitor_service import competitor_service
+    comps = competitor_service.find_competitors(
+        location=request.location,
+        category=request.business_category,
+        location_detail=request.location_detail,
+        language=request.language or "en",
+        radius_km=request.radius_km,
+    )
+    has_live = any(not getattr(c, "is_demo_data", True) for c in comps)
+    return {
+        "success": True,
+        "data": {
+            "request_id": request.request_id,
+            "input": {
+                "location": request.location,
+                "business_category": request.business_category,
+                "language": request.language or "en",
+            },
+            "competitors": comps,
+            "is_live_data": has_live,
+            "source": "Google Places API" if has_live else "Indicative Benchmark",
+        },
+    }
 
 
 @router.post("/financial/calculate")

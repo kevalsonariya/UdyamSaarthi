@@ -255,6 +255,14 @@ export const translations = {
       categoryBenchmarkSource: 'Prototype category benchmark',
       indicativeCatchmentTitle: 'Indicative Catchment Estimate',
       indicativeCatchmentDesc: 'Prototype estimate based on configured location/category factors.',
+      realCompetitorBadge: 'Live Provider Result • Verified Local Business',
+      viewLocationBtn: 'View Location',
+      locationUnavailable: 'Location unavailable',
+      providerAttribution: 'Source: Google Places',
+      distanceFromCenter: '{distance} km from center',
+      ratingLabel: '{rating}★ ({reviews} reviews)',
+      verifiedListing: 'Verified Provider Listing',
+      websiteBtn: 'Website',
     },
 
     // Financial Page
@@ -681,6 +689,14 @@ export const translations = {
       categoryBenchmarkSource: 'प्रोटोटाइप श्रेणी मानक',
       indicativeCatchmentTitle: 'संकेतात्मक कैचमेंट अनुमान',
       indicativeCatchmentDesc: 'कॉन्फ़िगर किए गए स्थान/श्रेणी कारकों पर आधारित प्रोटोटाइप अनुमान।',
+      realCompetitorBadge: 'लाइव प्रदाता परिणाम • सत्यापित स्थानीय व्यवसाय',
+      viewLocationBtn: 'स्थान देखें',
+      locationUnavailable: 'स्थान अनुपलब्ध',
+      providerAttribution: 'स्रोत: Google Places',
+      distanceFromCenter: 'केंद्र से {distance} किमी',
+      ratingLabel: '{rating}★ ({reviews} समीक्षाएं)',
+      verifiedListing: 'सत्यापित प्रदाता सूची',
+      websiteBtn: 'वेबसाइट',
     },
 
     // Financial Page
@@ -1103,6 +1119,14 @@ export const translations = {
       categoryBenchmarkSource: 'પ્રોટોટાઇપ શ્રેણી ધોરણ',
       indicativeCatchmentTitle: 'સૂચક કેચમેન્ટ અંદાજ',
       indicativeCatchmentDesc: 'રૂપરેખાંકિત સ્થાન/કેટેગરી પરિબળો પર આધારિત પ્રોટોટાઇપ અંદાજ.',
+      realCompetitorBadge: 'લાઇવ પ્રદાતા પરિણામ • ચકાસાયેલ સ્થાનિક વ્યવસાય',
+      viewLocationBtn: 'સ્થાન જુઓ',
+      locationUnavailable: 'સ્થાન ઉપલબ્ધ નથી',
+      providerAttribution: 'સ્ત્રોત: Google Places',
+      distanceFromCenter: 'કેન્દ્રથી {distance} કિમી',
+      ratingLabel: '{rating}★ ({reviews} સમીક્ષાઓ)',
+      verifiedListing: 'ચકાસાયેલ પ્રદાતા યાદી',
+      websiteBtn: 'વેબસાઇટ',
     },
 
     // Financial Page

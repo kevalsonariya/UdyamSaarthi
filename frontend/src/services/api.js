@@ -153,6 +153,20 @@ export const bizApi = {
           formatted.language === 'hi' ? 'मानक स्थानीय मूल्य' : formatted.language === 'gu' ? 'સ્થાનિક બજાર ભાવ' : 'Standard Local Pricing'
         ),
         weakness: c.differentiation_strategy || c.weakness || 'Opportunity for higher quality, transparent pricing, and digital payments.',
+        is_demo_data: c.is_demo_data !== false,
+        is_estimate: c.is_estimate !== false,
+        data_source: c.data_source || 'Indicative category-location profile',
+        location_status: c.location_status || '',
+        address: c.address || null,
+        distance_km: c.distance_km ?? null,
+        latitude: c.latitude ?? null,
+        longitude: c.longitude ?? null,
+        place_id: c.place_id || null,
+        map_url: c.map_url || null,
+        website_url: c.website_url || null,
+        rating: c.rating ?? null,
+        review_count: c.review_count ?? null,
+        source: c.source || (c.is_demo_data === false ? 'Google Places' : 'Indicative Benchmark'),
       }));
 
       // Normalize pricing

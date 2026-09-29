@@ -20,6 +20,8 @@ import {
   ShieldAlert,
   ArrowUpRight,
   RotateCcw,
+  ExternalLink,
+  Globe,
 } from 'lucide-react';
 import {
   PieChart,
@@ -166,6 +168,8 @@ export const Analysis = () => {
     if (sev === 'medium') return <Badge variant="warning">{severity}</Badge>;
     return <Badge variant="info">{severity}</Badge>;
   };
+
+  const hasLiveCompetitors = competitors?.some((c) => c.is_demo_data === false);
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -545,33 +549,103 @@ export const Analysis = () => {
           title={t('analysis.competitorsTitle')}
           subtitle={t('analysis.competitorsSubtitle')}
           badge={
-            <Badge variant="warning" size="sm">
-              {t('analysis.demoCompetitorBadge')}
-            </Badge>
+            hasLiveCompetitors ? (
+              <Badge variant="success" size="sm">
+                {t('analysis.realCompetitorBadge')}
+              </Badge>
+            ) : (
+              <Badge variant="warning" size="sm">
+                {t('analysis.demoCompetitorBadge')}
+              </Badge>
+            )
           }
         >
           <div className="space-y-3 text-xs">
             {competitors?.map((comp, idx) => (
               <div
                 key={idx}
-                className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5"
+                className={`p-3.5 rounded-xl border space-y-1.5 transition-colors ${
+                  comp.is_demo_data === false
+                    ? 'bg-emerald-50/40 border-emerald-200'
+                    : 'bg-slate-50 border-slate-200'
+                }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-bold text-slate-900 text-sm">{comp.name}</span>
-                  <Badge variant="warning" size="sm">
-                    {t('analysis.demoDataLabel')}
-                  </Badge>
+                  {comp.is_demo_data === false ? (
+                    <Badge variant="success" size="sm">
+                      {t('analysis.verifiedListing')}
+                    </Badge>
+                  ) : (
+                    <Badge variant="warning" size="sm">
+                      {t('analysis.demoDataLabel')}
+                    </Badge>
+                  )}
                 </div>
-                <div className="text-slate-500">
-                  <span>{comp.type}</span> • <span>{comp.presence}</span>
+
+                <div className="text-slate-500 flex flex-wrap items-center gap-1.5 text-[11px]">
+                  <span className="font-medium text-slate-700">{comp.type}</span>
+                  {comp.distance_km != null && (
+                    <span>• {t('analysis.distanceFromCenter', { distance: comp.distance_km })}</span>
+                  )}
+                  {comp.presence && comp.distance_km == null && (
+                    <span>• {comp.presence}</span>
+                  )}
+                  {comp.rating && (
+                    <span className="text-amber-700 font-semibold">
+                      • {t('analysis.ratingLabel', { rating: comp.rating, reviews: comp.review_count || 0 })}
+                    </span>
+                  )}
                 </div>
-                <div className="pt-1 text-[11px] text-amber-900 font-medium">
-                  <strong>{t('analysis.unmetGapLabel')} </strong> {comp.weakness}
-                </div>
-                <div className="pt-2 border-t border-slate-200/80 flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                  <MapPinOff className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span>{comp.location_status || t('analysis.locationUnavailableB9')}</span>
-                </div>
+
+                {comp.address && (
+                  <div className="text-[11px] text-slate-600 flex items-start gap-1.5 pt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">{comp.address}</span>
+                  </div>
+                )}
+
+                {comp.is_demo_data !== false ? (
+                  <>
+                    <div className="pt-1 text-[11px] text-amber-900 font-medium">
+                      <strong>{t('analysis.unmetGapLabel')} </strong> {comp.weakness}
+                    </div>
+                    <div className="pt-2 border-t border-slate-200/80 flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <MapPinOff className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <span>{comp.location_status || t('analysis.locationUnavailableB9')}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="pt-2 border-t border-emerald-200/80 flex items-center justify-between gap-3 text-[11px]">
+                    <div className="flex items-center gap-3">
+                      {comp.map_url && (
+                        <a
+                          href={comp.map_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-semibold text-emerald-800 hover:text-emerald-950 underline decoration-emerald-400 underline-offset-2"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          {t('analysis.viewLocationBtn')}
+                        </a>
+                      )}
+                      {comp.website_url && (
+                        <a
+                          href={comp.website_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 font-medium text-slate-600 hover:text-slate-900"
+                        >
+                          <Globe className="w-3.5 h-3.5" />
+                          {t('analysis.websiteBtn')}
+                        </a>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-400">
+                      {comp.source || t('analysis.providerAttribution')}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
